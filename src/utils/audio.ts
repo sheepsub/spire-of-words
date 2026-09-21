@@ -1,9 +1,13 @@
-// Web Audio API Sound Synthesizer + Web Speech API for Pronunciation
+// Web Audio API Sound Synthesizer + Web Speech API + iOS Haptic Feedback
 
 class SoundFX {
   private ctx: AudioContext | null = null;
   public enabled: boolean = true;
   public speechEnabled: boolean = true;
+  private bgmOsc1: OscillatorNode | null = null;
+  private bgmOsc2: OscillatorNode | null = null;
+  private bgmGain: GainNode | null = null;
+  public isBgmPlaying: boolean = false;
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -17,18 +21,81 @@ class SoundFX {
     }
   }
 
+  // iOS Taptic Vibration / Haptic Feedback
+  public haptic(type: 'light' | 'medium' | 'heavy' | 'success' = 'light') {
+    if (typeof window !== 'undefined' && 'navigator' in window && 'vibrate' in navigator) {
+      try {
+        if (type === 'light') navigator.vibrate(15);
+        else if (type === 'medium') navigator.vibrate(30);
+        else if (type === 'heavy') navigator.vibrate([40, 30, 60]);
+        else if (type === 'success') navigator.vibrate([20, 40, 20]);
+      } catch {
+        // Ignore haptics error if not permitted
+      }
+    }
+  }
+
+  // Ambient Dark Fantasy Dungeon Drone (BGM)
+  public startBgm() {
+    if (!this.enabled || this.isBgmPlaying) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      this.bgmGain = this.ctx.createGain();
+      this.bgmGain.gain.setValueAtTime(0.04, this.ctx.currentTime); // Subtle background drone
+
+      // Low harmonic drone
+      this.bgmOsc1 = this.ctx.createOscillator();
+      this.bgmOsc1.type = 'triangle';
+      this.bgmOsc1.frequency.setValueAtTime(55, this.ctx.currentTime); // A1 note
+
+      this.bgmOsc2 = this.ctx.createOscillator();
+      this.bgmOsc2.type = 'sine';
+      this.bgmOsc2.frequency.setValueAtTime(82.4, this.ctx.currentTime); // E2 note
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(260, this.ctx.currentTime);
+
+      this.bgmOsc1.connect(filter);
+      this.bgmOsc2.connect(filter);
+      filter.connect(this.bgmGain);
+      this.bgmGain.connect(this.ctx.destination);
+
+      this.bgmOsc1.start();
+      this.bgmOsc2.start();
+      this.isBgmPlaying = true;
+    } catch {
+      // Ignore audio start issue
+    }
+  }
+
+  public stopBgm() {
+    if (!this.isBgmPlaying) return;
+    try {
+      this.bgmOsc1?.stop();
+      this.bgmOsc2?.stop();
+      this.bgmOsc1?.disconnect();
+      this.bgmOsc2?.disconnect();
+      this.isBgmPlaying = false;
+    } catch {
+      // Ignore
+    }
+  }
+
   // Play English word pronunciation using Web Speech API
   public speakWord(word: string) {
     if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     try {
-      window.speechSynthesis.cancel(); // Stop prior speech
+      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(word);
       utterance.lang = 'en-US';
-      utterance.rate = 0.88; // Clear, deliberate educational speed
+      utterance.rate = 0.88;
       utterance.pitch = 1.0;
       window.speechSynthesis.speak(utterance);
     } catch {
-      // Ignore speech synth error if unsupported
+      // Ignore
     }
   }
 
@@ -86,11 +153,11 @@ class SoundFX {
 
   // Sword Slash / Attack
   public playSlash() {
+    this.haptic('medium');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
-    // White noise swoosh + rapid pitch drop
     const bufferSize = this.ctx.sampleRate * 0.2;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -103,12 +170,12 @@ class SoundFX {
 
     const filter = this.ctx.createBiquadFilter();
     filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(3200, this.ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.18);
+    filter.frequency.setValueAtTime(3400, this.ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(380, this.ctx.currentTime + 0.18);
     filter.Q.setValueAtTime(3, this.ctx.currentTime);
 
     const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
 
     noise.connect(filter);
@@ -119,8 +186,9 @@ class SoundFX {
     noise.stop(this.ctx.currentTime + 0.2);
   }
 
-  // Shield Block / Metal clang
+  // Shield Block
   public playBlock() {
+    this.haptic('light');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -129,10 +197,10 @@ class SoundFX {
     const gain = this.ctx.createGain();
 
     osc.type = 'square';
-    osc.frequency.setValueAtTime(240, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.2);
+    osc.frequency.setValueAtTime(250, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(85, this.ctx.currentTime + 0.2);
 
-    gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
 
     osc.connect(gain);
@@ -142,14 +210,14 @@ class SoundFX {
     osc.stop(this.ctx.currentTime + 0.22);
   }
 
-  // Critical Recall Strike (Sparkle + powerful hit chime)
+  // Critical Recall Strike (Sparkle + hit chime)
   public playCritical() {
+    this.haptic('success');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
-    // Chime chords
-    const notes = [523.25, 659.25, 783.99, 1046.5]; // C E G C
+    const notes = [523.25, 659.25, 783.99, 1046.5];
     notes.forEach((freq, idx) => {
       const osc = this.ctx!.createOscillator();
       const gain = this.ctx!.createGain();
@@ -157,14 +225,14 @@ class SoundFX {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, this.ctx!.currentTime + idx * 0.04);
 
-      gain.gain.setValueAtTime(0.1, this.ctx!.currentTime + idx * 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + idx * 0.04 + 0.35);
+      gain.gain.setValueAtTime(0.12, this.ctx!.currentTime + idx * 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + idx * 0.04 + 0.38);
 
       osc.connect(gain);
       gain.connect(this.ctx!.destination);
 
       osc.start(this.ctx!.currentTime + idx * 0.04);
-      osc.stop(this.ctx!.currentTime + idx * 0.04 + 0.36);
+      osc.stop(this.ctx!.currentTime + idx * 0.04 + 0.4);
     });
   }
 
@@ -178,10 +246,10 @@ class SoundFX {
     const gain = this.ctx.createGain();
 
     osc.type = 'triangle';
-    osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(900, this.ctx.currentTime + 0.3);
+    osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(950, this.ctx.currentTime + 0.3);
 
-    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+    gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
 
     osc.connect(gain);
@@ -193,6 +261,7 @@ class SoundFX {
 
   // Enemy Hit / Thud
   public playEnemyHit() {
+    this.haptic('heavy');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -201,33 +270,34 @@ class SoundFX {
     const gain = this.ctx.createGain();
 
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(140, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.25);
+    osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.28);
 
-    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.26);
+    gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
     osc.start();
-    osc.stop(this.ctx.currentTime + 0.26);
+    osc.stop(this.ctx.currentTime + 0.3);
   }
 
   // Gold Clink
   public playGold() {
+    this.haptic('light');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
 
-    [1500, 2200].forEach((freq, idx) => {
+    [1600, 2400].forEach((freq, idx) => {
       const osc = this.ctx!.createOscillator();
       const gain = this.ctx!.createGain();
 
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, this.ctx!.currentTime + idx * 0.08);
 
-      gain.gain.setValueAtTime(0.09, this.ctx!.currentTime + idx * 0.08);
+      gain.gain.setValueAtTime(0.1, this.ctx!.currentTime + idx * 0.08);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + idx * 0.08 + 0.2);
 
       osc.connect(gain);
@@ -240,6 +310,7 @@ class SoundFX {
 
   // Victory Jingle
   public playVictory() {
+    this.haptic('success');
     if (!this.enabled) return;
     this.initCtx();
     if (!this.ctx) return;
@@ -252,14 +323,14 @@ class SoundFX {
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(freq, this.ctx!.currentTime + i * 0.1);
 
-      gain.gain.setValueAtTime(0.12, this.ctx!.currentTime + i * 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + i * 0.1 + 0.8);
+      gain.gain.setValueAtTime(0.14, this.ctx!.currentTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + i * 0.1 + 0.85);
 
       osc.connect(gain);
       gain.connect(this.ctx!.destination);
 
       osc.start(this.ctx!.currentTime + i * 0.1);
-      osc.stop(this.ctx!.currentTime + i * 0.1 + 0.85);
+      osc.stop(this.ctx!.currentTime + i * 0.1 + 0.9);
     });
   }
 }

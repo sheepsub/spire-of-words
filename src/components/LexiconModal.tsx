@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { Card, VocabDifficulty } from '../types/game';
-import { VOCABULARY_CARDS } from '../data/vocabulary';
+import type { Card, VocabDifficulty, DictionaryEntry } from '../types/game';
+import { DICTIONARY_WORDS, getRandomDistractors } from '../data/dictionary';
 import { sound } from '../utils/audio';
 import { 
   BookOpen, 
@@ -32,7 +32,8 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
-  const [quizCards, setQuizCards] = useState<Card[]>([]);
+  const [quizCards, setQuizCards] = useState<DictionaryEntry[]>([]);
+  const [quizOptions, setQuizOptions] = useState<string[]>([]);
 
   // Calculate stats from deck
   const deckWordsMap = new Map<string, Card>();
@@ -40,18 +41,18 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
     deckWordsMap.set(c.word.toLowerCase(), c);
   });
 
-  const reviewNeededWords = VOCABULARY_CARDS.filter((v) => {
+  const reviewNeededWords = DICTIONARY_WORDS.filter((v) => {
     const matched = deckWordsMap.get(v.word.toLowerCase());
     return matched && matched.needReview;
   });
 
-  const masteredWords = VOCABULARY_CARDS.filter((v) => {
+  const masteredWords = DICTIONARY_WORDS.filter((v) => {
     const matched = deckWordsMap.get(v.word.toLowerCase());
     return matched && matched.masteryCount > 0;
   });
 
-  // Filter words
-  const filteredWords = VOCABULARY_CARDS.filter((word) => {
+  // Filter words from 150+ dictionary database
+  const filteredWords = DICTIONARY_WORDS.filter((word) => {
     // Search
     const matchesSearch = 
       word.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -75,14 +76,29 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
     return true;
   });
 
-  // Start mini quiz
+  // Helper to generate options for a quiz question
+  const prepareQuizOptions = (wordEntry: DictionaryEntry) => {
+    const distractors = getRandomDistractors(wordEntry.word, wordEntry.meaning, wordEntry.pos, 3);
+    const opts = [wordEntry.meaning, ...distractors];
+    for (let i = opts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [opts[i], opts[j]] = [opts[j], opts[i]];
+    }
+    return opts;
+  };
+
+  // Start mini quiz from the 150+ dictionary database
   const handleStartQuiz = () => {
-    const shuffled = [...VOCABULARY_CARDS].sort(() => Math.random() - 0.5).slice(0, 5);
+    const shuffled = [...DICTIONARY_WORDS].sort(() => Math.random() - 0.5).slice(0, 5);
     setQuizCards(shuffled);
     setQuizIndex(0);
     setQuizScore(0);
     setQuizFinished(false);
     setActiveTab('quiz');
+    if (shuffled.length > 0) {
+      sound.speakWord(shuffled[0].word);
+      setQuizOptions(prepareQuizOptions(shuffled[0]));
+    }
   };
 
   const handleQuizAnswer = (selectedMeaning: string) => {
@@ -94,8 +110,11 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
       sound.playEnemyHit();
     }
 
-    if (quizIndex + 1 < quizCards.length) {
-      setQuizIndex((i) => i + 1);
+    const nextIndex = quizIndex + 1;
+    if (nextIndex < quizCards.length) {
+      setQuizIndex(nextIndex);
+      sound.speakWord(quizCards[nextIndex].word);
+      setQuizOptions(prepareQuizOptions(quizCards[nextIndex]));
     } else {
       setQuizFinished(true);
       if (onPracticeReward) {
@@ -160,7 +179,7 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
         }}>
           <div style={{ fontSize: '11px', color: '#94a3b8' }}>全库词汇总量</div>
           <div style={{ fontSize: '18px', fontWeight: 800, color: '#f8fafc', fontFamily: 'var(--font-mono)' }}>
-            {VOCABULARY_CARDS.length} 词
+            {DICTIONARY_WORDS.length} 词
           </div>
         </div>
 
@@ -222,7 +241,7 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
               borderColor: activeTab === 'all' ? '#60a5fa' : undefined,
             }}
           >
-            全部词典 ({VOCABULARY_CARDS.length})
+            全部词典 ({DICTIONARY_WORDS.length})
           </button>
 
           <button
@@ -506,23 +525,21 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
 
               {/* Quiz Options */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {[quizCards[quizIndex]?.meaning, ...quizCards[quizIndex]?.distractors]
-                  .sort()
-                  .map((opt, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleQuizAnswer(opt)}
-                      className="spire-btn"
-                      style={{
-                        padding: '12px 16px',
-                        fontSize: '14px',
-                        justifyContent: 'flex-start',
-                      }}
-                    >
-                      <span style={{ color: '#facc15', marginRight: 8 }}>{String.fromCharCode(65 + i)}.</span>
-                      <span>{opt}</span>
-                    </button>
-                  ))}
+                {quizOptions.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleQuizAnswer(opt)}
+                    className="spire-btn"
+                    style={{
+                      padding: '12px 16px',
+                      fontSize: '14px',
+                      justifyContent: 'flex-start',
+                    }}
+                  >
+                    <span style={{ color: '#facc15', marginRight: 8 }}>{String.fromCharCode(65 + i)}.</span>
+                    <span>{opt}</span>
+                  </button>
+                ))}
               </div>
             </div>
           ) : (

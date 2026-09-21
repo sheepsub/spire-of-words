@@ -1,0 +1,23 @@
+{
+  "name": "词汇尖塔 - Spire of Words",
+  "short_name": "词汇尖塔",
+  "description": "杀戮尖塔风格的沉浸式背单词卡牌肉鸽游戏",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0e15",
+  "theme_color": "#0d0e15",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app-icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

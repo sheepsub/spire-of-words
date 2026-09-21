@@ -6,6 +6,7 @@ import { sound } from '../utils/audio';
 import { Coins, PlusCircle } from 'lucide-react';
 
 interface RewardModalProps {
+  characterId?: string;
   goldReward: number;
   onClaimGold: () => void;
   goldClaimed: boolean;
@@ -15,6 +16,7 @@ interface RewardModalProps {
 }
 
 export const RewardModal: React.FC<RewardModalProps> = ({
+  characterId,
   goldReward,
   onClaimGold,
   goldClaimed,
@@ -22,9 +24,10 @@ export const RewardModal: React.FC<RewardModalProps> = ({
   cardPicked,
   onContinue,
 }) => {
-  // Generate 3 random cards for drafting
+  // Generate 3 character-specific cards for drafting
   const [draftCards] = useState<Card[]>(() => {
-    const pool = [...VOCABULARY_CARDS].sort(() => Math.random() - 0.5);
+    const charPool = characterId ? VOCABULARY_CARDS.filter(c => c.characterId === characterId) : [];
+    const pool = (charPool.length >= 3 ? charPool : VOCABULARY_CARDS).sort(() => Math.random() - 0.5);
     return pool.slice(0, 3).map((c, i) => ({
       ...c,
       id: `draft_${c.id}_${Date.now()}_${i}`,

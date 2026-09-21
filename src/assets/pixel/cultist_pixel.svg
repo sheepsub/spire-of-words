@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%" shape-rendering="crispEdges">
+  <!-- Cultist of Babel / 巴别咒术祭司 16-bit Pixel Art -->
+  <!-- Shadow -->
+  <ellipse cx="24" cy="44" rx="14" ry="3" fill="#000000" opacity="0.45" shape-rendering="geometricPrecision"/>
+
+  <!-- Feathery Robe Body -->
+  <rect x="20" y="24" width="8" height="18" fill="#1e293b"/>
+  <rect x="18" y="28" width="12" height="14" fill="#0f172a"/>
+  <rect x="16" y="32" width="16" height="10" fill="#090d16"/>
+  <rect x="14" y="36" width="20" height="6" fill="#020617"/>
+
+  <!-- Cultist Blue/Teal Feathers & Trim -->
+  <rect x="22" y="25" width="4" height="16" fill="#0284c7"/>
+  <rect x="20" y="27" width="2" height="13" fill="#0369a1"/>
+  <rect x="26" y="27" width="2" height="13" fill="#0369a1"/>
+  <rect x="18" y="31" width="2" height="8" fill="#38bdf8"/>
+  <rect x="28" y="31" width="2" height="8" fill="#38bdf8"/>
+  <rect x="16" y="37" width="2" height="4" fill="#7dd3fc"/>
+  <rect x="30" y="37" width="2" height="4" fill="#7dd3fc"/>
+
+  <!-- Mystic Belt & Amulet -->
+  <rect x="19" y="30" width="10" height="2" fill="#ca8a04"/>
+  <rect x="23" y="31" width="2" height="2" fill="#facc15"/>
+  <rect x="23" y="33" width="2" height="3" fill="#38bdf8"/>
+
+  <!-- Arms and Sleeves -->
+  <rect x="14" y="25" width="4" height="9" fill="#1e293b"/>
+  <rect x="13" y="32" width="3" height="4" fill="#0f172a"/>
+  <!-- Left Claw / Hand holding Staff -->
+  <rect x="12" y="30" width="3" height="3" fill="#cbd5e1"/>
+
+  <!-- Ritual Staff -->
+  <rect x="11" y="10" width="2" height="34" fill="#78350f"/>
+  <rect x="10" y="14" width="4" height="2" fill="#92400e"/>
+  <rect x="10" y="24" width="4" height="2" fill="#92400e"/>
+  <!-- Staff Skull / Occult Head -->
+  <rect x="9" y="8" width="6" height="4" fill="#f1f5f9"/>
+  <rect x="8" y="9" width="8" height="2" fill="#e2e8f0"/>
+  <rect x="10" y="7" width="4" height="1" fill="#cbd5e1"/>
+  <rect x="10" y="9" width="1" height="1" fill="#0f172a"/>
+  <rect x="13" y="9" width="1" height="1" fill="#0f172a"/>
+  <!-- Glowing Ritual Gem atop Staff -->
+  <rect x="10" y="4" width="4" height="4" fill="#818cf8"/>
+  <rect x="11" y="3" width="2" height="6" fill="#a5b4fc"/>
+  <rect x="9" y="5" width="6" height="2" fill="#c7d2fe"/>
+  <rect x="11" y="5" width="2" height="2" fill="#ffffff"/>
+
+  <!-- Hood & Head -->
+  <rect x="18" y="11" width="12" height="14" fill="#0f172a"/>
+  <rect x="19" y="9" width="10" height="3" fill="#1e293b"/>
+  <rect x="21" y="7" width="6" height="3" fill="#334155"/>
+  <rect x="23" y="6" width="2" height="2" fill="#475569"/>
+
+  <!-- Bird Beak Mask (Classic Spire Cultist "Caw Caw!") -->
+  <rect x="19" y="14" width="8" height="8" fill="#f8fafc"/>
+  <rect x="18" y="16" width="10" height="5" fill="#f1f5f9"/>
+  <!-- Sharp Beak Pointing Left/Forward -->
+  <rect x="14" y="17" width="5" height="3" fill="#e2e8f0"/>
+  <rect x="11" y="18" width="4" height="2" fill="#cbd5e1"/>
+  <rect x="9" y="19" width="3" height="1" fill="#94a3b8"/>
+  <!-- Beak Shadow and Line -->
+  <rect x="11" y="19" width="8" height="1" fill="#64748b"/>
+  
+  <!-- Glowing Mystic Eyes in Mask -->
+  <rect x="20" y="16" width="2" height="2" fill="#ef4444"/>
+  <rect x="20" y="16" width="1" height="1" fill="#fef08a"/>
+  
+  <!-- Right Arm in Casting Gesture -->
+  <rect x="30" y="23" width="5" height="4" fill="#1e293b"/>
+  <rect x="33" y="20" width="4" height="4" fill="#334155"/>
+  <rect x="35" y="18" width="3" height="3" fill="#cbd5e1"/>
+  <!-- Casting Magic Spark -->
+  <rect x="38" y="16" width="3" height="3" fill="#c084fc"/>
+  <rect x="39" y="15" width="1" height="5" fill="#e9d5ff"/>
+  <rect x="37" y="17" width="5" height="1" fill="#e9d5ff"/>
+  <rect x="39" y="17" width="1" height="1" fill="#ffffff"/>
+
+  <!-- Ritual Aura Feathers / Particles -->
+  <rect x="32" y="34" width="2" height="3" fill="#38bdf8" opacity="0.8"/>
+  <rect x="35" y="30" width="2" height="2" fill="#818cf8" opacity="0.8"/>
+  <rect x="15" y="22" width="2" height="2" fill="#818cf8" opacity="0.7"/>
+</svg>

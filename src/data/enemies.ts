@@ -1,9 +1,15 @@
 import type { Enemy, EnemyIntent } from '../types/game';
+import cultistImg from '../assets/pixel/cultist_pixel.svg';
+import jawWormImg from '../assets/pixel/jaw_worm_pixel.svg';
+import acidSlimeImg from '../assets/pixel/acid_slime_pixel.svg';
+import nobImg from '../assets/pixel/gremlin_nob_pixel.svg';
+import hexaghostImg from '../assets/pixel/hexaghost_pixel.svg';
 
 export interface EnemyTemplate {
   name: string;
   title: string;
   avatar: string;
+  image?: string;
   minHp: number;
   maxHp: number;
   getIntents: (turn: number, enemy: Enemy) => EnemyIntent;
@@ -14,9 +20,10 @@ export interface EnemyTemplate {
 export const MONSTER_TEMPLATES: EnemyTemplate[] = [
   // 1. 巴别教徒 (Cultist of Babel) - Classic Spire scaling threat
   {
-    name: '巴别教徒',
-    title: '语言的狂热信徒',
+    name: '巴别咒术祭司',
+    title: '语言狂热者 · 仪式施法',
     avatar: '🦅',
+    image: cultistImg,
     minHp: 48,
     maxHp: 54,
     getIntents: (turn) => {
@@ -38,6 +45,7 @@ export const MONSTER_TEMPLATES: EnemyTemplate[] = [
     name: '下颚蠕虫',
     title: '尖塔底层的吞噬者',
     avatar: '🐛',
+    image: jawWormImg,
     minHp: 40,
     maxHp: 46,
     getIntents: (turn) => {
@@ -68,6 +76,7 @@ export const MONSTER_TEMPLATES: EnemyTemplate[] = [
     name: '酸液软泥怪',
     title: '腐蚀性巨型原生体',
     avatar: '🧪',
+    image: acidSlimeImg,
     minHp: 44,
     maxHp: 50,
     getIntents: (turn) => {
@@ -93,6 +102,7 @@ export const ELITE_TEMPLATES: EnemyTemplate[] = [
     name: '地精大块头',
     title: '狂怒的嗜血巨怪',
     avatar: '👹',
+    image: nobImg,
     minHp: 82,
     maxHp: 88,
     isElite: true,
@@ -122,9 +132,10 @@ export const ELITE_TEMPLATES: EnemyTemplate[] = [
 export const BOSS_TEMPLATES: EnemyTemplate[] = [
   // 六角亡魂 (Hexaghost) - Act 1 Boss
   {
-    name: '六角亡魂',
-    title: '尖塔第一幕领主',
+    name: '六角幽冥领主',
+    title: '尖塔终末亡魂 · 六道冥火',
     avatar: '👻',
+    image: hexaghostImg,
     minHp: 150,
     maxHp: 160,
     isBoss: true,
@@ -168,13 +179,14 @@ export function createEnemy(template: EnemyTemplate): Enemy {
     hp: hp,
     block: 0,
     avatar: template.avatar,
+    image: template.image,
     statusEffects: {
       strength: 0,
       weak: 0,
       vulnerable: 0,
       poison: 0,
       dexterity: 0,
-      ritual: template.name.includes('教徒') ? 0 : undefined,
+      ritual: template.name.includes('教徒') || template.name.includes('祭司') ? 0 : undefined,
     },
     intent: { type: 'attack', desc: '准备就绪' },
     patternIndex: 1,

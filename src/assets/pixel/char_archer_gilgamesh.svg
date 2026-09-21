@@ -1,0 +1,318 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 420" width="100%" height="100%">
+  <defs>
+    <!-- Metallic Gold Armor Gradients -->
+    <linearGradient id="goldLight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="30%" stop-color="#fde047"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="goldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ca8a04"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+
+    <!-- Crimson Cape & Sash Gradient -->
+    <linearGradient id="crimsonCloth" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="60%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#450a0a"/>
+    </linearGradient>
+
+    <!-- Golden Hair Gradient -->
+    <linearGradient id="hairGold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="40%" stop-color="#fde047"/>
+      <stop offset="85%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+
+    <!-- Skin Tones -->
+    <linearGradient id="skinFair" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff7ed"/>
+      <stop offset="70%" stop-color="#ffedd5"/>
+      <stop offset="100%" stop-color="#fed7aa"/>
+    </linearGradient>
+
+    <!-- Gate of Babylon Ripple Portals -->
+    <radialGradient id="portalGlow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="25%" stop-color="#fef08a" stop-opacity="0.95"/>
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.8"/>
+      <stop offset="85%" stop-color="#d97706" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="portalGlow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="30%" stop-color="#fef08a" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="#ea580c" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#9a3412" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Divine Weapons Shimmer -->
+    <linearGradient id="silverBlade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="crimsonSpear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fca5a5"/>
+      <stop offset="50%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+
+    <filter id="divineGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="weaponGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Divine Golden Aura Beam -->
+  <circle cx="160" cy="200" r="140" fill="url(#portalGlow1)" opacity="0.15" filter="url(#divineGlow)"/>
+
+  <!-- ================= GATE OF BABYLON RIPPLES & WEAPONS ================= -->
+  <!-- Portal 1: Top-Right (Main Large Portal) -->
+  <g transform="translate(230, 80)">
+    <circle cx="0" cy="0" r="55" fill="url(#portalGlow1)" filter="url(#divineGlow)"/>
+    <!-- Concentric Golden Shockwave Rings -->
+    <circle cx="0" cy="0" r="44" fill="none" stroke="#fef08a" stroke-width="2.5" opacity="0.85"/>
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.9"/>
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="7" fill="#ffffff"/>
+    <!-- Rune Dots on Ring -->
+    <circle cx="0" cy="-32" r="3" fill="#ffffff"/>
+    <circle cx="32" cy="0" r="3" fill="#ffffff"/>
+    <circle cx="0" cy="32" r="3" fill="#ffffff"/>
+    <circle cx="-32" cy="0" r="3" fill="#ffffff"/>
+    <!-- Protruding Divine Golden Spear / Lance -->
+    <g transform="rotate(-35) translate(-40, -10)" filter="url(#weaponGlow)">
+      <!-- Spear Blade -->
+      <polygon points="0,10 60,3 75,10 60,17" fill="url(#goldLight)"/>
+      <polygon points="10,10 60,7 65,10 60,13" fill="#ffffff"/>
+      <rect x="65" y="8" width="55" height="4" fill="url(#goldDark)"/>
+      <!-- Crossguard Ribbons -->
+      <polygon points="65,4 75,10 65,16" fill="#dc2626"/>
+    </g>
+  </g>
+
+  <!-- Portal 2: Top-Left (Medium Sword Portal) -->
+  <g transform="translate(70, 95)">
+    <circle cx="0" cy="0" r="46" fill="url(#portalGlow2)" filter="url(#divineGlow)"/>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="#fef08a" stroke-width="2" opacity="0.9"/>
+    <circle cx="0" cy="0" r="22" fill="none" stroke="#f59e0b" stroke-width="1.8" opacity="0.9"/>
+    <circle cx="0" cy="0" r="10" fill="#ffffff"/>
+    <!-- Emerging Holy Sword -->
+    <g transform="rotate(30) translate(-10, -8)" filter="url(#weaponGlow)">
+      <polygon points="0,8 70,3 85,8 70,13" fill="url(#silverBlade)"/>
+      <polygon points="15,8 70,6 75,8 70,10" fill="#ffffff"/>
+      <rect x="75" y="4" width="8" height="8" fill="url(#goldLight)"/>
+      <rect x="83" y="6" width="30" height="4" fill="#334155"/>
+    </g>
+  </g>
+
+  <!-- Portal 3: Mid-Left Lower (Crimson Halberd Portal) -->
+  <g transform="translate(50, 210)">
+    <circle cx="0" cy="0" r="38" fill="url(#portalGlow1)" filter="url(#divineGlow)"/>
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#fef08a" stroke-width="2" opacity="0.8"/>
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+    <!-- Protruding Crimson Halberd -->
+    <g transform="rotate(15) translate(-15, -6)">
+      <polygon points="0,6 55,1 65,6 55,11" fill="url(#crimsonSpear)"/>
+      <path d="M40,6 Q50,-10 60,0 Q50,2 40,6" fill="url(#goldLight)"/>
+    </g>
+  </g>
+
+  <!-- Portal 4: Mid-Right Lower (Jeweled Saber Portal) -->
+  <g transform="translate(265, 230)">
+    <circle cx="0" cy="0" r="42" fill="url(#portalGlow2)" filter="url(#divineGlow)"/>
+    <circle cx="0" cy="0" r="30" fill="none" stroke="#fef08a" stroke-width="2" opacity="0.85"/>
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#ffffff" stroke-width="1.5"/>
+    <!-- Protruding Curved Blade -->
+    <g transform="rotate(-25) translate(-30, -8)">
+      <path d="M0,8 Q40,3 70,14 L65,18 Q35,8 0,8 Z" fill="url(#goldLight)"/>
+      <circle cx="68" cy="16" r="4" fill="#38bdf8"/>
+    </g>
+  </g>
+
+  <!-- ================= GILGAMESH BODY & ARMOR (HEROIC PROPORTIONS) ================= -->
+  <!-- Ground Shadow -->
+  <ellipse cx="160" cy="405" rx="75" ry="12" fill="#000000" opacity="0.6"/>
+  <ellipse cx="160" cy="405" rx="55" ry="8" fill="#d97706" opacity="0.3" filter="url(#divineGlow)"/>
+
+  <!-- Flowing Crimson Back Sash / Cape -->
+  <path d="M125,230 Q110,290 100,370 Q120,380 135,330 Q140,270 145,230 Z" fill="url(#crimsonCloth)"/>
+  <path d="M175,230 Q190,290 205,375 Q185,385 170,335 Q165,270 160,230 Z" fill="url(#crimsonCloth)"/>
+
+  <!-- Golden Greaves & Armored Sabatons (Legs) -->
+  <!-- Left Leg -->
+  <g>
+    <path d="M130,280 L125,360 L120,395 L145,395 L150,360 L148,280 Z" fill="url(#goldDark)"/>
+    <path d="M132,285 L128,355 L124,392 L140,392 L146,355 L144,285 Z" fill="url(#goldShine)"/>
+    <!-- Golden Knee Guard (Poleyn) -->
+    <polygon points="122,295 138,285 154,295 138,310" fill="url(#goldLight)"/>
+    <polygon points="128,295 138,288 148,295 138,305" fill="#ffffff" opacity="0.6"/>
+    <!-- Shoe Toe Cap -->
+    <path d="M115,392 Q130,388 145,392 L140,402 L110,402 Z" fill="url(#goldLight)"/>
+  </g>
+  <!-- Right Leg -->
+  <g>
+    <path d="M172,280 L170,360 L175,395 L200,395 L195,360 L190,280 Z" fill="url(#goldDark)"/>
+    <path d="M174,285 L172,355 L178,392 L196,392 L192,355 L186,285 Z" fill="url(#goldShine)"/>
+    <!-- Right Knee Guard -->
+    <polygon points="166,295 182,285 198,295 182,310" fill="url(#goldLight)"/>
+    <polygon points="172,295 182,288 192,295 182,305" fill="#ffffff" opacity="0.6"/>
+    <!-- Right Shoe Toe Cap -->
+    <path d="M175,392 Q190,388 205,392 L210,402 L170,402 Z" fill="url(#goldLight)"/>
+  </g>
+
+  <!-- Golden Faulds / Tassets (Hips Armor) -->
+  <path d="M120,225 L115,280 L150,290 L160,240 L120,225 Z" fill="url(#goldShine)"/>
+  <path d="M200,225 L205,280 L170,290 L160,240 L200,225 Z" fill="url(#goldDark)"/>
+  <!-- Front Groin Armor Plate -->
+  <polygon points="145,230 175,230 168,285 160,295 152,285" fill="url(#goldLight)"/>
+  <polygon points="150,235 170,235 165,275 160,285 155,275" fill="#ffffff" opacity="0.5"/>
+  <!-- Royal Crimson Center Sash Tabard -->
+  <path d="M153,240 L167,240 L165,330 L160,340 L155,330 Z" fill="url(#crimsonCloth)"/>
+  <rect x="157" y="320" width="6" height="15" fill="#fef08a"/>
+
+  <!-- Sculpted Golden Cuirass (Chestplate) -->
+  <path d="M125,160 Q160,150 195,160 L198,230 Q160,240 122,230 Z" fill="url(#goldDark)"/>
+  <path d="M128,165 Q160,155 192,165 L190,225 Q160,235 130,225 Z" fill="url(#goldShine)"/>
+  <!-- Pectoral & Abdominal Muscles Sculpt in Gold -->
+  <path d="M135,175 Q160,170 185,175 L182,195 Q160,190 138,195 Z" fill="url(#goldLight)"/>
+  <path d="M142,200 Q160,195 178,200 L175,220 Q160,218 145,220 Z" fill="url(#goldLight)"/>
+  <line x1="160" y1="165" x2="160" y2="225" stroke="#78350f" stroke-width="2"/>
+
+  <!-- High Golden Collar / Gorget -->
+  <polygon points="140,155 160,140 180,155 170,165 150,165" fill="url(#goldLight)"/>
+  <polygon points="145,153 160,143 175,153 168,160 152,160" fill="#ffffff" opacity="0.7"/>
+
+  <!-- Massive Golden Pauldrons (Shoulder Plates) -->
+  <!-- Left Shoulder (Curved blade-edge pauldron) -->
+  <g>
+    <path d="M125,155 Q95,145 90,185 Q115,200 130,180 Z" fill="url(#goldDark)"/>
+    <path d="M122,158 Q100,150 96,180 Q115,192 128,178 Z" fill="url(#goldLight)"/>
+    <!-- Blade Spike atop pauldron -->
+    <polygon points="90,160 80,140 105,155" fill="url(#goldLight)"/>
+    <polygon points="85,158 83,144 98,155" fill="#ffffff" opacity="0.7"/>
+  </g>
+  <!-- Right Shoulder -->
+  <g>
+    <path d="M195,155 Q225,145 230,185 Q205,200 190,180 Z" fill="url(#goldDark)"/>
+    <path d="M198,158 Q220,150 224,180 Q205,192 192,178 Z" fill="url(#goldLight)"/>
+    <!-- Right Spike -->
+    <polygon points="230,160 240,140 215,155" fill="url(#goldLight)"/>
+    <polygon points="235,158 237,144 222,155" fill="#ffffff" opacity="0.7"/>
+  </g>
+
+  <!-- Left Arm: Hand on Hip (Arrogant stance) -->
+  <path d="M110,180 L88,225 L108,245 L125,235 L105,225 L120,190 Z" fill="url(#goldShine)"/>
+  <!-- Left Gauntlet -->
+  <polygon points="88,225 108,245 118,235 100,220" fill="url(#goldLight)"/>
+  <!-- Knuckle Plating -->
+  <circle cx="106" cy="242" r="3" fill="#fef08a"/>
+
+  <!-- Right Arm: Commanding Outstretched Hand Summoning Gate -->
+  <path d="M210,180 L245,210 L275,200 L265,185 L240,195 L215,175 Z" fill="url(#goldShine)"/>
+  <!-- Right Gauntlet Pointing -->
+  <g transform="translate(260, 185)">
+    <polygon points="5,15 25,5 28,12 12,22" fill="url(#goldLight)"/>
+    <polygon points="8,13 23,6 25,10 12,18" fill="#ffffff" opacity="0.7"/>
+    <!-- Gold Ring with Ruby on Finger -->
+    <circle cx="20" cy="9" r="2.5" fill="#dc2626"/>
+    <!-- Golden Mana Sparks at Fingertip -->
+    <polygon points="28,8 35,5 30,12 38,10" fill="#fef08a" filter="url(#divineGlow)"/>
+  </g>
+
+  <!-- ================= HEAD & ARROGANT ANIME FACE ================= -->
+  <!-- Neck -->
+  <path d="M150,140 L150,155 L170,155 L170,140 Z" fill="url(#skinFair)"/>
+
+  <!-- Handsome Anime Face Contour (Sharp Chin & Jaw) -->
+  <path d="M142,105 Q138,125 145,142 L160,155 L175,142 Q182,125 178,105 Z" fill="url(#skinFair)"/>
+  <!-- Soft Ear -->
+  <path d="M138,118 Q134,124 138,130 Z" fill="#fbcfe8"/>
+  <path d="M182,118 Q186,124 182,130 Z" fill="#fbcfe8"/>
+  <!-- Gold Drop Earrings (King's Jewelry) -->
+  <polygon points="137,130 135,145 139,145" fill="url(#goldLight)"/>
+  <circle cx="137" cy="147" r="2" fill="#ef4444"/>
+  <polygon points="183,130 181,145 185,145" fill="url(#goldLight)"/>
+  <circle cx="183" cy="147" r="2" fill="#ef4444"/>
+
+  <!-- Nose & Mouth (The Iconic King's Smirk) -->
+  <path d="M159,126 L161,131 L158,132" stroke="#d97706" stroke-width="1.2" fill="none"/>
+  <!-- Haughty Smirk Line -->
+  <path d="M153,139 Q162,143 169,137" stroke="#991b1b" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M166,137 L171,135" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- CRIMSON SLIT-LIKE SNAKE EYES (赤红蛇瞳 · 威严睥睨) -->
+  <!-- Left Eye -->
+  <g>
+    <!-- White Sclera -->
+    <path d="M145,119 Q152,115 156,120 Q150,125 145,119 Z" fill="#ffffff"/>
+    <!-- Crimson Iris -->
+    <ellipse cx="152" cy="120" rx="3.5" ry="4" fill="#dc2626"/>
+    <!-- Slit Pupil -->
+    <line x1="152" y1="117" x2="152" y2="123" stroke="#450a0a" stroke-width="1.2"/>
+    <circle cx="150.5" cy="118.5" r="1.2" fill="#ffffff"/>
+    <!-- Sharp Upper Eyelid / Lash -->
+    <path d="M143,118 Q151,113 158,119" stroke="#78350f" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- Sharp Confident Eyebrow -->
+    <path d="M142,112 Q150,111 156,115" stroke="#b45309" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- Right Eye -->
+  <g>
+    <!-- White Sclera -->
+    <path d="M164,120 Q168,115 175,119 Q170,125 164,120 Z" fill="#ffffff"/>
+    <!-- Crimson Iris -->
+    <ellipse cx="168" cy="120" rx="3.5" ry="4" fill="#dc2626"/>
+    <!-- Slit Pupil -->
+    <line x1="168" y1="117" x2="168" y2="123" stroke="#450a0a" stroke-width="1.2"/>
+    <circle cx="166.5" cy="118.5" r="1.2" fill="#ffffff"/>
+    <!-- Sharp Upper Eyelid / Lash -->
+    <path d="M162,119 Q169,113 177,118" stroke="#78350f" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- Sharp Confident Eyebrow -->
+    <path d="M164,115 Q170,111 178,112" stroke="#b45309" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ================= ICONIC SPIKY GOLDEN HAIR (金发冲天) ================= -->
+  <!-- Back Hair Layers -->
+  <path d="M130,105 Q125,75 140,55 Q150,70 148,90 Z" fill="url(#goldDark)"/>
+  <path d="M190,105 Q195,75 180,55 Q170,70 172,90 Z" fill="url(#goldDark)"/>
+  <!-- Tall Majestic Spikes pointing up -->
+  <!-- Spike 1 (Left High) -->
+  <path d="M140,85 Q135,45 145,25 Q152,50 150,75 Z" fill="url(#hairGold)"/>
+  <!-- Spike 2 (Center Crest Top) -->
+  <path d="M150,75 Q155,25 162,10 Q168,35 165,70 Z" fill="url(#hairGold)"/>
+  <polygon points="160,18 163,12 165,28" fill="#ffffff" opacity="0.6"/>
+  <!-- Spike 3 (Right High) -->
+  <path d="M165,70 Q172,40 180,28 Q182,55 175,80 Z" fill="url(#hairGold)"/>
+  <!-- Side Flares -->
+  <path d="M135,95 Q115,75 125,60 Q135,70 138,90 Z" fill="url(#hairGold)"/>
+  <path d="M185,95 Q205,75 195,60 Q185,70 182,90 Z" fill="url(#hairGold)"/>
+
+  <!-- Forehead Bangs & Side Strands framing the face -->
+  <path d="M135,100 Q142,108 140,118 Q144,110 148,102 Z" fill="url(#hairGold)"/>
+  <path d="M185,100 Q178,108 180,118 Q176,110 172,102 Z" fill="url(#hairGold)"/>
+  <path d="M146,95 Q155,104 158,110 Q159,102 165,95 Z" fill="url(#hairGold)"/>
+  <path d="M162,95 Q168,105 170,112 Q172,102 176,96 Z" fill="url(#hairGold)"/>
+
+  <!-- Floating Golden Mana Stars / Embers -->
+  <g filter="url(#divineGlow)">
+    <circle cx="100" cy="120" r="2.5" fill="#fef08a"/>
+    <circle cx="210" cy="110" r="3" fill="#fde047"/>
+    <circle cx="280" cy="160" r="2" fill="#ffffff"/>
+    <circle cx="60" cy="270" r="2.5" fill="#fef08a"/>
+    <circle cx="240" cy="320" r="2" fill="#fde047"/>
+    <circle cx="120" cy="350" r="2.5" fill="#ffffff"/>
+  </g>
+</svg>

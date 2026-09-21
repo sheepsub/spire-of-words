@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%" shape-rendering="crispEdges">
+  <!-- Stardew Valley Chibi: Rune Weaver / 露娜 -->
+  <!-- Soft ground shadow with starry purple glow -->
+  <ellipse cx="24" cy="45" rx="12" ry="3" fill="#000000" opacity="0.45" shape-rendering="geometricPrecision"/>
+  <ellipse cx="24" cy="45" rx="9" ry="2" fill="#c084fc" opacity="0.25" shape-rendering="geometricPrecision"/>
+
+  <!-- Tiny Violet Slippers -->
+  <rect x="18" y="41" width="4" height="4" fill="#3b0764"/>
+  <rect x="18" y="43" width="5" height="2" fill="#581c87"/>
+  <rect x="26" y="41" width="4" height="4" fill="#3b0764"/>
+  <rect x="25" y="43" width="5" height="2" fill="#581c87"/>
+
+  <!-- Starry Mage Robe & Ribbon (Chibi Compact Body) -->
+  <rect x="17" y="29" width="14" height="12" fill="#4c1d95"/>
+  <rect x="18" y="30" width="12" height="11" fill="#6d28d9"/>
+  <rect x="19" y="31" width="10" height="9" fill="#7c3aed"/>
+  <!-- Gold Constellation Ribbon & Star Belt -->
+  <rect x="17" y="36" width="14" height="2" fill="#facc15"/>
+  <rect x="23" y="35" width="2" height="4" fill="#fef08a"/>
+  <!-- Starry Glints on Robe -->
+  <rect x="21" y="38" width="1" height="1" fill="#ffffff"/>
+  <rect x="27" y="33" width="1" height="1" fill="#ffffff"/>
+
+  <!-- Left Hand Casting Starlight Runes -->
+  <rect x="13" y="30" width="4" height="4" fill="#6d28d9"/>
+  <rect x="11" y="33" width="3" height="3" fill="#fed7aa"/>
+  <!-- Floating Rune Sparkle -->
+  <rect x="8" y="30" width="3" height="3" fill="#38bdf8"/>
+  <rect x="9" y="29" width="1" height="5" fill="#bae6fd"/>
+  <rect x="7" y="31" width="5" height="1" fill="#bae6fd"/>
+  <rect x="9" y="31" width="1" height="1" fill="#ffffff"/>
+
+  <!-- Right Arm Holding Glowing Resonance Tuning Fork / Wand -->
+  <rect x="31" y="30" width="4" height="4" fill="#6d28d9"/>
+  <rect x="33" y="33" width="3" height="3" fill="#fed7aa"/>
+  <!-- Golden Tuning Fork / Arcane Staff -->
+  <rect x="35" y="27" width="2" height="15" fill="#ca8a04"/>
+  <rect x="34" y="20" width="4" height="8" fill="#eab308"/>
+  <rect x="35" y="22" width="2" height="6" fill="#000000" opacity="0.3"/>
+  <rect x="35" y="19" width="2" height="2" fill="#fef08a"/>
+  <!-- Sound/Combo Wave Resonance Rings -->
+  <rect x="38" y="18" width="2" height="2" fill="#f43f5e"/>
+  <rect x="41" y="20" width="2" height="2" fill="#fbbf24"/>
+  <rect x="33" y="16" width="2" height="2" fill="#c084fc"/>
+
+  <!-- Flowing Violet Twin-Tails (Fluffy Pigtails on both sides) -->
+  <!-- Left Twin-tail -->
+  <rect x="8" y="16" width="5" height="13" fill="#7c3aed"/>
+  <rect x="7" y="18" width="5" height="12" fill="#8b5cf6"/>
+  <rect x="6" y="24" width="4" height="7" fill="#a78bfa"/>
+  <rect x="9" y="15" width="2" height="3" fill="#f43f5e"/>
+  <!-- Right Twin-tail -->
+  <rect x="35" y="16" width="5" height="13" fill="#7c3aed"/>
+  <rect x="36" y="18" width="5" height="12" fill="#8b5cf6"/>
+  <rect x="38" y="24" width="4" height="7" fill="#a78bfa"/>
+  <rect x="37" y="15" width="2" height="3" fill="#f43f5e"/>
+
+  <!-- BIG CHIBI HEAD -->
+  <rect x="14" y="11" width="20" height="18" fill="#ffedd5"/>
+  <rect x="15" y="10" width="18" height="20" fill="#fed7aa"/>
+
+  <!-- Sparkling Big Violet Chibi Eyes with White Star Highlights -->
+  <!-- Left Eye -->
+  <rect x="18" y="18" width="3" height="5" fill="#3b0764"/>
+  <rect x="18" y="19" width="3" height="3" fill="#7e22ce"/>
+  <rect x="19" y="18" width="1" height="2" fill="#ffffff"/>
+  <!-- Right Eye -->
+  <rect x="27" y="18" width="3" height="5" fill="#3b0764"/>
+  <rect x="27" y="19" width="3" height="3" fill="#7e22ce"/>
+  <rect x="28" y="18" width="1" height="2" fill="#ffffff"/>
+
+  <!-- Cheerful Rosy Blush & Sweet Smile -->
+  <rect x="16" y="23" width="3" height="2" fill="#ec4899" opacity="0.65"/>
+  <rect x="29" y="23" width="3" height="2" fill="#ec4899" opacity="0.65"/>
+  <rect x="23" y="24" width="3" height="1" fill="#9d174d"/>
+
+  <!-- Soft Bangs Across Forehead -->
+  <rect x="14" y="12" width="20" height="4" fill="#8b5cf6"/>
+  <rect x="16" y="14" width="4" height="3" fill="#a78bfa"/>
+  <rect x="22" y="14" width="4" height="4" fill="#a78bfa"/>
+  <rect x="28" y="14" width="4" height="3" fill="#a78bfa"/>
+
+  <!-- Pointy Starry Witch/Bard Hat Tilted Adorably -->
+  <rect x="11" y="8" width="26" height="5" fill="#4c1d95"/>
+  <rect x="13" y="5" width="22" height="4" fill="#581c87"/>
+  <rect x="16" y="2" width="16" height="4" fill="#6d28d9"/>
+  <rect x="19" y="0" width="10" height="3" fill="#7c3aed"/>
+  <rect x="22" y="-1" width="4" height="2" fill="#8b5cf6"/>
+  <!-- Golden Hat Star Buckle -->
+  <rect x="23" y="7" width="3" height="3" fill="#facc15"/>
+  <rect x="24" y="8" width="1" height="1" fill="#fef9c3"/>
+</svg>

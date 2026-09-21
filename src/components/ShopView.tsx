@@ -21,10 +21,11 @@ export const ShopView: React.FC<ShopViewProps> = ({
   onRemoveCard,
   onLeave,
 }) => {
-  // Generate inventory on first mount
+  // Generate inventory on first mount for this character
   const [shopCards] = useState<Array<{ card: Card; price: number; bought: boolean }>>(() => {
-    // Pick 5 random cards from vocabulary
-    const shuffled = [...VOCABULARY_CARDS].sort(() => Math.random() - 0.5).slice(0, 5);
+    const charPool = player.characterId ? VOCABULARY_CARDS.filter(c => c.characterId === player.characterId) : [];
+    const pool = (charPool.length >= 5 ? charPool : VOCABULARY_CARDS).sort(() => Math.random() - 0.5);
+    const shuffled = pool.slice(0, 5);
     return shuffled.map((c, i) => ({
       card: { ...c, id: `shop_${c.id}_${Date.now()}_${i}` },
       price: c.rarity === 'rare' ? 120 : c.rarity === 'uncommon' ? 75 : 50,

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import type { 
   Player, 
   Enemy, 
@@ -7,8 +7,6 @@ import type {
   GameScreen, 
   FloatText 
 } from './types/game';
-import { getStarterDeck } from './data/vocabulary';
-import { STARTER_RELIC } from './data/relics';
 import { getRandomMonster } from './data/enemies';
 import { generateActMap } from './utils/mapGenerator';
 import type { GeneratedFloor } from './utils/mapGenerator';
@@ -23,12 +21,18 @@ import { ShopView } from './components/ShopView';
 import { RewardModal } from './components/RewardModal';
 import { LexiconModal } from './components/LexiconModal';
 import { DeckModal } from './components/DeckModal';
+import { TitleView } from './components/TitleView';
+import { CharacterSelectView } from './components/CharacterSelectView';
 import { GameOverModal } from './components/GameOverModal';
+import { DEFAULT_CHARACTER, type CharacterDefinition } from './data/characters';
 
 export const App: React.FC = () => {
-  // Master Game State
-  const [screen, setScreen] = useState<GameScreen>('map');
+  // Master Game State - Starts at Title Screen (Main Menu)
+  const [screen, setScreen] = useState<GameScreen>('title');
   const [soundEnabled, setSoundEnabled] = useState(true);
+  
+  // Selected Character & Archetype
+  const [selectedCharacter, setSelectedCharacter] = useState<CharacterDefinition>(DEFAULT_CHARACTER);
   
   // Modals overlay
   const [showLexicon, setShowLexicon] = useState(false);
@@ -42,12 +46,15 @@ export const App: React.FC = () => {
 
   // Player State
   const [player, setPlayer] = useState<Player>(() => ({
-    hp: 75,
-    maxHp: 75,
-    energy: 3,
-    maxEnergy: 3,
+    characterId: DEFAULT_CHARACTER.id,
+    characterName: DEFAULT_CHARACTER.name,
+    characterAvatar: DEFAULT_CHARACTER.avatarSprite,
+    hp: DEFAULT_CHARACTER.hp,
+    maxHp: DEFAULT_CHARACTER.maxHp,
+    energy: DEFAULT_CHARACTER.energy,
+    maxEnergy: DEFAULT_CHARACTER.energy,
     block: 0,
-    gold: 99,
+    gold: DEFAULT_CHARACTER.gold,
     statusEffects: {
       strength: 0,
       weak: 0,
@@ -55,12 +62,12 @@ export const App: React.FC = () => {
       poison: 0,
       dexterity: 0,
     },
-    deck: getStarterDeck(),
+    deck: DEFAULT_CHARACTER.getStarterDeck(),
     drawPile: [],
     hand: [],
     discardPile: [],
     exhaustPile: [],
-    relics: [STARTER_RELIC],
+    relics: [DEFAULT_CHARACTER.starterRelic],
   }));
 
   // Battle State
@@ -106,12 +113,31 @@ export const App: React.FC = () => {
     return { draw, discard, hand };
   }, []);
 
+  // Combat Relic tracking refs
+  const cardsPlayedThisTurnRef = useRef<number>(0);
+  const scholarTriggeredRef = useRef<boolean>(false);
+
   // START COMBAT
   const startCombat = useCallback((floorNum: number) => {
     const newEnemy = getRandomMonster(floorNum);
     const hasAnchor = player.relics.some((r) => r.id === 'anchor');
     const hasVajra = player.relics.some((r) => r.id === 'vajra');
     const hasLexicon = player.relics.some((r) => r.id === 'oxford_lexicon');
+    const hasFlask = player.relics.some((r) => r.id === 'toxic_flask');
+    const hasPaladinAegis = player.relics.some((r) => r.id === 'iron_aegis');
+    const hasBabylonKey = player.relics.some((r) => r.id === 'babylon_key');
+    const hasDragonBanner = player.relics.some((r) => r.id === 'dragon_witch_banner');
+
+    cardsPlayedThisTurnRef.current = 0;
+    scholarTriggeredRef.current = false;
+
+    // Relic: Toxic Flask (3 poison, 1 weak at combat start)
+    if (hasFlask) {
+      newEnemy.statusEffects.poison += 3;
+      newEnemy.statusEffects.weak += 1;
+    }
+
+    const startingBlock = (hasAnchor ? 10 : 0) + (hasPaladinAegis ? 8 : 0);
 
     // Shuffle full deck into draw pile
     const initialDrawPile = [...player.deck].sort(() => Math.random() - 0.5);
@@ -124,13 +150,13 @@ export const App: React.FC = () => {
     setPlayer((prev) => ({
       ...prev,
       energy: prev.maxEnergy + (hasLexicon ? 1 : 0),
-      block: hasAnchor ? 10 : 0,
+      block: startingBlock,
       drawPile: draw,
       discardPile: discard,
       hand: hand,
       exhaustPile: [],
       statusEffects: {
-        strength: hasVajra ? 1 : 0,
+        strength: (hasVajra ? 1 : 0) + (hasBabylonKey ? 2 : 0),
         weak: 0,
         vulnerable: 0,
         poison: 0,
@@ -140,6 +166,18 @@ export const App: React.FC = () => {
 
     if (hasAnchor) {
       addFloatText('+10 🛡️ 船锚护体', 'block', 25, 45);
+    }
+    if (hasPaladinAegis) {
+      setTimeout(() => addFloatText('+8 🛡️ 理想之城', 'block', 25, 45), 250);
+    }
+    if (hasFlask) {
+      setTimeout(() => addFloatText('🧪 妄想毒身: 3剧毒 1虚弱', 'debuff', 70, 38), 450);
+    }
+    if (hasBabylonKey) {
+      setTimeout(() => addFloatText('+2 力量 👑 王之财宝', 'buff', 25, 38), 350);
+    }
+    if (hasDragonBanner) {
+      setTimeout(() => addFloatText('🚩 邪龙之怒启动', 'buff', 25, 45), 350);
     }
 
     setScreen('battle');
@@ -204,64 +242,189 @@ export const App: React.FC = () => {
     let updatedPlayerBlock = player.block;
     let updatedPlayerHp = player.hp;
 
+    // 0. HP SACRIFICE (Jeanne Alter)
+    if (card.hpCost) {
+      updatedPlayerHp = Math.max(1, updatedPlayerHp - card.hpCost);
+      addFloatText(`-${card.hpCost} 🩸 鲜血献祭`, 'damage', 25, 45);
+    }
+
     // 1. DAMAGE CALCULATION
-    if (baseDmg !== undefined) {
+    if (baseDmg !== undefined || card.bodySlam) {
       sound.playSlash();
-      for (let h = 0; h < hits; h++) {
-        let dmg = baseDmg + player.statusEffects.strength;
+      if (!isCritical) {
+        addFloatText('⚠️ 咏唱失误! 威力衰减 50%', 'miss', 70, 30);
+      }
+
+      // Gilgamesh: Gate of Babylon (Gold Scaling)
+      let effectiveHits = hits;
+      if (card.goldScaling) {
+        const bonusHits = Math.floor(player.gold / 50);
+        effectiveHits += bonusHits;
+        if (bonusHits > 0) {
+          addFloatText(`👑 黄金律追加 +${bonusHits}段!`, 'buff', 25, 30);
+        }
+      }
+
+      // Saber: Mana Burst (Reverberate on Critical)
+      if (card.reverberateOnCritical && isCritical) {
+        effectiveHits *= 2;
+        addFloatText('⚡ 魔力回响! 剑气连击翻倍', 'buff', 25, 30);
+      }
+
+      for (let h = 0; h < effectiveHits; h++) {
+        let dmg = (baseDmg || 0) + player.statusEffects.strength;
+
+        // Mash: Shield Slam (Body Slam)
+        if (card.bodySlam) {
+          dmg += player.block;
+        }
+
+        // Jeanne Alter: Blood for Blood (Frenzy: if HP <= 50%, 2x damage)
+        if (card.bloodForBlood && player.hp <= Math.floor(player.maxHp * 0.5)) {
+          dmg = Math.floor(dmg * 2);
+          if (h === 0) {
+            addFloatText('🩸 绝境反击! 伤害翻倍', 'buff', 25, 35);
+          }
+        }
+
+        // Tohsaka Rin: Finisher (Bonus damage per card played this turn)
+        if (card.finisher) {
+          const finBonus = (card.finisherBonus || 4) * cardsPlayedThisTurnRef.current;
+          dmg += finBonus;
+          if (h === 0 && finBonus > 0) {
+            addFloatText(`💎 连击终结 +${finBonus}`, 'buff', 25, 35);
+          }
+        }
+
+        // Gilgamesh: Babylon Key (Gold >= 60 adds +3 piercing damage)
+        const hasBabylonKey = player.relics.some((r) => r.id === 'babylon_key');
+        if (hasBabylonKey && player.gold >= 60) {
+          dmg += 3;
+        }
+
+        // Jeanne Alter: Dragon Witch Banner (Frenzy: if HP <= 50%, 1.5x damage)
+        const hasDragonBanner = player.relics.some((r) => r.id === 'dragon_witch_banner');
+        if (hasDragonBanner && player.hp <= Math.floor(player.maxHp * 0.5)) {
+          dmg = Math.floor(dmg * 1.5);
+        }
+
         if (player.statusEffects.weak > 0) dmg = Math.floor(dmg * 0.75);
-        if (enemy.statusEffects.vulnerable > 0) dmg = Math.floor(dmg * 1.5);
+
+        // Vulnerable on enemy (standard 1.5x, or Saber Excalibur 3x)
+        if (enemy.statusEffects.vulnerable > 0) {
+          const mult = card.vulnerableMultiplier || 1.5;
+          dmg = Math.floor(dmg * mult);
+        }
+
         if (isCritical) {
           const hasRing = player.relics.some((r) => r.id === 'mnemonic_ring');
           dmg = Math.floor(dmg * (hasRing ? 1.8 : 1.5));
+        } else {
+          // Weakened damage on wrong answer (50%)
+          dmg = Math.max(1, Math.floor(dmg * 0.5));
         }
 
-        // Apply against enemy block first
-        if (updatedEnemyBlock >= dmg) {
-          updatedEnemyBlock -= dmg;
-          addFloatText(`-${dmg} 🛡️`, 'block', 70 + Math.random() * 8, 45);
-        } else {
-          const rem = dmg - updatedEnemyBlock;
-          updatedEnemyBlock = 0;
-          updatedEnemyHp = Math.max(0, updatedEnemyHp - rem);
+        // Gilgamesh: Enuma Elish (Pierce Block - bypass enemy block directly)
+        if (card.pierceBlock) {
+          updatedEnemyHp = Math.max(0, updatedEnemyHp - dmg);
           addFloatText(
-            isCritical ? `-${rem} ⚡暴击!` : `-${rem}`, 
-            isCritical ? 'critical' : 'damage', 
-            70 + Math.random() * 8, 
+            isCritical ? `-${dmg} ⚡乖离真伤!` : `-${dmg} (弱化 50%)`,
+            isCritical ? 'critical' : 'damage',
+            70 + Math.random() * 8,
             45
           );
+        } else {
+          // Normal: apply against enemy block first
+          if (updatedEnemyBlock >= dmg) {
+            updatedEnemyBlock -= dmg;
+            addFloatText(`-${dmg} 🛡️`, 'block', 70 + Math.random() * 8, 45);
+          } else {
+            const rem = dmg - updatedEnemyBlock;
+            updatedEnemyBlock = 0;
+            updatedEnemyHp = Math.max(0, updatedEnemyHp - rem);
+            addFloatText(
+              isCritical ? `-${rem} ⚡暴击!` : `-${rem} (弱化 50%)`, 
+              isCritical ? 'critical' : 'damage', 
+              70 + Math.random() * 8, 
+              45
+            );
+          }
         }
       }
     }
 
-    // 2. BLOCK CALCULATION
+    // 2. BLOCK CALCULATION & REFLECTION
     if (baseBlk !== undefined) {
       sound.playBlock();
       let blk = baseBlk + player.statusEffects.dexterity;
-      if (isCritical) blk = Math.floor(blk * 1.5);
+      if (isCritical) {
+        blk = Math.floor(blk * 1.5);
+      } else {
+        // Weakened block on wrong answer (50%)
+        blk = Math.floor(blk * 0.5);
+      }
       updatedPlayerBlock += blk;
-      addFloatText(`+${blk} 🛡️`, 'block', 25, 45);
+      addFloatText(isCritical ? `+${blk} 🛡️` : `+${blk} 🛡️(弱化 50%)`, 'block', 25, 45);
+
+      // Mash: Lord Camelot Reflection Damage
+      if (card.reflectionDamage && blk > 0) {
+        if (updatedEnemyBlock >= blk) {
+          updatedEnemyBlock -= blk;
+          addFloatText(`-${blk} 🛡️ 理想城反震`, 'block', 70, 45);
+        } else {
+          const rem = blk - updatedEnemyBlock;
+          updatedEnemyBlock = 0;
+          updatedEnemyHp = Math.max(0, updatedEnemyHp - rem);
+          addFloatText(`-${rem} 🛡️ 理想之城反震!`, 'damage', 70, 45);
+        }
+      }
     }
 
     // 3. STATUS DEBUFFS & BUFFS
     const newEnemyStatus = { ...enemy.statusEffects };
-    if (vuln) {
-      newEnemyStatus.vulnerable += vuln;
-      addFloatText(`+${vuln} 易伤`, 'debuff', 70, 38);
+    const effectiveVuln = vuln ? (isCritical ? vuln : Math.max(0, Math.floor(vuln * 0.5))) : 0;
+    const effectiveWeak = weak ? (isCritical ? weak : Math.max(0, Math.floor(weak * 0.5))) : 0;
+    const effectivePoison = poison ? (isCritical ? poison : Math.max(0, Math.floor(poison * 0.5))) : 0;
+
+    if (effectiveVuln > 0) {
+      newEnemyStatus.vulnerable += effectiveVuln;
+      addFloatText(`+${effectiveVuln} 易伤`, 'debuff', 70, 38);
     }
-    if (weak) {
-      newEnemyStatus.weak += weak;
-      addFloatText(`+${weak} 虚弱`, 'debuff', 70, 38);
+    if (effectiveWeak > 0) {
+      newEnemyStatus.weak += effectiveWeak;
+      addFloatText(`+${effectiveWeak} 虚弱`, 'debuff', 70, 38);
     }
-    if (poison) {
-      newEnemyStatus.poison += poison;
-      addFloatText(`+${poison} 🧪中毒`, 'debuff', 70, 38);
+    if (effectivePoison > 0) {
+      newEnemyStatus.poison += effectivePoison;
+      addFloatText(`+${effectivePoison} 🧪中毒`, 'debuff', 70, 38);
     }
 
-    // Special: Catalyst (Power) doubles poison!
-    if (card.id.includes('catalyst') && newEnemyStatus.poison > 0) {
+    // Hassan: Catalyst (doubles poison)
+    if ((card.catalyst || card.id.includes('catalyst')) && newEnemyStatus.poison > 0) {
       newEnemyStatus.poison *= 2;
-      addFloatText(`中毒翻倍! 🧪${newEnemyStatus.poison}`, 'debuff', 70, 38);
+      addFloatText(`🧪 剧毒催化翻倍! ${newEnemyStatus.poison}层`, 'debuff', 70, 38);
+    }
+
+    // Mash: Metallicize (Fortress Guard)
+    let newPlayerMetallicize = player.statusEffects.metallicize || 0;
+    if (card.id.includes('fortress_guard')) {
+      const blkGain = card.isUpgraded ? 9 : 6;
+      newPlayerMetallicize += blkGain;
+      addFloatText(`+${blkGain} 🛡️/回合 坚壁金属化`, 'buff', 25, 38);
+    }
+
+    // Tohsaka Rin: Jewel Sword (Card draw on attack)
+    let newPlayerCardDrawOnAttack = player.statusEffects.cardDrawOnAttack || 0;
+    if (card.cardDrawOnAttack) {
+      newPlayerCardDrawOnAttack += 1;
+      addFloatText('💎 宝石剑刻印: 攻击抽牌+1', 'buff', 25, 38);
+    }
+
+    // Draw on attack trigger from Jewel Sword
+    let jewelSwordDraw = 0;
+    if (card.type === 'attack' && (player.statusEffects.cardDrawOnAttack || 0) > 0) {
+      jewelSwordDraw = player.statusEffects.cardDrawOnAttack!;
+      addFloatText(`+${jewelSwordDraw} 抽牌 宝石剑`, 'buff', 25, 25);
     }
 
     // Player buffs
@@ -281,13 +444,52 @@ export const App: React.FC = () => {
       currentEnergy += card.gainEnergy;
     }
 
+    // Gilgamesh: Golden Rule & Treasury Shield gold gain
+    let updatedPlayerGold = player.gold;
+    if (card.goldGain) {
+      updatedPlayerGold += card.goldGain;
+      sound.playGold();
+      addFloatText(`+${card.goldGain} 🪙 黄金律`, 'buff', 25, 38);
+    }
+
+    // Relic: Feather Quill (词汇回忆暴击获得 2 金币)
+    if (isCritical) {
+      const hasQuill = player.relics.some((r) => r.id === 'feather_quill');
+      if (hasQuill) {
+        updatedPlayerGold += 2;
+        addFloatText('+2 🪙 羽毛笔', 'buff', 25, 38);
+      }
+    }
+
+    // Relic: Scholar Scroll (首次打出词根牌抽1张牌并施加1层易伤)
+    const hasScholarScroll = player.relics.some((r) => r.id === 'scholar_scroll');
+    const isRootCard = card.archetype === 'root' || !!card.prefix || !!card.rootWord;
+    let scholarDraw = 0;
+    if (hasScholarScroll && isRootCard && !scholarTriggeredRef.current) {
+      scholarTriggeredRef.current = true;
+      scholarDraw = 1;
+      newEnemyStatus.vulnerable += 1;
+      addFloatText('📜 学士羊皮卷: 抽1牌 + 易伤!', 'buff', 25, 30);
+    }
+
+    // Relic: Resonance Tuning Fork (单回合每打出第 3 张牌返还 1 点能量并抽 1 张牌)
+    cardsPlayedThisTurnRef.current += 1;
+    const hasTuningFork = player.relics.some((r) => r.id === 'tuning_fork');
+    let forkDraw = 0;
+    if (hasTuningFork && cardsPlayedThisTurnRef.current % 3 === 0) {
+      currentEnergy += 1;
+      forkDraw = 1;
+      addFloatText('🎵 灵弦共鸣: +1⚡ +抽1牌!', 'buff', 25, 25);
+    }
+
     // 4. DRAW EXTRA CARDS
     let curDraw = player.drawPile;
     let curDiscard = player.discardPile;
     let curHand = player.hand.filter((c) => c.id !== card.id);
 
-    if (drawNum) {
-      const drawn = drawCards(drawNum, curDraw, curDiscard, curHand);
+    const totalDraw = (drawNum || 0) + scholarDraw + forkDraw + jewelSwordDraw;
+    if (totalDraw > 0) {
+      const drawn = drawCards(totalDraw, curDraw, curDiscard, curHand);
       curDraw = drawn.draw;
       curDiscard = drawn.discard;
       curHand = drawn.hand;
@@ -325,6 +527,7 @@ export const App: React.FC = () => {
       hp: updatedPlayerHp,
       block: updatedPlayerBlock,
       energy: currentEnergy,
+      gold: updatedPlayerGold,
       deck: updatedDeck,
       hand: curHand,
       drawPile: curDraw,
@@ -332,6 +535,8 @@ export const App: React.FC = () => {
       statusEffects: {
         ...prev.statusEffects,
         strength: newPlayerStrength,
+        metallicize: newPlayerMetallicize,
+        cardDrawOnAttack: newPlayerCardDrawOnAttack,
       },
     }));
 
@@ -355,7 +560,12 @@ export const App: React.FC = () => {
         if (enemy.isBoss) {
           setScreen('victory');
         } else {
-          setRewardGold(Math.floor(Math.random() * 15) + 15);
+          let baseReward = Math.floor(Math.random() * 15) + 15;
+          const hasBabylonKey = player.relics.some((r) => r.id === 'babylon_key');
+          if (hasBabylonKey) {
+            baseReward = Math.floor(baseReward * 1.5);
+          }
+          setRewardGold(baseReward);
           setGoldClaimed(false);
           setCardPicked(false);
           setScreen('reward');
@@ -368,9 +578,12 @@ export const App: React.FC = () => {
   const handleEndTurn = () => {
     if (!isPlayerTurn || !enemy) return;
     setIsPlayerTurn(false);
+    cardsPlayedThisTurnRef.current = 0;
 
-    // 1. Move hand to discard pile
-    let nextDiscard = [...player.discardPile, ...player.hand];
+    // 1. Move hand to discard pile (keeping cards with retainCard)
+    const retainedHand = player.hand.filter((c) => c.retainCard);
+    const discardedHand = player.hand.filter((c) => !c.retainCard);
+    let nextDiscard = [...player.discardPile, ...discardedHand];
     let nextDraw = [...player.drawPile];
 
     // 2. Resolve Enemy Intent
@@ -379,7 +592,7 @@ export const App: React.FC = () => {
 
       let currentEnemy = { ...enemy };
       let updatedPlayerHp = player.hp;
-      let updatedPlayerBlock = 0; // Player block resets at turn end
+      let remainingBlock = player.block;
 
       // Enemy Attack
       if (currentEnemy.intent.type === 'attack' && currentEnemy.intent.value) {
@@ -390,13 +603,22 @@ export const App: React.FC = () => {
           if (currentEnemy.statusEffects.weak > 0) dmg = Math.floor(dmg * 0.75);
           if (player.statusEffects.vulnerable > 0) dmg = Math.floor(dmg * 1.5);
 
-          if (player.block >= dmg) {
+          if (remainingBlock >= dmg) {
             // Block absorbed
+            remainingBlock -= dmg;
             addFloatText(`-${dmg} 🛡️`, 'block', 25, 45);
           } else {
-            const unblocked = dmg - player.block;
+            const unblocked = dmg - remainingBlock;
+            remainingBlock = 0;
             updatedPlayerHp = Math.max(0, updatedPlayerHp - unblocked);
             addFloatText(`-${unblocked}`, 'damage', 25, 45);
+          }
+
+          // Relic: Dragon Witch Banner (Jeanne Alter 反伤)
+          const hasDragonBanner = player.relics.some((r) => r.id === 'dragon_witch_banner');
+          if (hasDragonBanner && currentEnemy.hp > 0) {
+            currentEnemy.hp = Math.max(0, currentEnemy.hp - 4);
+            addFloatText('-4 🚩 邪龙逆火!', 'damage', 70, 45);
           }
         }
       }
@@ -449,14 +671,28 @@ export const App: React.FC = () => {
       const nextTurn = battleTurn + 1;
       setBattleTurn(nextTurn);
 
-      // Draw 5 cards
-      const drawn = drawCards(5, nextDraw, nextDiscard, []);
+      // Draw cards (retaining retainedHand)
+      const drawn = drawCards(5, nextDraw, nextDiscard, retainedHand);
 
       // Relic: Hourglass (deals 4 damage to enemy at start of player turn)
       const hasHourglass = player.relics.some((r) => r.id === 'ebbinghaus_glass');
       if (hasHourglass && currentEnemy.hp > 0) {
         currentEnemy.hp = Math.max(0, currentEnemy.hp - 4);
         addFloatText('-4 ⏳沙漏', 'damage', 70, 45);
+      }
+
+      // Relic: Paladin Aegis (回合结束保留50%剩余护甲)
+      const hasPaladinAegis = player.relics.some((r) => r.id === 'iron_aegis');
+      let updatedPlayerBlock = hasPaladinAegis ? Math.floor(remainingBlock * 0.5) : 0;
+      if (updatedPlayerBlock > 0) {
+        addFloatText(`🛡️ 坚城保留: ${updatedPlayerBlock}护甲`, 'block', 25, 45);
+      }
+
+      // Metallicize (Mash: Fortress Guard)
+      const metallicizeAmt = player.statusEffects.metallicize || 0;
+      if (metallicizeAmt > 0) {
+        updatedPlayerBlock += metallicizeAmt;
+        addFloatText(`+${metallicizeAmt} 🛡️ 金属要塞`, 'block', 25, 45);
       }
 
       setEnemy(currentEnemy);
@@ -494,18 +730,22 @@ export const App: React.FC = () => {
     setScreen('map');
   };
 
-  // RESTART RUN
-  const handleRestart = () => {
+  // START RUN WITH CHARACTER
+  const startRunWithCharacter = (char: CharacterDefinition) => {
+    setSelectedCharacter(char);
     setFloors(generateActMap(15));
     setCurrentFloor(0);
     setCurrentNodeId(null);
     setPlayer({
-      hp: 75,
-      maxHp: 75,
-      energy: 3,
-      maxEnergy: 3,
+      characterId: char.id,
+      characterName: char.name,
+      characterAvatar: char.avatarSprite,
+      hp: char.hp,
+      maxHp: char.maxHp,
+      energy: char.energy,
+      maxEnergy: char.energy,
       block: 0,
-      gold: 99,
+      gold: char.gold,
       statusEffects: {
         strength: 0,
         weak: 0,
@@ -513,14 +753,41 @@ export const App: React.FC = () => {
         poison: 0,
         dexterity: 0,
       },
-      deck: getStarterDeck(),
+      deck: char.getStarterDeck(),
       drawPile: [],
       hand: [],
       discardPile: [],
       exhaustPile: [],
-      relics: [STARTER_RELIC],
+      relics: [char.starterRelic],
     });
     setScreen('map');
+  };
+
+  // RESTART RUN
+  const handleRestart = () => {
+    startRunWithCharacter(selectedCharacter);
+  };
+
+  // Switch character preview & synchronize player deck/stats immediately
+  const handleSwitchCharacter = (char: CharacterDefinition) => {
+    setSelectedCharacter(char);
+    setPlayer((prev) => ({
+      ...prev,
+      characterId: char.id,
+      characterName: char.name,
+      characterAvatar: char.avatarSprite,
+      hp: char.hp,
+      maxHp: char.maxHp,
+      energy: char.energy,
+      maxEnergy: char.energy,
+      block: 0,
+      gold: char.gold,
+      deck: char.getStarterDeck(),
+      drawPile: [],
+      hand: [],
+      discardPile: [],
+      relics: [char.starterRelic],
+    }));
   };
 
   return (
@@ -532,30 +799,66 @@ export const App: React.FC = () => {
       overflow: 'hidden',
       position: 'relative',
     }}>
-      {/* Top Bar Status */}
-      <TopBar
-        player={player}
-        currentFloor={currentFloor}
-        floorType={
-          screen === 'battle' ? (enemy?.isBoss ? '领主战斗' : enemy?.isElite ? '精英战斗' : '怪物战斗')
-          : screen === 'rest' ? '营火休息'
-          : screen === 'shop' ? '商贩'
-          : '爬塔路标'
-        }
-        onOpenDeck={() => setShowDeck(true)}
-        onOpenLexicon={() => setShowLexicon(true)}
-        onOpenMap={screen !== 'map' && screen !== 'gameover' && screen !== 'victory' ? () => setScreen('map') : undefined}
-        soundEnabled={soundEnabled}
-        onToggleSound={() => {
-          const next = !soundEnabled;
-          sound.enabled = next;
-          sound.speechEnabled = next;
-          setSoundEnabled(next);
-        }}
-      />
+      {/* Top Bar Status - Hidden on Title and Character Select Screens */}
+      {screen !== 'title' && screen !== 'char_select' && (
+        <TopBar
+          player={player}
+          currentFloor={currentFloor}
+          floorType={
+            screen === 'battle' ? (enemy?.isBoss ? '领主战斗' : enemy?.isElite ? '精英战斗' : '怪物战斗')
+            : screen === 'rest' ? '营火休息'
+            : screen === 'shop' ? '商贩'
+            : '爬塔路标'
+          }
+          onOpenDeck={() => setShowDeck(true)}
+          onOpenLexicon={() => setShowLexicon(true)}
+          onOpenMap={screen !== 'map' && screen !== 'gameover' && screen !== 'victory' ? () => setScreen('map') : undefined}
+          onReturnToMenu={() => setScreen('title')}
+          soundEnabled={soundEnabled}
+          onToggleSound={() => {
+            const next = !soundEnabled;
+            sound.enabled = next;
+            sound.speechEnabled = next;
+            setSoundEnabled(next);
+          }}
+        />
+      )}
 
       {/* MAIN SCREEN SWITCHER */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        {screen === 'title' && (
+          <TitleView
+            onStartGame={() => startRunWithCharacter(selectedCharacter)}
+            onOpenCharacterSelect={() => setScreen('char_select')}
+            onResumeRun={() => setScreen('map')}
+            hasActiveRun={currentFloor > 0}
+            currentFloor={currentFloor}
+            onOpenLexicon={() => setShowLexicon(true)}
+            onOpenDeck={() => setShowDeck(true)}
+            soundEnabled={soundEnabled}
+            onToggleSound={() => {
+              const next = !soundEnabled;
+              sound.enabled = next;
+              sound.speechEnabled = next;
+              setSoundEnabled(next);
+            }}
+            selectedCharacter={selectedCharacter}
+            onSelectCharacter={handleSwitchCharacter}
+          />
+        )}
+
+        {screen === 'char_select' && (
+          <CharacterSelectView
+            initialCharacterId={selectedCharacter.id}
+            onPreviewCharacter={handleSwitchCharacter}
+            onSelectCharacter={(char) => {
+              handleSwitchCharacter(char);
+              startRunWithCharacter(char);
+            }}
+            onBackToTitle={() => setScreen('title')}
+          />
+        )}
+
         {screen === 'map' && (
           <MapView
             floors={floors}
@@ -626,6 +929,7 @@ export const App: React.FC = () => {
       {/* REWARD MODAL */}
       {screen === 'reward' && (
         <RewardModal
+          characterId={player.characterId}
           goldReward={rewardGold}
           onClaimGold={handleClaimGold}
           goldClaimed={goldClaimed}
