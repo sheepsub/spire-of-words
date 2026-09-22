@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.spireofwords.app',
-  appName: '词汇尖塔',
+  appName: 'Spire of Words',
   webDir: 'dist'
 };
 
