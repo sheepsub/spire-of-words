@@ -158,18 +158,22 @@ export const CardView: React.FC<CardViewProps> = ({
             marginBottom: 2,
             paddingLeft: 22,
           }}>
-            <div style={{
-              fontFamily: 'var(--font-serif)',
-              fontWeight: 900,
-              fontSize: '11.5px',
-              color: card.isUpgraded ? '#86efac' : '#fef08a',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: '92px',
-              letterSpacing: '0.2px',
-              textShadow: '0 1px 3px rgba(0,0,0,0.9)',
-            }} title={card.name || card.word}>
+            <div 
+              className="card-name-title"
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontWeight: 900,
+                fontSize: '11.5px',
+                color: card.isUpgraded ? '#86efac' : '#fef08a',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '92px',
+                letterSpacing: '0.2px',
+                textShadow: '0 1px 3px rgba(0,0,0,0.9)',
+              }} 
+              title={card.name || card.word}
+            >
               {card.name || card.word}
             </div>
 
@@ -215,16 +219,19 @@ export const CardView: React.FC<CardViewProps> = ({
           </div>
 
           {/* Subheader: Incantation Word (魔导咏唱) with POS & Phonetic */}
-          <div style={{
-            fontSize: '9.5px',
-            color: '#94a3b8',
-            fontFamily: 'var(--font-mono)',
-            marginBottom: 3,
-            paddingLeft: 4,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
+          <div 
+            className="card-word-incantation"
+            style={{
+              fontSize: '9.5px',
+              color: '#94a3b8',
+              fontFamily: 'var(--font-mono)',
+              marginBottom: 3,
+              paddingLeft: 4,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
             <span style={{ color: '#e2e8f0', fontWeight: 700, fontFamily: 'var(--font-serif)', letterSpacing: '0.3px' }}>
               “{card.word}”
             </span>

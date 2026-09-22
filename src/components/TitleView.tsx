@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sound } from '../utils/audio';
 import { CHARACTERS, type CharacterDefinition } from '../data/characters';
 import { AtmosphericParticles } from './AtmosphericParticles';
@@ -54,6 +54,24 @@ export const TitleView: React.FC<TitleViewProps> = ({
   const currentChar = selectedCharacter || CHARACTERS[0];
   const currentIndex = Math.max(0, CHARACTERS.findIndex(c => c.id === currentChar.id));
 
+  // Responsive hook for compact mobile landscape viewports
+  const [isCompact, setIsCompact] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerHeight <= 540;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsCompact(window.innerHeight <= 540);
+    };
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+
   const handlePrev = () => {
     sound.playSelect();
     const prevIdx = (currentIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
@@ -87,103 +105,149 @@ export const TitleView: React.FC<TitleViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasActiveRun, onResumeRun, onStartGame, currentIndex, onSelectCharacter]);
 
+  // Card dimensions tailored for mobile landscape vs desktop
+  const cardWidth = isCompact ? 152 : 205;
+  const cardHeight = isCompact ? 216 : 290;
+
   return (
     <div 
-      className="spire-pixel-bg"
+      className="spire-pixel-bg title-view-container"
       style={{
         width: '100vw',
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: isCompact ? 'center' : 'space-between',
         alignItems: 'center',
-        padding: '32px 20px',
+        padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
         position: 'relative',
-        overflow: 'hidden',
+        overflowX: 'hidden',
+        overflowY: 'auto',
         boxSizing: 'border-box',
       }}
     >
       {/* Dynamic Ambient Magical Particle Atmosphere */}
-      <AtmosphericParticles color={currentChar.archetypeColor} density={45} />
+      <AtmosphericParticles color={currentChar.archetypeColor} density={isCompact ? 30 : 45} />
 
-      {/* Top Ambient Glow / Brand */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 8,
-        color: '#fbbf24',
-        fontFamily: 'var(--font-pixel)',
-        fontSize: '11px',
-        letterSpacing: '1px',
-        zIndex: 10,
-        textShadow: '0 2px 4px #000',
-      }}>
-        <Sparkles size={14} color="#fbbf24" />
-        <span>ROGUE-LITE VOCABULARY DECKBUILDER</span>
-        <Sparkles size={14} color="#fbbf24" />
-      </div>
-
-      {/* Main Title Area */}
-      <div style={{
-        textAlign: 'center',
-        zIndex: 10,
-        marginTop: 8,
-      }}>
-        {/* Shimmering Metallic Gold Title */}
-        <h1 style={{
-          fontFamily: 'var(--font-serif)',
-          fontWeight: 900,
-          fontSize: 'clamp(36px, 7vw, 64px)',
-          letterSpacing: '3px',
-          textTransform: 'uppercase',
-          lineHeight: 1.1,
-          marginBottom: 8,
-          filter: 'drop-shadow(0 0 28px rgba(234, 179, 8, 0.7))',
-        }}>
-          <span className="shimmer-gold-title">
-            SPIRE OF WORDS
-          </span>
-        </h1>
-
+      {/* HORIZONTAL 3-COLUMN LAYOUT IN LANDSCAPE */}
+      <div 
+        className="title-content-row"
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+          width: '100%',
+          maxWidth: '1240px',
+          flex: 1,
+          zIndex: 10,
+          gap: isCompact ? '12px' : '36px',
+          flexWrap: 'wrap',
+          padding: '4px 0',
+        }}
+      >
+        {/* COLUMN 1: BRAND LOGO & MOTTO & SOUND SETTINGS */}
         <div style={{
-          fontFamily: 'var(--font-pixel)',
-          fontSize: 'clamp(14px, 2.8vw, 20px)',
-          color: '#fbbf24',
-          letterSpacing: '2px',
-          textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 16px rgba(251, 191, 36, 0.5)',
-          marginBottom: 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: isCompact ? 'center' : 'flex-start',
+          textAlign: isCompact ? 'center' : 'left',
+          maxWidth: isCompact ? '260px' : '360px',
+          flexShrink: 0,
         }}>
-          尖 塔 单 词 · 语 言 狂 潮
+          {/* Top Subtitle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            color: '#fbbf24',
+            fontFamily: 'var(--font-pixel)',
+            fontSize: isCompact ? '9.5px' : '11px',
+            letterSpacing: '1px',
+            textShadow: '0 2px 4px #000',
+            marginBottom: 4,
+          }}>
+            <Sparkles size={12} color="#fbbf24" />
+            <span>VOCABULARY DECKBUILDER</span>
+            <Sparkles size={12} color="#fbbf24" />
+          </div>
+
+          {/* Shimmering Metallic Gold Title */}
+          <h1 style={{
+            fontFamily: 'var(--font-serif)',
+            fontWeight: 900,
+            fontSize: isCompact ? 'clamp(24px, 4.2vw, 36px)' : 'clamp(34px, 5.5vw, 56px)',
+            letterSpacing: '2px',
+            textTransform: 'uppercase',
+            lineHeight: 1.05,
+            marginBottom: 4,
+            filter: 'drop-shadow(0 0 24px rgba(234, 179, 8, 0.7))',
+          }}>
+            <span className="shimmer-gold-title">
+              SPIRE OF WORDS
+            </span>
+          </h1>
+
+          {/* Chinese Title */}
+          <div style={{
+            fontFamily: 'var(--font-pixel)',
+            fontSize: isCompact ? '13px' : '18px',
+            color: '#fbbf24',
+            letterSpacing: '2px',
+            textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 16px rgba(251, 191, 36, 0.5)',
+            marginBottom: isCompact ? 6 : 10,
+          }}>
+            尖 塔 单 词 · 语 言 狂 潮
+          </div>
+
+          <p style={{
+            fontSize: isCompact ? '10.5px' : '12px',
+            color: '#94a3b8',
+            fontStyle: 'italic',
+            letterSpacing: '0.4px',
+            lineHeight: 1.4,
+            marginBottom: isCompact ? 8 : 14,
+          }}>
+            "Words are thy runic blade; Vocabulary is thy indestructible shield."
+          </p>
+
+          {/* Sound Toggle Button in Left Column for Easy Access */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => {
+                sound.playSelect();
+                onToggleSound();
+              }}
+              className="spire-btn"
+              style={{
+                padding: '6px 12px',
+                fontSize: '11px',
+                color: soundEnabled ? '#86efac' : '#94a3b8',
+                borderColor: soundEnabled ? 'rgba(74, 222, 128, 0.4)' : '#475569',
+              }}
+            >
+              {soundEnabled ? <Volume2 size={14} color="#4ade80" /> : <VolumeX size={14} color="#94a3b8" />}
+              <span>音效: {soundEnabled ? '已开' : '静音'}</span>
+            </button>
+
+            <div style={{
+              fontSize: '10px',
+              color: '#64748b',
+              fontFamily: 'var(--font-mono)',
+            }}>
+              v1.2.0 横屏重构版
+            </div>
+          </div>
         </div>
 
-        <p style={{
-          fontSize: '12px',
-          color: '#94a3b8',
-          maxWidth: '460px',
-          margin: '0 auto',
-          fontStyle: 'italic',
-          letterSpacing: '0.5px',
-        }}>
-          "Words are thy runic blade; Vocabulary is thy indestructible shield."
-        </p>
-      </div>
-
-      {/* Center Display: Scholar Hero Sprite & Action Menu */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 'clamp(20px, 6vw, 60px)',
-        flexWrap: 'wrap',
-        zIndex: 10,
-        margin: '16px 0',
-      }}>
-        {/* Fate Servant Feature Box with Switching Controls */}
+        {/* COLUMN 2: 3D HOLOGRAPHIC SERVANT CARD & SWITCHER */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 8,
+          justifyContent: 'center',
+          position: 'relative',
+          flexShrink: 0,
         }}>
           <div style={{ position: 'relative' }}>
             {/* Left Switcher Arrow */}
@@ -193,11 +257,11 @@ export const TitleView: React.FC<TitleViewProps> = ({
               className="spire-btn"
               style={{
                 position: 'absolute',
-                left: -26,
+                left: isCompact ? -20 : -26,
                 top: '44%',
                 transform: 'translateY(-50%)',
-                width: 38,
-                height: 38,
+                width: isCompact ? 32 : 38,
+                height: isCompact ? 32 : 38,
                 borderRadius: '50%',
                 padding: 0,
                 display: 'flex',
@@ -210,7 +274,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              <ChevronLeft size={22} color={currentChar.archetypeColor} />
+              <ChevronLeft size={isCompact ? 18 : 22} color={currentChar.archetypeColor} />
             </button>
 
             {/* Right Switcher Arrow */}
@@ -220,11 +284,11 @@ export const TitleView: React.FC<TitleViewProps> = ({
               className="spire-btn"
               style={{
                 position: 'absolute',
-                right: -26,
+                right: isCompact ? -20 : -26,
                 top: '44%',
                 transform: 'translateY(-50%)',
-                width: 38,
-                height: 38,
+                width: isCompact ? 32 : 38,
+                height: isCompact ? 32 : 38,
                 borderRadius: '50%',
                 padding: 0,
                 display: 'flex',
@@ -237,37 +301,36 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 cursor: 'pointer',
               }}
             >
-              <ChevronRight size={22} color={currentChar.archetypeColor} />
+              <ChevronRight size={isCompact ? 18 : 22} color={currentChar.archetypeColor} />
             </button>
 
-            {/* 3D Holographic Foil Card with Magic Circle */}
+            {/* 3D Holographic Foil Card */}
             <HoloServantCard
               character={currentChar}
               viewMode="card"
-              width={205}
-              height={290}
+              width={cardWidth}
+              height={cardHeight}
             />
 
             {/* Class & Name Badge */}
             <div style={{
               position: 'absolute',
-              bottom: -16,
+              bottom: isCompact ? -12 : -16,
               left: '50%',
               transform: 'translateX(-50%)',
               backgroundColor: 'rgba(9, 11, 18, 0.96)',
               border: `2px solid ${currentChar.archetypeColor}`,
               boxShadow: '0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000',
-              padding: '4px 14px',
+              padding: isCompact ? '2px 10px' : '4px 14px',
               color: '#f8fafc',
               fontFamily: 'var(--font-pixel)',
               textAlign: 'center',
               whiteSpace: 'nowrap',
               borderRadius: 3,
-              transition: 'border-color 0.25s ease',
               zIndex: 25,
             }}>
               <div style={{
-                fontSize: '13px',
+                fontSize: isCompact ? '11px' : '13px',
                 fontWeight: 700,
                 color: '#ffffff',
                 fontFamily: 'var(--font-pixel)',
@@ -275,10 +338,10 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 {currentChar.name}
               </div>
               <div style={{
-                fontSize: '9.5px',
+                fontSize: isCompact ? '8.5px' : '9.5px',
                 color: '#94a3b8',
                 fontFamily: 'var(--font-pixel)',
-                marginTop: 2,
+                marginTop: 1,
               }}>
                 {currentChar.title}
               </div>
@@ -286,20 +349,20 @@ export const TitleView: React.FC<TitleViewProps> = ({
           </div>
 
           <div style={{
-            fontSize: '11px',
+            fontSize: isCompact ? '9.5px' : '11px',
             color: currentChar.archetypeColor,
             fontFamily: 'var(--font-pixel)',
-            marginTop: 14,
+            marginTop: isCompact ? 14 : 16,
           }}>
             {currentChar.archetypeTag}
           </div>
 
-          {/* 6 Servants Mini Carousel Dots & Switcher */}
+          {/* 6 Servants Mini Carousel Dots */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 6,
-            margin: '2px 0',
+            gap: 5,
+            margin: '3px 0',
           }}>
             {CHARACTERS.map((c) => {
               const isCur = c.id === currentChar.id;
@@ -312,9 +375,9 @@ export const TitleView: React.FC<TitleViewProps> = ({
                   }}
                   title={`点击切换到 ${c.name} (${c.servantClass})`}
                   style={{
-                    width: isCur ? 26 : 9,
-                    height: 8,
-                    borderRadius: 4,
+                    width: isCur ? (isCompact ? 20 : 26) : (isCompact ? 7 : 9),
+                    height: isCompact ? 6 : 8,
+                    borderRadius: 3,
                     backgroundColor: isCur ? c.archetypeColor : 'rgba(148, 163, 184, 0.35)',
                     border: isCur ? `1px solid ${c.archetypeColor}` : 'none',
                     boxShadow: isCur ? `0 0 8px ${c.archetypeGlow}` : undefined,
@@ -327,48 +390,42 @@ export const TitleView: React.FC<TitleViewProps> = ({
             })}
           </div>
 
-          <div style={{
-            fontSize: '9px',
-            color: '#64748b',
-            fontFamily: 'var(--font-pixel)',
-            letterSpacing: '0.5px',
-          }}>
-            ◀ 点击箭头或按 A / D 切换英灵 ({currentIndex + 1}/6) ▶
-          </div>
-
           {/* Detailed Roster Selection Button */}
           <button
             onClick={() => { sound.playSelect(); onOpenCharacterSelect(); }}
             className="spire-btn"
             style={{
-              padding: '6px 14px',
-              fontSize: '11px',
+              padding: isCompact ? '4px 10px' : '6px 14px',
+              fontSize: isCompact ? '9.5px' : '11px',
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
               borderColor: currentChar.archetypeColor,
               color: '#f8fafc',
-              gap: 6,
+              gap: 5,
               marginTop: 2,
             }}
           >
-            <Users size={13} color={currentChar.archetypeColor} />
-            <span>查看 6 位英灵流派与宝具详情</span>
+            <Users size={isCompact ? 12 : 13} color={currentChar.archetypeColor} />
+            <span>6位英灵流派与宝具</span>
           </button>
         </div>
 
-        {/* Action Menu Buttons with Glassmorphic Arcane Frame */}
-        <div className="pixel-panel" style={{
-          padding: '24px 28px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 11,
-          minWidth: 'clamp(240px, 30vw, 320px)',
-          backdropFilter: 'blur(12px)',
-          backgroundColor: 'rgba(12, 15, 25, 0.88)',
-          border: `2px solid ${currentChar.archetypeColor}`,
-          boxShadow: `0 0 24px ${currentChar.archetypeGlow}, 0 12px 32px rgba(0, 0, 0, 0.85)`,
-          transition: 'all 0.3s ease',
-          zIndex: 10,
-        }}>
+        {/* COLUMN 3: ACTION MENU BUTTONS */}
+        <div 
+          className="pixel-panel" 
+          style={{
+            padding: isCompact ? '12px 14px' : '20px 24px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: isCompact ? 7 : 10,
+            width: isCompact ? '230px' : '280px',
+            backdropFilter: 'blur(12px)',
+            backgroundColor: 'rgba(12, 15, 25, 0.92)',
+            border: `2px solid ${currentChar.archetypeColor}`,
+            boxShadow: `0 0 24px ${currentChar.archetypeGlow}, 0 12px 32px rgba(0, 0, 0, 0.85)`,
+            transition: 'all 0.3s ease',
+            flexShrink: 0,
+          }}
+        >
           {/* Continue button if run active */}
           {hasActiveRun && currentFloor > 0 && onResumeRun && (
             <button
@@ -378,36 +435,17 @@ export const TitleView: React.FC<TitleViewProps> = ({
               }}
               className="spire-btn"
               style={{
-                padding: '12px 18px',
-                fontSize: '13px',
+                padding: isCompact ? '8px 12px' : '11px 16px',
+                fontSize: isCompact ? '11px' : '13px',
                 backgroundColor: '#1e3a8a',
                 color: '#93c5fd',
                 justifyContent: 'flex-start',
               }}
             >
-              <Compass size={16} color="#60a5fa" />
+              <Compass size={isCompact ? 14 : 16} color="#60a5fa" />
               <span>继续攀登 (第 {currentFloor} 层)</span>
             </button>
           )}
-
-          {/* Select Character / Hero Roster Button */}
-          <button
-            onClick={() => {
-              sound.playSelect();
-              onOpenCharacterSelect();
-            }}
-            className="spire-btn"
-            style={{
-              padding: '13px 18px',
-              fontSize: '13px',
-              borderColor: currentChar.archetypeColor,
-              color: '#ffffff',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <UserCheck size={17} color={currentChar.archetypeColor} />
-            <span>英灵召见与职阶选择 (SERVANTS)</span>
-          </button>
 
           {/* Start New Run Button */}
           <button
@@ -417,15 +455,35 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="spire-btn"
             style={{
-              padding: '14px 20px',
-              fontSize: '14px',
+              padding: isCompact ? '10px 14px' : '13px 18px',
+              fontSize: isCompact ? '12px' : '14px',
               backgroundColor: '#854d0e',
               color: '#fef08a',
               justifyContent: 'flex-start',
+              boxShadow: '0 0 14px rgba(234, 179, 8, 0.4)',
             }}
           >
-            <Play size={18} color="#fde047" fill="#fde047" />
+            <Play size={isCompact ? 15 : 17} color="#fde047" fill="#fde047" />
             <span>{hasActiveRun && currentFloor > 0 ? '重新开始攀登' : '踏入尖塔 (START)'}</span>
+          </button>
+
+          {/* Select Character / Hero Roster Button */}
+          <button
+            onClick={() => {
+              sound.playSelect();
+              onOpenCharacterSelect();
+            }}
+            className="spire-btn"
+            style={{
+              padding: isCompact ? '8px 12px' : '11px 16px',
+              fontSize: isCompact ? '11px' : '12.5px',
+              borderColor: currentChar.archetypeColor,
+              color: '#ffffff',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <UserCheck size={isCompact ? 14 : 16} color={currentChar.archetypeColor} />
+            <span>英灵召见 (SERVANTS)</span>
           </button>
 
           {/* Lexicon / Vocabulary Library */}
@@ -436,12 +494,12 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="spire-btn"
             style={{
-              padding: '11px 18px',
-              fontSize: '12px',
+              padding: isCompact ? '8px 12px' : '10px 16px',
+              fontSize: isCompact ? '11px' : '12px',
               justifyContent: 'flex-start',
             }}
           >
-            <BookOpen size={16} color="#fbbf24" />
+            <BookOpen size={isCompact ? 14 : 15} color="#fbbf24" />
             <span>尖塔词典 (LEXICON)</span>
           </button>
 
@@ -453,68 +511,40 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="spire-btn"
             style={{
-              padding: '11px 18px',
-              fontSize: '12px',
+              padding: isCompact ? '8px 12px' : '10px 16px',
+              fontSize: isCompact ? '11px' : '12px',
               justifyContent: 'flex-start',
             }}
           >
-            <Layers size={16} color="#38bdf8" />
+            <Layers size={isCompact ? 14 : 15} color="#38bdf8" />
             <span>卡牌套组鉴赏</span>
           </button>
-
-          {/* Sound Toggle */}
-          <button
-            onClick={() => {
-              sound.playSelect();
-              onToggleSound();
-            }}
-            className="spire-btn"
-            style={{
-              padding: '10px 18px',
-              fontSize: '11px',
-              color: soundEnabled ? '#86efac' : '#94a3b8',
-              justifyContent: 'flex-start',
-            }}
-          >
-            {soundEnabled ? <Volume2 size={16} color="#4ade80" /> : <VolumeX size={16} color="#94a3b8" />}
-            <span>音效 & 发音: {soundEnabled ? '已开启' : '静音'}</span>
-          </button>
         </div>
       </div>
 
-      {/* Bottom Footer Info */}
-      <div style={{
-        textAlign: 'center',
-        zIndex: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 6,
-      }}>
+      {/* FOOTER BAR: GAMEPLAY RULE TIP */}
+      {!isCompact && (
         <div style={{
-          backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          border: '1px solid rgba(255, 255, 255, 0.15)',
-          padding: '4px 12px',
-          borderRadius: 4,
-          fontSize: '11px',
-          color: '#cbd5e1',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
+          textAlign: 'center',
+          zIndex: 10,
+          padding: '4px 0',
         }}>
-          <ShieldCheck size={13} color="#34d399" />
-          <span>核心玩法：出牌唤醒词义触发 <strong style={{ color: '#facc15' }}>1.5x 暴击</strong> | 支持真实英语语音发音</span>
+          <div style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            padding: '3px 12px',
+            borderRadius: 4,
+            fontSize: '11px',
+            color: '#cbd5e1',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+          }}>
+            <ShieldCheck size={13} color="#34d399" />
+            <span>出牌唤醒词义享 <strong style={{ color: '#facc15' }}>1.5x 暴击</strong> | 原生支持真人发音与词根记忆</span>
+          </div>
         </div>
-
-        <div style={{
-          fontFamily: 'var(--font-pixel)',
-          fontSize: '9px',
-          color: '#64748b',
-          letterSpacing: '1px',
-        }}>
-          v1.2.0 PIXEL RETRO EDITION · REACT + VITE + CAPACITOR
-        </div>
-      </div>
+      )}
     </div>
   );
 };

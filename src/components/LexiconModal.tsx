@@ -132,7 +132,7 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
       zIndex: 200,
       display: 'flex',
       flexDirection: 'column',
-      padding: 'max(16px, env(safe-area-inset-top)) 20px max(16px, env(safe-area-inset-bottom)) 20px',
+      padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
     }}>
       {/* Top Header */}
       <div style={{

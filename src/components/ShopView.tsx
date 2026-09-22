@@ -79,7 +79,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'auto',
-      padding: '20px 24px 80px 24px',
+      padding: 'max(8px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))',
       position: 'relative',
     }}>
       {/* Header Bar */}

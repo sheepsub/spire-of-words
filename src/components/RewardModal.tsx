@@ -46,22 +46,24 @@ export const RewardModal: React.FC<RewardModalProps> = ({
     <div style={{
       position: 'fixed',
       inset: 0,
-      backgroundColor: 'rgba(5, 6, 12, 0.88)',
+      backgroundColor: 'rgba(5, 6, 12, 0.9)',
       backdropFilter: 'blur(8px)',
       zIndex: 150,
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 20,
+      padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
     }}>
       <div style={{
         backgroundColor: '#12141f',
         border: '2px solid var(--border-gold)',
         borderRadius: 14,
-        padding: '24px 30px',
-        maxWidth: 580,
+        padding: '14px 24px',
+        maxWidth: 560,
         width: '100%',
+        maxHeight: '94vh',
+        overflowY: 'auto',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.9), 0 0 25px var(--border-gold-glow)',
         textAlign: 'center',
       }}>

@@ -24,12 +24,14 @@ import { DeckModal } from './components/DeckModal';
 import { TitleView } from './components/TitleView';
 import { CharacterSelectView } from './components/CharacterSelectView';
 import { GameOverModal } from './components/GameOverModal';
+import { RotatePrompt } from './components/RotatePrompt';
 import { DEFAULT_CHARACTER, type CharacterDefinition } from './data/characters';
 
 export const App: React.FC = () => {
   // Master Game State - Starts at Title Screen (Main Menu)
   const [screen, setScreen] = useState<GameScreen>('title');
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isVirtualLandscape, setIsVirtualLandscape] = useState(false);
   
   // Selected Character & Archetype
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterDefinition>(DEFAULT_CHARACTER);
@@ -791,14 +793,23 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      position: 'relative',
-    }}>
+    <div 
+      className={isVirtualLandscape ? 'force-virtual-landscape' : ''}
+      style={{
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
+      {/* Mobile Portrait Detection & Force Landscape Helper */}
+      <RotatePrompt 
+        isVirtualLandscape={isVirtualLandscape}
+        onToggleVirtualLandscape={() => setIsVirtualLandscape(prev => !prev)}
+      />
+
       {/* Top Bar Status - Hidden on Title and Character Select Screens */}
       {screen !== 'title' && screen !== 'char_select' && (
         <TopBar

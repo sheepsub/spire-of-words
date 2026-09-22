@@ -54,7 +54,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '14px 24px',
+        padding: 'max(6px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
         overflow: 'hidden',
         boxSizing: 'border-box',
         position: 'relative',

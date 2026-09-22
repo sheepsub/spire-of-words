@@ -62,7 +62,7 @@ export const MapView: React.FC<MapViewProps> = ({
     }}>
       {/* Header bar */}
       <div style={{
-        padding: '12px 20px',
+        padding: 'max(8px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) 8px max(24px, env(safe-area-inset-left))',
         backgroundColor: 'rgba(18, 20, 31, 0.95)',
         borderBottom: '1px solid var(--border-gold)',
         display: 'flex',
@@ -94,7 +94,7 @@ export const MapView: React.FC<MapViewProps> = ({
       <div style={{
         flex: 1,
         overflowY: 'auto',
-        padding: '30px 20px 80px 20px',
+        padding: '20px max(24px, env(safe-area-inset-right)) max(50px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

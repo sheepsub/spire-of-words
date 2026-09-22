@@ -29,19 +29,23 @@ export const TopBar: React.FC<TopBarProps> = ({
   const hpPercent = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
 
   return (
-    <div style={{
-      width: '100%',
-      backgroundColor: 'rgba(8, 9, 14, 0.96)',
-      borderBottom: '2px solid #000',
-      boxShadow: '0 4px 0 0 #000, 0 8px 20px rgba(0, 0, 0, 0.8)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      padding: '8px 14px',
-      zIndex: 100,
-      flexWrap: 'wrap',
-      gap: 8,
-    }} className="safe-top">
+    <div 
+      className="safe-all"
+      style={{
+        width: '100%',
+        backgroundColor: 'rgba(8, 9, 14, 0.96)',
+        borderBottom: '2px solid #000',
+        boxShadow: '0 4px 0 0 #000, 0 8px 20px rgba(0, 0, 0, 0.8)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 'max(5px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 5px max(16px, env(safe-area-inset-left))',
+        zIndex: 100,
+        flexWrap: 'nowrap',
+        overflowX: 'auto',
+        gap: 8,
+      }}
+    >
       {/* Left: Player HP & Shield & Floor */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         {/* Floor indicator */}

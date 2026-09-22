@@ -29,15 +29,17 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: 24,
+      padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
     }}>
       <div style={{
         backgroundColor: '#121422',
         border: isVictory ? '2px solid #eab308' : '2px solid #ef4444',
         borderRadius: 16,
-        padding: '36px 32px',
+        padding: '16px 24px',
         maxWidth: 480,
         width: '100%',
+        maxHeight: '94vh',
+        overflowY: 'auto',
         textAlign: 'center',
         boxShadow: isVictory 
           ? '0 10px 40px rgba(234, 179, 8, 0.3)' 

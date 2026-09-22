@@ -23,7 +23,7 @@ export const DeckModal: React.FC<DeckModalProps> = ({
       zIndex: 220,
       display: 'flex',
       flexDirection: 'column',
-      padding: 'max(16px, env(safe-area-inset-top)) 24px max(16px, env(safe-area-inset-bottom)) 24px',
+      padding: 'max(10px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))',
     }}>
       {/* Header */}
       <div style={{

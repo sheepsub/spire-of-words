@@ -127,6 +127,7 @@ export const BattleView: React.FC<BattleViewProps> = ({
     return Math.max(0, dmg);
   };
 
+  const playerHpPercent = Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100));
   const enemyHpPercent = Math.max(0, Math.min(100, (enemy.hp / enemy.maxHp) * 100));
   const enemyIntentDamage = getEnemyIntentDamage();
 
@@ -172,16 +173,17 @@ export const BattleView: React.FC<BattleViewProps> = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-around',
-        padding: '16px 20px',
+        padding: '4px max(24px, env(safe-area-inset-right)) 4px max(24px, env(safe-area-inset-left))',
         position: 'relative',
         zIndex: 10,
+        minHeight: 'clamp(120px, 30vh, 200px)',
       }}>
         {/* PLAYER DISPLAY */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: 8,
+          gap: 6,
           zIndex: 10,
         }}>
           {/* Servant Battlefield Standing Figure & Arcane Circle */}
@@ -191,16 +193,16 @@ export const BattleView: React.FC<BattleViewProps> = ({
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            minHeight: 185,
-            width: 180,
+            minHeight: 'clamp(110px, 24vh, 180px)',
+            width: 'clamp(120px, 20vw, 180px)',
           }}>
             <img 
               src={player.characterAvatar || heroPixelImg} 
               alt={player.characterName || '英灵战士'} 
               className="monster-idle"
               style={{
-                height: 185,
-                maxWidth: 175,
+                height: 'clamp(110px, 24vh, 180px)',
+                maxWidth: '100%',
                 objectFit: 'contain',
                 filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.95)) drop-shadow(0 0 10px rgba(59, 130, 246, 0.4))',
                 imageRendering: 'auto',
@@ -255,55 +257,85 @@ export const BattleView: React.FC<BattleViewProps> = ({
             )}
           </div>
 
-          <div style={{ 
-            fontFamily: 'var(--font-pixel)', 
-            fontWeight: 700, 
-            fontSize: 12, 
-            color: '#f8fafc',
-            letterSpacing: '0.5px',
-            textShadow: '0 2px 4px #000',
-          }}>
-            {player.characterName || '阿尔托莉雅 (Artoria)'}
+          {/* Player Name & HP bar */}
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ 
+              fontFamily: 'var(--font-pixel)', 
+              fontWeight: 700, 
+              fontSize: 12, 
+              color: '#f8fafc',
+              textShadow: '0 2px 4px #000',
+            }}>
+              {player.characterName || '御主英灵'}
+            </div>
+            
+            {/* Player Segmented 16-bit HP Bar */}
+            <div className="pixel-hp-bar-bg" style={{
+              width: 140,
+              marginTop: 4,
+              position: 'relative',
+            }}>
+              <div className="pixel-hp-fill" style={{
+                width: `${playerHpPercent}%`,
+              }} />
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 9,
+                fontFamily: 'var(--font-pixel-num)',
+                fontWeight: 700,
+                color: '#ffffff',
+                textShadow: '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000',
+              }}>
+                {player.hp}/{player.maxHp}
+              </div>
+            </div>
           </div>
 
-          {/* Player Status Effects */}
+          {/* Player Status Badges */}
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center' }}>
             {player.statusEffects.strength > 0 && (
-              <span className="badge" style={{ backgroundColor: 'rgba(239, 68, 68, 0.35)', color: '#fca5a5', border: '1px solid #ef4444', padding: '2px 6px', borderRadius: 2, fontSize: 10, display: 'flex', alignItems: 'center', gap: 2, fontFamily: 'var(--font-pixel)' }}>
-                <TrendingUp size={11} /> 力量 {player.statusEffects.strength}
+              <span style={{ backgroundColor: 'rgba(239, 68, 68, 0.25)', color: '#fca5a5', border: '1px solid #ef4444', padding: '2px 6px', borderRadius: 4, fontSize: 11, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <TrendingUp size={12} /> 力量 {player.statusEffects.strength}
               </span>
             )}
-            {player.statusEffects.vulnerable > 0 && (
-              <span style={{ backgroundColor: 'rgba(249, 115, 22, 0.35)', color: '#fdba74', border: '1px solid #f97316', padding: '2px 6px', borderRadius: 2, fontSize: 10, display: 'flex', alignItems: 'center', gap: 2, fontFamily: 'var(--font-pixel)' }}>
-                <Skull size={11} /> 易伤 {player.statusEffects.vulnerable}
+            {player.statusEffects.dexterity > 0 && (
+              <span style={{ backgroundColor: 'rgba(56, 189, 248, 0.25)', color: '#7dd3fc', border: '1px solid #38bdf8', padding: '2px 6px', borderRadius: 4, fontSize: 11, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Shield size={12} /> 敏捷 {player.statusEffects.dexterity}
               </span>
             )}
             {player.statusEffects.weak > 0 && (
-              <span style={{ backgroundColor: 'rgba(168, 85, 247, 0.35)', color: '#d8b4fe', border: '1px solid #a855f7', padding: '2px 6px', borderRadius: 2, fontSize: 10, display: 'flex', alignItems: 'center', gap: 2, fontFamily: 'var(--font-pixel)' }}>
-                <Skull size={11} /> 虚弱 {player.statusEffects.weak}
+              <span style={{ backgroundColor: 'rgba(168, 85, 247, 0.25)', color: '#d8b4fe', border: '1px solid #a855f7', padding: '2px 6px', borderRadius: 4, fontSize: 11, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Skull size={12} /> 虚弱 {player.statusEffects.weak}
+              </span>
+            )}
+            {player.statusEffects.vulnerable > 0 && (
+              <span style={{ backgroundColor: 'rgba(249, 115, 22, 0.25)', color: '#fdba74', border: '1px solid #f97316', padding: '2px 6px', borderRadius: 4, fontSize: 11, display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Skull size={12} /> 易伤 {player.statusEffects.vulnerable}
               </span>
             )}
           </div>
         </div>
 
-        {/* VS / Turn banner */}
+        {/* VS Pixel Arcane Clashing Insignia */}
         <div style={{
-          textAlign: 'center',
-          fontFamily: 'var(--font-pixel)',
-          color: '#cbd5e1',
-          zIndex: 10,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 4,
+          opacity: 0.85,
         }}>
+          <Swords size={22} color="#fbbf24" style={{ filter: 'drop-shadow(0 0 8px rgba(234, 179, 8, 0.7))' }} />
           <div style={{
-            fontSize: '11px',
+            fontFamily: 'var(--font-pixel)',
+            fontSize: '9px',
+            color: isPlayerTurn ? '#4ade80' : '#f87171',
             letterSpacing: '1px',
-            color: isPlayerTurn ? '#86efac' : '#f87171',
-            fontWeight: 700,
-            backgroundColor: 'rgba(8, 10, 16, 0.88)',
-            padding: '4px 10px',
-            border: '2px solid #000',
-            boxShadow: '0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000',
           }}>
-            {isPlayerTurn ? '【 你的回合 】' : '【 敌方行动 】'}
+            {isPlayerTurn ? '▶ 你的回合' : '⏳ 敌方行动'}
           </div>
         </div>
 
@@ -314,37 +346,45 @@ export const BattleView: React.FC<BattleViewProps> = ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 8,
+            gap: 6,
             zIndex: 10,
           }}
         >
-          {/* Intent Indicator Bubble */}
+          {/* Enemy Intent Bubble */}
           <div style={{
-            backgroundColor: 'rgba(9, 11, 18, 0.95)',
-            border: '2px solid #000',
+            backgroundColor: 'rgba(15, 17, 26, 0.95)',
+            border: '2px solid #374151',
             boxShadow: '0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000',
-            padding: '3px 8px',
-            borderRadius: 2,
+            padding: '3px 10px',
             display: 'flex',
             alignItems: 'center',
             gap: 6,
-            cursor: 'help',
-            fontFamily: 'var(--font-pixel)',
+            minHeight: 28,
+            borderRadius: 4,
           }} title={enemy.intent.desc}>
             {enemy.intent.type === 'attack' && (
               <>
                 <Swords size={15} color="#ef4444" />
-                <span style={{ color: '#ef4444', fontWeight: 700, fontFamily: 'var(--font-pixel-num)', fontSize: 12 }}>
+                <span style={{
+                  color: '#ef4444',
+                  fontFamily: 'var(--font-pixel-num)',
+                  fontWeight: 700,
+                  fontSize: 12,
+                }}>
                   {enemyIntentDamage}
-                  {enemy.intent.times && enemy.intent.times > 1 ? ` × ${enemy.intent.times}` : ''}
                 </span>
+                {enemy.intent.times && enemy.intent.times > 1 && (
+                  <span style={{ color: '#f87171', fontSize: 10, fontFamily: 'var(--font-pixel-num)' }}>
+                    x{enemy.intent.times}
+                  </span>
+                )}
               </>
             )}
             {enemy.intent.type === 'defend' && (
               <>
                 <Shield size={15} color="#38bdf8" />
-                <span style={{ color: '#38bdf8', fontWeight: 700, fontFamily: 'var(--font-pixel-num)', fontSize: 12 }}>
-                  +{enemy.intent.value} 🛡️
+                <span style={{ color: '#38bdf8', fontFamily: 'var(--font-pixel-num)', fontSize: 11, fontWeight: 700 }}>
+                  +{enemy.intent.value} 防御
                 </span>
               </>
             )}
@@ -366,24 +406,24 @@ export const BattleView: React.FC<BattleViewProps> = ({
           <div className="pixel-pedestal" style={{ position: 'relative' }}>
             {enemy.image ? (
               <img 
-                src={enemy.image}
+                src={enemy.image} 
                 alt={enemy.name}
                 className="pixel-art"
                 style={{
-                  width: enemy.isBoss ? 150 : 126,
-                  height: enemy.isBoss ? 150 : 126,
+                  width: enemy.isBoss ? 'clamp(100px, 20vh, 140px)' : 'clamp(85px, 17vh, 120px)',
+                  height: enemy.isBoss ? 'clamp(100px, 20vh, 140px)' : 'clamp(85px, 17vh, 120px)',
                   objectFit: 'contain',
                   filter: 'drop-shadow(0 8px 16px rgba(0, 0, 0, 0.9))',
                 }}
               />
             ) : (
               <div style={{
-                width: 110,
-                height: 110,
+                width: 95,
+                height: 95,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '52px',
+                fontSize: '46px',
               }}>
                 {enemy.avatar}
               </div>
@@ -427,7 +467,7 @@ export const BattleView: React.FC<BattleViewProps> = ({
             {/* Enemy Segmented 16-bit HP Bar */}
             <div className="pixel-hp-bar-bg" style={{
               width: 140,
-              marginTop: 5,
+              marginTop: 4,
               position: 'relative',
             }}>
               <div className="pixel-hp-fill" style={{
@@ -476,184 +516,209 @@ export const BattleView: React.FC<BattleViewProps> = ({
         </div>
       </div>
 
-      {/* WORD INCANTATION QUIZ MODAL */}
+      {/* WORD INCANTATION QUIZ MODAL (Mobile Landscape 2-Column Touch Layout) */}
       {selectedCard && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(5, 6, 15, 0.88)',
+          backgroundColor: 'rgba(5, 6, 15, 0.92)',
           backdropFilter: 'blur(8px)',
           zIndex: 100,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: 16,
+          padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
         }}>
           <div className="pixel-panel" style={{
-            padding: '22px 26px',
-            maxWidth: 480,
+            padding: '16px 20px',
+            maxWidth: 640,
             width: '100%',
-            textAlign: 'center',
+            maxHeight: '94vh',
+            overflowY: 'auto',
             boxShadow: '0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(234, 179, 8, 0.25)',
             border: '2px solid var(--border-gold)',
           }}>
             {/* Modal Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 6 }}>
-              <Sparkles size={18} color="#facc15" />
-              <span style={{
-                fontFamily: 'var(--font-serif)',
-                fontWeight: 800,
-                fontSize: 15,
-                color: '#facc15',
-                letterSpacing: 1.5,
-                textTransform: 'uppercase',
-              }}>
-                魔导咏唱 · 词义裁定
-              </span>
-              <Sparkles size={18} color="#facc15" />
-            </div>
-
-            {/* Word & Pronunciation */}
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-              marginTop: 4,
-              marginBottom: 4,
-            }}>
-              <div style={{
-                fontSize: '28px',
-                fontFamily: 'var(--font-serif)',
-                fontWeight: 900,
-                color: '#f8fafc',
-                textTransform: 'capitalize',
-                letterSpacing: 1,
-              }}>
-                {selectedCard.word}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, borderBottom: '1px solid rgba(251, 191, 36, 0.2)', paddingBottom: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Sparkles size={16} color="#facc15" />
+                <span style={{
+                  fontFamily: 'var(--font-serif)',
+                  fontWeight: 800,
+                  fontSize: 14,
+                  color: '#facc15',
+                  letterSpacing: 1,
+                  textTransform: 'uppercase',
+                }}>
+                  魔导咏唱 · 词义裁定
+                </span>
               </div>
+
               <button
-                onClick={() => sound.speakWord(selectedCard.word)}
-                title="重播发音"
+                onClick={() => setSelectedCard(null)}
                 style={{
-                  background: 'rgba(56, 189, 248, 0.15)',
-                  border: '1px solid #38bdf8',
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1px solid #475569',
+                  color: '#cbd5e1',
                   borderRadius: '50%',
-                  width: 32,
-                  height: 32,
+                  width: 26,
+                  height: 26,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#38bdf8',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  fontSize: 14,
                 }}
+                title="返回手牌"
               >
-                <Volume2 size={16} />
+                ✕
               </button>
             </div>
 
-            <div style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'var(--font-mono)', marginBottom: 12 }}>
-              <span style={{ color: '#38bdf8', fontWeight: 700, marginRight: 6 }}>{selectedCard.pos}</span>
-              <span>{selectedCard.phonetic}</span>
-            </div>
-
-            {/* Rule Indicator */}
+            {/* 2-Column Responsive Layout in Landscape */}
             <div style={{
-              fontSize: 12,
-              backgroundColor: 'rgba(0, 0, 0, 0.45)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              borderRadius: 6,
-              padding: '8px 12px',
-              marginBottom: 16,
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+              gap: 14,
+              alignItems: 'center',
             }}>
-              <div style={{ color: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                <Sparkles size={13} />
-                <span><strong>正确答案</strong>：触发 100% 完整卡牌威力并享暴击</span>
-              </div>
-              <div style={{ color: '#f87171', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                <AlertTriangle size={13} />
-                <span><strong>错误回答</strong>：卡牌威力衰减 50%，负面效果减半</span>
-              </div>
-            </div>
-
-            {/* 4 Recall Options with Hotkeys */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10, marginBottom: 16 }}>
-              {shuffledOptions.map((option, idx) => {
-                const keyLetter = String.fromCharCode(65 + idx);
-                const keyNum = idx + 1;
-                return (
+              {/* Left Column: Word details & Rules */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, textAlign: 'center' }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                }}>
+                  <div style={{
+                    fontSize: '24px',
+                    fontFamily: 'var(--font-serif)',
+                    fontWeight: 900,
+                    color: '#f8fafc',
+                    textTransform: 'capitalize',
+                    letterSpacing: 1,
+                  }}>
+                    {selectedCard.word}
+                  </div>
                   <button
-                    key={idx}
-                    onClick={() => handleRecallChoice(option)}
-                    className="spire-btn"
+                    onClick={() => sound.speakWord(selectedCard.word)}
+                    title="重播发音"
                     style={{
-                      padding: '11px 16px',
-                      fontSize: '13px',
-                      justifyContent: 'space-between',
-                      textAlign: 'left',
+                      background: 'rgba(56, 189, 248, 0.2)',
+                      border: '1px solid #38bdf8',
+                      borderRadius: '50%',
+                      width: 30,
+                      height: 30,
                       display: 'flex',
                       alignItems: 'center',
-                      backgroundColor: 'rgba(20, 24, 39, 0.95)',
-                      borderColor: 'rgba(234, 179, 8, 0.3)',
+                      justifyContent: 'center',
+                      color: '#38bdf8',
+                      cursor: 'pointer',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Volume2 size={15} />
+                  </button>
+                </div>
+
+                <div style={{ fontSize: 12, color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
+                  <span style={{ color: '#38bdf8', fontWeight: 700, marginRight: 6 }}>{selectedCard.pos}</span>
+                  <span>{selectedCard.phonetic}</span>
+                </div>
+
+                {/* Etymology / Hint */}
+                {selectedCard.etymology && (
+                  <div style={{
+                    fontSize: 10.5,
+                    color: '#94a3b8',
+                    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                    padding: '6px 10px',
+                    border: '1px solid #334155',
+                    borderRadius: 4,
+                    textAlign: 'left',
+                    lineHeight: 1.4,
+                  }}>
+                    💡 <span style={{ color: '#bae6fd', fontWeight: 700 }}>词源：</span>{selectedCard.etymology}
+                  </div>
+                )}
+
+                {/* Rule indicator */}
+                <div style={{
+                  fontSize: 11,
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: 4,
+                  padding: '6px 8px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                }}>
+                  <div style={{ color: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <Sparkles size={12} />
+                    <span><strong>回答正确</strong>：100%威力并触发暴击</span>
+                  </div>
+                  <div style={{ color: '#f87171', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <AlertTriangle size={12} />
+                    <span><strong>回答错误</strong>：威力衰减 50%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 4 Touch-friendly Choice Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {shuffledOptions.map((option, idx) => {
+                  const badge = ['A', 'B', 'C', 'D'][idx];
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleRecallChoice(option)}
+                      className="spire-btn"
+                      style={{
+                        padding: '10px 14px',
+                        fontSize: '12.5px',
+                        justifyContent: 'flex-start',
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 10,
+                        backgroundColor: 'rgba(20, 24, 39, 0.95)',
+                        borderColor: 'rgba(234, 179, 8, 0.35)',
+                        cursor: 'pointer',
+                      }}
+                    >
                       <span style={{
                         backgroundColor: 'rgba(234, 179, 8, 0.2)',
                         color: '#facc15',
                         border: '1px solid rgba(234, 179, 8, 0.5)',
                         borderRadius: 4,
-                        padding: '2px 6px',
+                        padding: '2px 7px',
                         fontSize: 11,
                         fontFamily: 'var(--font-mono)',
                         fontWeight: 700,
                       }}>
-                        {keyLetter} / {keyNum}
+                        {badge}
                       </span>
                       <span style={{ color: '#f8fafc', fontWeight: 600 }}>{option}</span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                    </button>
+                  );
+                })}
 
-            {/* Etymology / Hint Accordion */}
-            {selectedCard.etymology && (
-              <div style={{
-                fontSize: 11,
-                color: '#94a3b8',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                padding: '8px 12px',
-                border: '1px solid #334155',
-                borderRadius: 6,
-                marginBottom: 16,
-                textAlign: 'left',
-                lineHeight: 1.5,
-              }}>
-                💡 <span style={{ color: '#bae6fd', fontWeight: 700 }}>词根词源解析：</span>{selectedCard.etymology}
+                <button
+                  onClick={() => setSelectedCard(null)}
+                  className="spire-btn"
+                  style={{
+                    fontSize: 11,
+                    padding: '6px 14px',
+                    backgroundColor: 'rgba(71, 85, 105, 0.25)',
+                    borderColor: '#475569',
+                    color: '#94a3b8',
+                    justifyContent: 'center',
+                    marginTop: 4,
+                  }}
+                >
+                  放弃本次咏唱
+                </button>
               </div>
-            )}
-
-            {/* Bottom Actions */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <button
-                onClick={() => setSelectedCard(null)}
-                className="spire-btn"
-                style={{
-                  fontSize: 12,
-                  padding: '8px 20px',
-                  backgroundColor: 'rgba(71, 85, 105, 0.3)',
-                  borderColor: '#64748b',
-                  color: '#cbd5e1',
-                }}
-              >
-                取消咏唱 (Esc)
-              </button>
             </div>
           </div>
         </div>
@@ -663,7 +728,7 @@ export const BattleView: React.FC<BattleViewProps> = ({
       <div style={{
         position: 'relative',
         width: '100%',
-        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
+        paddingBottom: 'max(4px, env(safe-area-inset-bottom))',
         zIndex: 20,
       }}>
         {/* Battle Controls Bar: Energy, Draw Pile, Discard Pile, End Turn */}
@@ -671,10 +736,10 @@ export const BattleView: React.FC<BattleViewProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 16px 8px 16px',
+          padding: '0 max(20px, env(safe-area-inset-right)) 4px max(20px, env(safe-area-inset-left))',
         }}>
           {/* Left: Player Main Energy Orb & Draw Pile */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div className="main-energy-orb" title="剩余能量">
               <span style={{
                 fontFamily: 'var(--font-pixel-num)',
@@ -698,24 +763,24 @@ export const BattleView: React.FC<BattleViewProps> = ({
             <button
               onClick={() => onOpenDeckList(player.drawPile, '抽牌堆 (Draw Pile)')}
               className="spire-btn"
-              style={{ padding: '6px 10px', fontSize: '12px' }}
+              style={{ padding: '5px 10px', fontSize: '11px' }}
               title="查看抽牌堆"
             >
-              <Layers size={14} />
-              <span>抽牌堆 ({player.drawPile.length})</span>
+              <Layers size={13} />
+              <span>抽牌 ({player.drawPile.length})</span>
             </button>
           </div>
 
           {/* Right: Discard Pile & End Turn Button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <button
               onClick={() => onOpenDeckList(player.discardPile, '弃牌堆 (Discard Pile)')}
               className="spire-btn"
-              style={{ padding: '6px 10px', fontSize: '12px' }}
+              style={{ padding: '5px 10px', fontSize: '11px' }}
               title="查看弃牌堆"
             >
-              <Archive size={14} />
-              <span>弃牌堆 ({player.discardPile.length})</span>
+              <Archive size={13} />
+              <span>弃牌 ({player.discardPile.length})</span>
             </button>
 
             <button
@@ -727,6 +792,10 @@ export const BattleView: React.FC<BattleViewProps> = ({
               }}
               disabled={!isPlayerTurn}
               className="end-turn-btn"
+              style={{
+                padding: '10px 18px',
+                fontSize: '13px',
+              }}
             >
               结束回合
             </button>
@@ -741,9 +810,9 @@ export const BattleView: React.FC<BattleViewProps> = ({
           display: 'flex',
           justifyContent: player.hand.length <= 4 ? 'center' : 'flex-start',
           alignItems: 'flex-end',
-          padding: '8px 24px 12px 24px',
-          gap: 10,
-          minHeight: 270,
+          padding: '2px max(24px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))',
+          gap: 8,
+          minHeight: 'clamp(170px, 36vh, 260px)',
         }}>
           {player.hand.map((card) => {
             const cost = card.isUpgraded && card.upgradedCost !== undefined ? card.upgradedCost : card.cost;

@@ -46,14 +46,15 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '24px 20px',
+      padding: 'max(6px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
+      overflowY: 'auto',
       position: 'relative',
     }}>
       {/* Campfire Fire Icon & Ambient glow */}
       <div style={{
-        fontSize: '72px',
+        fontSize: 'clamp(42px, 11vh, 64px)',
         filter: 'drop-shadow(0 0 35px rgba(245, 158, 11, 0.8))',
-        marginBottom: 16,
+        marginBottom: 8,
         animation: 'monster-idle 2.5s infinite',
       }}>
         🔥
