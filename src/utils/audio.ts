@@ -333,6 +333,39 @@ class SoundFX {
       osc.stop(this.ctx!.currentTime + i * 0.1 + 0.9);
     });
   }
+
+  // --- STS2 真实原生音频支持 ---
+  public playSTS2Click() {
+    this.haptic('light');
+    if (!this.enabled) return;
+    try {
+      const audio = new Audio('/sts2/audio/ui_click.wav');
+      audio.volume = 0.45;
+      audio.play().catch(() => this.playSelect());
+    } catch {
+      this.playSelect();
+    }
+  }
+
+  public playSTS2Tarot() {
+    this.haptic('medium');
+    if (!this.enabled) return;
+    try {
+      const audio = new Audio('/sts2/audio/tarot_open.ogg');
+      audio.volume = 0.55;
+      audio.play().catch(() => {});
+    } catch {}
+  }
+
+  public playSTS2Divinity() {
+    this.haptic('success');
+    if (!this.enabled) return;
+    try {
+      const audio = new Audio('/sts2/audio/divinity_enter.ogg');
+      audio.volume = 0.6;
+      audio.play().catch(() => this.playVictory());
+    } catch {}
+  }
 }
 
 export const sound = new SoundFX();

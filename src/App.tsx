@@ -26,6 +26,7 @@ import { CharacterSelectView } from './components/CharacterSelectView';
 import { GameOverModal } from './components/GameOverModal';
 import { RotatePrompt } from './components/RotatePrompt';
 import { DEFAULT_CHARACTER, type CharacterDefinition } from './data/characters';
+import { applyEnchantment } from './data/enchantments';
 
 export const App: React.FC = () => {
   // Master Game State - Starts at Title Screen (Main Menu)
@@ -250,6 +251,30 @@ export const App: React.FC = () => {
       addFloatText(`-${card.hpCost} 🩸 鲜血献祭`, 'damage', 25, 45);
     }
 
+    // STS2: Affliction Check (Galvanized / 流电反噬)
+    if (card.affliction === 'galvanized') {
+      updatedPlayerHp = Math.max(1, updatedPlayerHp - 3);
+      addFloatText('-3 ⚡ 流电反噬', 'damage', 25, 45);
+    }
+
+    // STS2: Enchantment Check (Corrupted / 腐化代价)
+    if (card.enchantment === 'corrupted') {
+      updatedPlayerHp = Math.max(1, updatedPlayerHp - 2);
+      addFloatText('-2 🩸 腐化代价', 'damage', 25, 45);
+    }
+
+    // STS2: Enchantment Check (Sown / 播种回能)
+    if (card.enchantment === 'sown') {
+      currentEnergy += 1;
+      addFloatText('+1 ⚡ 播种回能', 'buff', 25, 30);
+    }
+
+    // STS2: Relic Check (Hand of Osti / 奥斯提之灵)
+    if (card.exhaust && player.relics.some((r) => r.id === 'necro_hand')) {
+      updatedPlayerHp = Math.min(player.maxHp, updatedPlayerHp + 2);
+      addFloatText('+2 💀 奥斯提汲取', 'heal', 25, 45);
+    }
+
     // 1. DAMAGE CALCULATION
     if (baseDmg !== undefined || card.bodySlam) {
       sound.playSlash();
@@ -308,6 +333,24 @@ export const App: React.FC = () => {
         const hasDragonBanner = player.relics.some((r) => r.id === 'dragon_witch_banner');
         if (hasDragonBanner && player.hp <= Math.floor(player.maxHp * 0.5)) {
           dmg = Math.floor(dmg * 1.5);
+        }
+
+        // STS2: Momentum (动量: 额外+3伤害)
+        if (card.enchantment === 'momentum') {
+          dmg += 3;
+        }
+
+        // STS2: Corrupted (腐化: 伤害提升 50%)
+        if (card.enchantment === 'corrupted') {
+          dmg = Math.floor(dmg * 1.5);
+        }
+
+        // STS2: Regent Crown (群星之冕: 单回合打出第 2 张攻击牌伤害 +50%)
+        if (card.type === 'attack' && player.relics.some((r) => r.id === 'regent_crown') && cardsPlayedThisTurnRef.current === 1) {
+          dmg = Math.floor(dmg * 1.5);
+          if (h === 0) {
+            addFloatText('👑 群星之冕 +50% 爆发!', 'buff', 25, 30);
+          }
         }
 
         if (player.statusEffects.weak > 0) dmg = Math.floor(dmg * 0.75);
@@ -489,7 +532,14 @@ export const App: React.FC = () => {
     let curDiscard = player.discardPile;
     let curHand = player.hand.filter((c) => c.id !== card.id);
 
-    const totalDraw = (drawNum || 0) + scholarDraw + forkDraw + jewelSwordDraw;
+    // STS2: Swift (迅速: 抽 1 张牌)
+    let swiftDraw = 0;
+    if (card.enchantment === 'swift') {
+      swiftDraw = 1;
+      addFloatText('🦅 迅速: 抽1牌!', 'buff', 25, 25);
+    }
+
+    const totalDraw = (drawNum || 0) + scholarDraw + forkDraw + jewelSwordDraw + swiftDraw;
     if (totalDraw > 0) {
       const drawn = drawCards(totalDraw, curDraw, curDiscard, curHand);
       curDraw = drawn.draw;
@@ -902,6 +952,12 @@ export const App: React.FC = () => {
               setPlayer((prev) => ({
                 ...prev,
                 deck: prev.deck.map((c) => (c.id === cardId ? { ...c, isUpgraded: true } : c)),
+              }));
+            }}
+            onEnchantCard={(cardId, enchantment) => {
+              setPlayer((prev) => ({
+                ...prev,
+                deck: prev.deck.map((c) => (c.id === cardId ? applyEnchantment(c, enchantment) : c)),
               }));
             }}
             onLeave={() => setScreen('map')}

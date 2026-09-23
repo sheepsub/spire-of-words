@@ -188,18 +188,6 @@ export const TitleView: React.FC<TitleViewProps> = ({
             </span>
           </h1>
 
-          {/* Chinese Title */}
-          <div style={{
-            fontFamily: 'var(--font-pixel)',
-            fontSize: isCompact ? '13px' : '18px',
-            color: '#fbbf24',
-            letterSpacing: '2px',
-            textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 16px rgba(251, 191, 36, 0.5)',
-            marginBottom: isCompact ? 6 : 10,
-          }}>
-            尖 塔 单 词 · 语 言 狂 潮
-          </div>
-
           <p style={{
             fontSize: isCompact ? '10.5px' : '12px',
             color: '#94a3b8',

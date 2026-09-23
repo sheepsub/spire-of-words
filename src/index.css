@@ -603,6 +603,57 @@ html, body, #root {
   }
 }
 
+/* Holo Card Auto 3D Floating Rotation for Mobile & Idle */
+.holo-card-auto-rotate {
+  animation: holoCardAutoRotate 6.5s ease-in-out infinite alternate;
+}
+
+@keyframes holoCardAutoRotate {
+  0% {
+    transform: perspective(900px) rotateX(8deg) rotateY(-13deg) scale3d(1.03, 1.03, 1);
+  }
+  25% {
+    transform: perspective(900px) rotateX(-9deg) rotateY(-7deg) scale3d(1.045, 1.045, 1);
+  }
+  50% {
+    transform: perspective(900px) rotateX(-7deg) rotateY(13deg) scale3d(1.03, 1.03, 1);
+  }
+  75% {
+    transform: perspective(900px) rotateX(9deg) rotateY(8deg) scale3d(1.045, 1.045, 1);
+  }
+  100% {
+    transform: perspective(900px) rotateX(8deg) rotateY(-13deg) scale3d(1.03, 1.03, 1);
+  }
+}
+
+.holo-shine-auto {
+  background-size: 200% 200%;
+  animation: holoShineAuto 6.5s ease-in-out infinite alternate;
+}
+
+@keyframes holoShineAuto {
+  0% {
+    background-position: 10% 20%;
+    opacity: 0.55;
+  }
+  25% {
+    background-position: 85% 15%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position: 90% 85%;
+    opacity: 0.6;
+  }
+  75% {
+    background-position: 15% 80%;
+    opacity: 0.85;
+  }
+  100% {
+    background-position: 10% 20%;
+    opacity: 0.55;
+  }
+}
+
 /* Button Light Glint Sheen Sweep */
 .spire-btn {
   position: relative;

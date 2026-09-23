@@ -240,21 +240,32 @@ export const CardView: React.FC<CardViewProps> = ({
             </span>
           </div>
 
-          {/* Card Artwork Area: Official High-Definition Fate Illustration */}
+          {/* Card Artwork Area: Official High-Definition Illustration */}
           <div style={{
             flex: 1,
             minHeight: 56,
             borderRadius: 3,
             backgroundColor: '#05070d',
-            border: '1.5px solid rgba(0, 0, 0, 0.85)',
-            boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8)',
+            border: card.enchantment ? '1.5px solid #eab308' : card.affliction ? '1.5px solid #ef4444' : '1.5px solid rgba(0, 0, 0, 0.85)',
+            boxShadow: card.enchantment ? '0 0 10px rgba(234, 179, 8, 0.35)' : 'inset 0 0 10px rgba(0,0,0,0.8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
             overflow: 'hidden',
           }}>
-            {getCardArtwork(card.illustrationKey || card.id) ? (
+            {card.sts2Art ? (
+              <img
+                src={`/sts2/cards/${card.sts2Art}`}
+                alt={card.name || card.word}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center 20%',
+                }}
+              />
+            ) : getCardArtwork(card.illustrationKey || card.id) ? (
               <img
                 src={getCardArtwork(card.illustrationKey || card.id)}
                 alt={card.name || card.word}
@@ -271,6 +282,54 @@ export const CardView: React.FC<CardViewProps> = ({
                 type={card.type}
                 archetype={card.archetype}
               />
+            )}
+
+            {/* STS2 Enchantment Seal */}
+            {card.enchantment && (
+              <div style={{
+                position: 'absolute',
+                top: 2,
+                left: 2,
+                backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                border: '1px solid #eab308',
+                boxShadow: '0 0 6px rgba(234, 179, 8, 0.8)',
+                padding: '1px 5px',
+                borderRadius: 2,
+                fontSize: '8.5px',
+                fontFamily: 'var(--font-pixel)',
+                color: '#fde047',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                zIndex: 5,
+              }}>
+                ✨ {card.enchantmentTitle || '附魔'}
+              </div>
+            )}
+
+            {/* STS2 Affliction Seal */}
+            {card.affliction && (
+              <div style={{
+                position: 'absolute',
+                bottom: 2,
+                left: 2,
+                backgroundColor: 'rgba(69, 10, 10, 0.92)',
+                border: '1px solid #ef4444',
+                boxShadow: '0 0 6px rgba(239, 68, 68, 0.8)',
+                padding: '1px 5px',
+                borderRadius: 2,
+                fontSize: '8.5px',
+                fontFamily: 'var(--font-pixel)',
+                color: '#fca5a5',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                zIndex: 5,
+              }}>
+                ⛓️ {card.afflictionTitle || '苦痛'}
+              </div>
             )}
 
             {/* Archetype / Prefix tag overlay */}
@@ -526,6 +585,18 @@ export const CardView: React.FC<CardViewProps> = ({
             )}
             {card.exhaust && (
               <div style={{ color: '#94a3b8', fontStyle: 'italic' }}>消耗。</div>
+            )}
+            {/* STS2 附魔效果说明 */}
+            {card.enchantmentDesc && (
+              <div style={{ color: '#fde047', fontWeight: 600, fontSize: '9px', marginTop: 2 }}>
+                ✨ 附魔【{card.enchantmentTitle}】：{card.enchantmentDesc}
+              </div>
+            )}
+            {/* STS2 苦痛效果说明 */}
+            {card.afflictionDesc && (
+              <div style={{ color: '#fca5a5', fontWeight: 600, fontSize: '9px', marginTop: 2 }}>
+                ⛓️ 苦痛【{card.afflictionTitle}】：{card.afflictionDesc}
+              </div>
             )}
           </div>
 

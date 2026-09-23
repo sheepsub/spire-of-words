@@ -1,0 +1,502 @@
+{
+  "stats": {
+    "characters_count": 9,
+    "cards_count": 624,
+    "relics_count": 306,
+    "enchantments_count": 24,
+    "afflictions_count": 10,
+    "ancients_count": 11,
+    "potions_count": 66
+  },
+  "characters": {
+    "DEFECT": {
+      "aromaPrinciple": "[sine][blue]1100 0011 1100 0011……[/blue][/sine]",
+      "banter": "……",
+      "bestiaryQuote": "<分析需要首先制服这个对象>",
+      "cardsModifierDescription": "故障机器人的卡牌现在会出现在奖励和商店中。",
+      "cardsModifierTitle": "故障机器人卡牌",
+      "description": "一具不停改造自己来生存下去的自动机械。\n在不得不战斗时，它会使用充能球科技来作战。",
+      "eventDeathPrevention": "为了我的朋友们，我必须活下去！",
+      "goldMonologue": "[sine]这些金币可以用来交换零件……[/sine]",
+      "possessiveAdjective": "它的",
+      "pronounObject": "它",
+      "pronounPossessive": "它的",
+      "pronounSubject": "它",
+      "title": "故障机器人",
+      "titleObject": "故障机器人",
+      "unlockText": "用[pink]{Prerequisite}[/pink]进行一局游戏来解锁这个角色。"
+    },
+    "DEPRECATED_CHARACTER": {
+      "possessiveAdjective": "它的",
+      "pronounObject": "它",
+      "pronounPossessive": "它的",
+      "pronounSubject": "它",
+      "title": "已弃用角色",
+      "titleObject": "已弃用角色"
+    },
+    "DEPRIVED": {
+      "possessiveAdjective": "它的",
+      "pronounObject": "它",
+      "pronounPossessive": "它的",
+      "pronounSubject": "它",
+      "title": "被剥夺者",
+      "titleObject": "被剥夺者"
+    },
+    "IRONCLAD": {
+      "aromaPrinciple": "[sine][red]疼痛算得了什么，我的敌人们必须死。[/red][/sine]",
+      "banter": "……",
+      "bestiaryQuote": "我还没杀过这个东西。",
+      "cardsModifierDescription": "铁甲战士的卡牌现在会出现在奖励和商店中。",
+      "cardsModifierTitle": "铁甲战士卡牌",
+      "description": "铁甲军团最后的士兵。\n并非出自自身的意愿，用刀剑与烈焰击溃敌人们。",
+      "eventDeathPrevention": "我的队伍还需要我。",
+      "goldMonologue": "[sine]这些财富可以充实部落的军库……[/sine]",
+      "possessiveAdjective": "他的",
+      "pronounObject": "他",
+      "pronounPossessive": "他的",
+      "pronounSubject": "他",
+      "title": "铁甲战士",
+      "titleObject": "铁甲战士"
+    },
+    "LOCKED": {
+      "title": "？？？"
+    },
+    "NECROBINDER": {
+      "aromaPrinciple": "[sine][purple]他们的仇一定要报……我不会动摇……[/purple][/sine]",
+      "banter": "……",
+      "bestiaryQuote": "我还没有杀死过这个生物。",
+      "cardsModifierDescription": "亡灵契约师的卡牌现在会出现在奖励和商店中。",
+      "cardsModifierTitle": "亡灵契约师卡牌",
+      "description": "一位出生在尖塔的巫妖，正在寻求复仇。\n战斗中会召唤她可靠的左手[gold]奥斯提[/gold]。",
+      "eventDeathPrevention": "我的朋友们可不能没有我。",
+      "goldMonologue": "[sine]或许我终于可以买几双鞋子了……[/sine]",
+      "possessiveAdjective": "她的",
+      "pronounObject": "她",
+      "pronounPossessive": "她的",
+      "pronounSubject": "她",
+      "title": "亡灵契约师",
+      "titleObject": "亡灵契约师",
+      "unlockText": "用[orange]{Prerequisite}[/orange]进行一局游戏来解锁这个角色。"
+    },
+    "RANDOM_CHARACTER": {
+      "description": "以随机角色开始爬塔之旅。",
+      "title": "随机",
+      "unlockText": "解锁所有其他角色，就可以以随机角色游玩。"
+    },
+    "REGENT": {
+      "aromaPrinciple": "[sine][orange]我是下一任群星之王……[/orange][/sine]",
+      "banter": "……",
+      "bestiaryQuote": "我还没有击败过这个敌人！",
+      "cardsModifierDescription": "储君的卡牌现在会出现在奖励和商店中。",
+      "cardsModifierTitle": "储君卡牌",
+      "description": "群星王座的继承人。\n拥有宇宙的力量，但总是让他的仆从们去做各种事情。",
+      "eventDeathPrevention": "为了我的队伍，我必须活下去！！",
+      "goldMonologue": "[sine]我可以用这来征召一支不是白痴的军队……[/sine]",
+      "possessiveAdjective": "殿下的",
+      "pronounObject": "殿下",
+      "pronounPossessive": "殿下的",
+      "pronounSubject": "殿下",
+      "title": "储君",
+      "titleObject": "储君",
+      "unlockText": "用[green]{Prerequisite}[/green]进行一局游戏来解锁这个角色。"
+    },
+    "SILENT": {
+      "aromaPrinciple": "[sine][green]……狩猎……证明……属于……[/green][/sine]",
+      "banter": "……",
+      "bestiaryQuote": "这个生物，尚未被狩猎……",
+      "cardsModifierDescription": "静默猎手的卡牌现在会出现在奖励和商店中。",
+      "cardsModifierTitle": "静默猎手卡牌",
+      "description": "一位来自尖塔之外的女猎手。\n随时准备刀刺与毒杀任何拦路者。",
+      "eventDeathPrevention": "活下去才能继续狩猎……",
+      "goldMonologue": "[sine]我的姐妹们一定会为这些财富感到骄傲……[/sine]",
+      "possessiveAdjective": "她的",
+      "pronounObject": "她",
+      "pronounPossessive": "她的",
+      "pronounSubject": "她",
+      "title": "静默猎手",
+      "titleObject": "静默猎手",
+      "unlockText": "进行一局游戏来解锁这个角色。"
+    }
+  },
+  "enchantments": {
+    "ADROIT": {
+      "description": "获得[blue]{Block:diff()}[/blue]点[gold]格挡[/gold]。",
+      "extraCardText": "获得{Block:diff()}点[gold]格挡[/gold]。",
+      "title": "伶俐"
+    },
+    "CLONE": {
+      "description": "这张牌能在[gold]休息处[/gold]被复制。",
+      "title": "克隆"
+    },
+    "CORRUPTED": {
+      "description": "造成的伤害增加[blue]50%[/blue]，但会失去[blue]2[/blue]生命。",
+      "dialogue": "力量……",
+      "extraCardText": "失去2点生命。",
+      "title": "腐化"
+    },
+    "DEPRECATED_ENCHANTMENT": {
+      "description": "这个附魔已经从游戏中被移除。",
+      "title": "弃用"
+    },
+    "GLAM": {
+      "description": "这张牌每场战斗能够[gold]重放[/gold]一次。",
+      "title": "华彩"
+    },
+    "GOOPY": {
+      "description": "这张牌获得[gold]消耗[/gold]。当被打出时，这张牌的[gold]格挡[/gold]值永久增加[blue]1[/blue]点。",
+      "extraCardText": "这张牌的[gold]格挡[/gold]值永久增加[blue]1[/blue]点。",
+      "title": "黏糊"
+    },
+    "IMBUED": {
+      "description": "这张牌在每场战斗开始时自动打出。",
+      "extraCardText": "注能。",
+      "title": "注能"
+    },
+    "INKY": {
+      "description": "这张牌额外造成[blue]{Damage}[/blue]点伤害，并造成[blue]{WeakPower}[/blue]层[gold]虚弱[/gold]。",
+      "extraCardText": "{TargetType:choose(AllEnemies):对所有敌人|}造成[blue]{WeakPower}[/blue]层[gold]虚弱[/gold]。",
+      "title": "墨影"
+    },
+    "INSTINCT": {
+      "description": "这张牌的攻击伤害翻倍。",
+      "title": "本能"
+    },
+    "MOCK_FREE_ENCHANTMENT": {
+      "title": "临时免费附魔"
+    },
+    "MOMENTUM": {
+      "description": "在本场战斗中，每次打出就增加这张牌的攻击伤害[blue]{Amount}[/blue]点。",
+      "extraCardText": "在本场战斗中这张牌的伤害增加{Amount}点。",
+      "title": "动量"
+    },
+    "NIMBLE": {
+      "description": "这张牌获得的[gold]格挡[/gold]值增加[blue]{Amount}[/blue]点。",
+      "title": "灵巧"
+    },
+    "PERFECT_FIT": {
+      "description": "每当这张牌要被洗入[gold]抽牌堆[/gold]时，将其放在抽牌堆顶。",
+      "extraCardText": "完美契合。",
+      "title": "完美契合"
+    },
+    "ROYALLY_APPROVED": {
+      "description": "这张牌拥有[gold]固有[/gold]和[gold]保留[/gold]。",
+      "title": "王室认证"
+    },
+    "SHARP": {
+      "description": "这张牌上的伤害值增加[blue]{Amount}[/blue]点。",
+      "title": "锋利"
+    },
+    "SLITHER": {
+      "description": "当你抽到这张牌时，使其费用在[blue]0[/blue]到[blue]3[/blue]之间随机变化。",
+      "title": "蛇行"
+    },
+    "SLUMBERING_ESSENCE": {
+      "description": "回合结束时，如果这张牌在你的手牌中，则将其费用降低[blue]1[/blue]点，直到其被打出。",
+      "title": "沉眠精华"
+    },
+    "SOULS_POWER": {
+      "description": "这张牌失去[gold]消耗[/gold]。",
+      "title": "灵魂之力"
+    },
+    "SOWN": {
+      "description": "你在每场战斗中第一次打出这张牌时，获得{Amount:energyIcons()}。",
+      "extraCardText": "获得{Amount:energyIcons()}。",
+      "title": "播种"
+    },
+    "SPIRAL": {
+      "description": "这张牌获得[gold]重放[/gold][blue]1[/blue]。",
+      "title": "涡旋"
+    },
+    "STEADY": {
+      "description": "这张牌获得[gold]保留[/gold]。",
+      "title": "稳定"
+    },
+    "SWIFT": {
+      "description": "你第一次打出这张牌时，抽[blue]{Amount}[/blue]张牌。",
+      "extraCardText": "第一次打出时抽{Amount}张牌。",
+      "title": "迅速"
+    },
+    "TEZCATARAS_EMBER": {
+      "description": "费用为[blue]0[/blue]，造成[blue]{Damage}[/blue] 点额外伤害，且获得[gold]永恒[/gold]。",
+      "title": "特兹卡塔拉的余烬"
+    },
+    "VIGOROUS": {
+      "description": "第一次打出这张牌时，造成[blue]{Amount}[/blue]点额外伤害。",
+      "title": "活力"
+    }
+  },
+  "afflictions": {
+    "BOUND": {
+      "description": "每回合只能打出[blue]1[/blue]张[gold]魂缚[/gold]卡牌。卡牌会在回合结束时失去[gold]魂缚[/gold]。",
+      "extraCardText": "魂缚",
+      "title": "魂缚"
+    },
+    "ENTANGLED": {
+      "description": "{Amount:energyIcons()}费用增加1。",
+      "extraCardText": "缠身",
+      "title": "缠身"
+    },
+    "GALVANIZED": {
+      "description": "打出这张牌时受到[blue]{Amount}[/blue]点伤害。",
+      "extraCardText": "受到{Amount}点伤害。",
+      "title": "流电"
+    },
+    "HEXED": {
+      "description": "这张牌获得[gold]虚无[/gold]。",
+      "title": "邪咒"
+    },
+    "MOCK_NO_UNPLAYABLE_AFFLICTION": {
+      "title": "临时不可打出苦痛"
+    },
+    "MOCK_SELF_DAMAGE_AFFLICTION": {
+      "title": "临时自伤苦痛"
+    },
+    "MOCK_USELESS_AFFLICTION": {
+      "title": "临时无用苦痛"
+    },
+    "RINGING": {
+      "description": "你在本回合只能打出[blue]1[/blue]张牌。",
+      "extraCardText": "昏眩。",
+      "title": "昏眩"
+    },
+    "SMOG": {
+      "description": "你在本回合无法再打出更多[gold]技能[/gold]牌。回合结束时消除。",
+      "title": "烟雾"
+    },
+    "TAINTED": {
+      "description": "打出时获得[blue]{Amount}[/blue]层[gold]污染[/gold]。",
+      "extraCardText": "获得{Amount}层污染。",
+      "title": "污染"
+    }
+  },
+  "relics_sample": {
+    "AKABEKO": {
+      "description": "在每场战斗开始时，获得[blue]{VigorPower}[/blue]点[gold]活力[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "赤牛"
+    },
+    "ALCHEMICAL_COFFER": {
+      "description": "拾起时，获得[blue]{PotionSlots}[/blue]个放有随机[gold]药水[/gold]的药水栏位。",
+      "eventDescription": "获得[blue]{PotionSlots}[/blue]个放有随机[gold]药水[/gold]的药水栏位。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "炼金箱"
+    },
+    "AMETHYST_AUBERGINE": {
+      "description": "敌人额外掉落[blue]{Gold}[/blue][gold]金币[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "紫水晶茄子"
+    },
+    "ANCHOR": {
+      "description": "每场战斗开始时获得[blue]{Block}[/blue]点[gold]格挡[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "锚"
+    },
+    "ARCANE_SCROLL": {
+      "description": "拾起时，将一张随机[gold]稀有牌[/gold]加入你的[gold]牌组[/gold]。",
+      "eventDescription": "获得一张随机[gold]稀有牌[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "奥术卷轴"
+    },
+    "ARCHAIC_TOOTH": {
+      "description": "拾起时，将{StarterCard.StringValue:cond:[gold]{StarterCard}[/gold][gold]变化[/gold]为[gold]{AncientCard}[/gold]|一张初始卡牌[gold]变化[/gold]为先古版本}。",
+      "eventDescription": "将{StarterCard.StringValue:cond:[gold]{StarterCard}[/gold][gold]变化[/gold]为[gold]{AncientCard}[/gold]|一张初始卡牌[gold]变化[/gold]为先古版本}。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "古老牙齿"
+    },
+    "ART_OF_WAR": {
+      "description": "如果你在本回合中没有打出过攻击牌，则在下一回合额外获得1点{Energy:energyIcons()}。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "孙子兵法"
+    },
+    "ASTROLABE": {
+      "description": "拾起时，选择[blue]{Cards}[/blue]张牌进行[gold]变化[/gold]，然后将这些牌[gold]升级[/gold]。",
+      "eventDescription": "选择[blue]{Cards}[/blue]张牌进行[gold]变化[/gold]，然后将这些牌[gold]升级[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "星盘"
+    },
+    "BAG_OF_MARBLES": {
+      "description": "在每场战斗开始时，给予所有敌人[blue]{VulnerablePower}[/blue]层[gold]易伤[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "弹珠袋"
+    },
+    "BAG_OF_PREPARATION": {
+      "description": "在每场战斗开始时，额外抽[blue]{Cards}[/blue]张牌。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "准备背包"
+    },
+    "BEATING_REMNANT": {
+      "description": "你在一回合内失去的生命值不会超过[blue]20[/blue]点。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "律动残余"
+    },
+    "BEAUTIFUL_BRACELET": {
+      "description": "拾起时，从你的[gold]牌组[/gold]中选择[blue]{Cards}[/blue]张牌，[gold]附魔[/gold]：[purple]迅捷[/purple][blue]2[/blue]。",
+      "eventDescription": "从你的[gold]牌组[/gold]中选择[blue]{Cards}[/blue]张牌，[gold]附魔[/gold]：[purple]迅捷{Swift}[/purple]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "华美手镯"
+    },
+    "BELLOWS": {
+      "description": "你在每场战斗开始时的[gold]手牌[/gold]，将被[gold]升级[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "风箱"
+    },
+    "BELT_BUCKLE": {
+      "description": "当你没有[gold]药水[/gold]时，你额外拥有[blue]{DexterityPower}[/blue]点[gold]敏捷[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "腰带扣"
+    },
+    "BIG_HAT": {
+      "description": "在每场战斗开始时，将[blue]{Cards}[/blue]张随机[gold]虚无[/gold]牌加入你的[gold]手牌[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "大帽子"
+    },
+    "BIG_MUSHROOM": {
+      "description": "拾起时，将你的最大生命值提升[blue]{MaxHp}[/blue]。在每场战斗开始时，少抽[blue]{Cards}[/blue]张牌。",
+      "eventDescription": "在每场战斗开始时，[red]少抽[/red][blue]2[/blue]张牌。最大生命值提升[green]{MaxHp}[/green]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "大蘑菇"
+    },
+    "BIIIG_HUG": {
+      "description": "拾起时，从你的[gold]牌组[/gold]中移除[blue]{Cards}[/blue]张牌。每当你的[gold]抽牌堆[/gold]打乱洗牌时，将一张[gold]煤灰[/gold]加入你的[gold]抽牌堆[/gold]。",
+      "eventDescription": "从你的[gold]牌组[/gold]中移除[blue]{Cards}[/blue]张牌。每当你的[gold]抽牌堆[/gold]打乱洗牌时，将一张[gold]煤灰[/gold]加入你的[gold]抽牌堆[/gold]。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "大～抱抱"
+    },
+    "BING_BONG": {
+      "description": "每当你往[gold]牌组[/gold]中增添卡牌时，都将额外添加一张相同的牌。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "宾邦"
+    },
+    "BLACK_BLOOD": {
+      "description": "在战斗结束时，回复[green]{Heal}[/green]点生命。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "黑暗之血"
+    },
+    "BLACK_STAR": {
+      "description": "[gold]精英[/gold]敌人在被打败时多掉落一件遗物。",
+      "flavor": "[red]这个遗物的细节将在未来揭晓……[/red]",
+      "title": "黑星"
+    }
+  },
+  "cards_sample": {
+    "ABRASIVE": {
+      "description": "获得{DexterityPower:diff()}点[gold]敏捷[/gold]。\n获得{ThornsPower:diff()}点[gold]荆棘[/gold]。",
+      "title": "磨蚀"
+    },
+    "ABUNDANCE": {
+      "description": "从3张[gold]升级[/gold]过的[gold]能力[/gold]牌中选择1张加入你的[gold]手牌[/gold]。这张牌在本回合可以免费打出。",
+      "title": "富足"
+    },
+    "ACCELERANT": {
+      "description": "[gold]中毒[/gold]会额外触发{Accelerant:diff()}次。",
+      "title": "触媒"
+    },
+    "ACCURACY": {
+      "description": "[gold]小刀[/gold]额外造成{AccuracyPower:diff()}点伤害。",
+      "title": "精准"
+    },
+    "ACROBATICS": {
+      "description": "抽{Cards:diff()}张牌。\n丢弃1张牌。",
+      "title": "杂技"
+    },
+    "ADAPTIVE_STRIKE": {
+      "description": "造成{Damage:diff()}点伤害。\n将这张牌的一张0{energyPrefix:energyIcons(1)}复制品添加到你的[gold]弃牌堆[/gold]。",
+      "title": "适应打击"
+    },
+    "ADRENALINE": {
+      "description": "获得{Energy:energyIcons()}。\n抽2张牌。",
+      "title": "肾上腺素"
+    },
+    "AFTERIMAGE": {
+      "description": "你每打出一张牌，都获得{AfterimagePower:diff()}点[gold]格挡[/gold]。",
+      "title": "余像"
+    },
+    "AFTERLIFE": {
+      "description": "[gold]召唤[/gold]{Summon:diff()}。",
+      "title": "来生"
+    },
+    "AGGRESSION": {
+      "description": "在你的回合开始时，将你[gold]弃牌堆[/gold]的一张随机攻击牌放入你的[gold]手牌[/gold]并将其[gold]升级[/gold]。",
+      "title": "好勇斗狠"
+    },
+    "ALCHEMIZE": {
+      "description": "获得一瓶随机药水。",
+      "title": "炼制药水"
+    },
+    "ALIGNMENT": {
+      "description": "获得{Energy:energyIcons()}。",
+      "title": "星位序列"
+    },
+    "ALL_FOR_ONE": {
+      "description": "造成{Damage:diff()}点伤害。\n将你[gold]弃牌堆[/gold]中的所有0{energyPrefix:energyIcons(1)}牌放入你的[gold]手牌[/gold]。",
+      "title": "万物一心"
+    },
+    "ANGER": {
+      "description": "造成{Damage:diff()}点伤害。\n将一张此牌的复制品加入你的[gold]弃牌堆[/gold]。",
+      "title": "愤怒"
+    },
+    "ANOINTED": {
+      "description": "将你[gold]抽牌堆[/gold]中的所有[gold]稀有[/gold]牌放入你的[gold]手牌[/gold]。",
+      "title": "天选"
+    },
+    "ANTICIPATE": {
+      "description": "在本回合获得{DexterityPower:diff()}点[gold]敏捷[/gold]。",
+      "title": "预判"
+    },
+    "APOTHEOSIS": {
+      "description": "[gold]升级[/gold]你的全部卡牌。",
+      "title": "神化"
+    },
+    "APPARITION": {
+      "description": "获得{IntangiblePower:diff()}层[gold]无实体[/gold]。",
+      "title": "灵体"
+    },
+    "ARMAMENTS": {
+      "description": "获得{Block:diff()}点[gold]格挡[/gold]。\n[gold]升级[/gold]你[gold]手牌[/gold]中的{IfUpgraded:show:所有牌|一张牌}。",
+      "title": "武装"
+    },
+    "ARSENAL": {
+      "description": "每当你生成一张牌，就获得{ArsenalPower:diff()}点[gold]力量[/gold]。",
+      "title": "武器库"
+    },
+    "ASCENDERS_BANE": {
+      "title": "进阶之灾"
+    },
+    "ASHEN_STRIKE": {
+      "description": "造成{CalculatedDamage:diff()}点伤害。\n你的[gold]消耗牌堆[/gold]中每有一张牌，伤害增加{ExtraDamage:diff()}。",
+      "title": "灰烬打击"
+    },
+    "ASSASSINATE": {
+      "description": "造成{Damage:diff()}点伤害。\n给予{VulnerablePower:diff()}层[gold]易伤[/gold]。",
+      "title": "刺杀"
+    },
+    "ASTRAL_PULSE": {
+      "description": "对所有敌人造成{Damage:diff()}点伤害两次。",
+      "title": "星界脉冲"
+    },
+    "AUTOMATION": {
+      "description": "你每抽10张牌，获得{Energy:energyIcons()}。",
+      "title": "自动化"
+    },
+    "BACKFLIP": {
+      "description": "获得{Block:diff()}点[gold]格挡[/gold]。\n抽2张牌。",
+      "title": "后空翻"
+    },
+    "BACKSTAB": {
+      "description": "造成{Damage:diff()}点伤害。",
+      "title": "背刺"
+    },
+    "BAD_LUCK": {
+      "description": "在你的回合结束时，如果这张牌在你的手牌中，你失去{HpLoss:diff()}点生命。",
+      "title": "霉运"
+    },
+    "BALL_LIGHTNING": {
+      "description": "造成{Damage:diff()}点伤害。\n[gold]生成[/gold]1个[gold]闪电[/gold]充能球。",
+      "title": "球状闪电"
+    },
+    "BANSHEES_CRY": {
+      "description": "对所有敌人造成{Damage:diff()}点伤害。\n本场战斗中每打出过一张[gold]虚无[/gold]牌，此牌的耗能就减少{Energy:energyIcons()}。",
+      "title": "女妖之嚎"
+    }
+  }
+}

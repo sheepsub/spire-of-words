@@ -1,7 +1,30 @@
 export type CardType = 'attack' | 'skill' | 'power';
 export type CardRarity = 'starter' | 'common' | 'uncommon' | 'rare';
 export type VocabDifficulty = 'all' | 'cet46' | 'ielts' | 'toefl' | 'gre';
-export type VocabArchetype = 'root' | 'poison' | 'shield' | 'combo' | 'wealth' | 'fury' | 'general';
+export type VocabArchetype = 'root' | 'poison' | 'shield' | 'combo' | 'wealth' | 'fury' | 'general' | 'necro' | 'regent';
+
+// STS2 (杀戮尖塔 2) 附魔与苦痛类型
+export type EnchantmentType =
+  | 'sharp' // 锋利: +3 伤害
+  | 'adroit' // 伶俐: +3 护甲
+  | 'momentum' // 动量: 战斗中每次打出增加伤害
+  | 'slither' // 蛇行: 费用在 0-3 随机变化
+  | 'royally_approved' // 王室认证: 固有 + 保留
+  | 'perfect_fit' // 完美契合: 洗牌总在抽牌堆顶
+  | 'slumbering' // 沉眠精华: 回合结束费用-1
+  | 'glam' // 华彩: 每场战斗重放 1 次
+  | 'imbued' // 注能: 战斗开始自动打出
+  | 'corrupted' // 腐化: 伤害+50%，失去 2 生命
+  | 'sown' // 播种: 首次打出获得 1 能量
+  | 'swift' // 迅速: 首次打出抽 1 张牌
+  | 'instinct'; // 本能: 攻击伤害翻倍
+
+export type AfflictionType =
+  | 'bound' // 魂缚: 每回合只能打出 1 张魂缚牌
+  | 'entangled' // 缠身: 费用+1
+  | 'galvanized' // 流电: 打出受 3 伤害
+  | 'smog' // 烟雾: 本回合无法再打出技能牌
+  | 'hexed'; // 邪咒: 获得虚无
 
 export interface DictionaryEntry {
   id: string;
@@ -69,6 +92,16 @@ export interface Card {
   reverberateOnCritical?: boolean; // 咏唱暴击追加 1 段全额打击
   cardDrawOnAttack?: boolean; // 宝石剑：每打出 1 张攻击牌抽 1 张牌
   illustrationKey?: string; // 专属立绘标识
+  sts2Art?: string; // STS2 官方卡牌插画文件名
+
+  // STS2 (杀戮尖塔 2) 附魔与苦痛系统
+  enchantment?: EnchantmentType;
+  enchantmentTitle?: string;
+  enchantmentDesc?: string;
+  affliction?: AfflictionType;
+  afflictionTitle?: string;
+  afflictionDesc?: string;
+  replayedOnce?: boolean; // 华彩/涡旋重放标记
 
   // Upgrades
   isUpgraded: boolean;

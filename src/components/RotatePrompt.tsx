@@ -159,7 +159,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
           marginBottom: 24,
         }}
       >
-        《尖塔单词 · 语言狂潮》针对<strong>横屏卡牌构筑</strong>精心调优。请将手机横置，享受完整战斗视野与全息英灵立绘！
+        《Spire of Words》针对<strong>横屏卡牌构筑</strong>精心调优。请将手机横置，享受完整战斗视野与全息英灵立绘！
       </p>
 
       {/* Dual Choice Buttons */}

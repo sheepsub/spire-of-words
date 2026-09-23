@@ -54,6 +54,33 @@ export const RELIC_WEAVER_FORK: Relic = {
   rarity: 'starter',
 };
 
+// 7. Necrobinder (STS2 亡灵契约师): Hand of Osti
+export const RELIC_NECRO_HAND: Relic = {
+  id: 'necro_hand',
+  name: '奥斯提之灵 (Hand of Osti)',
+  desc: 'STS2 亡灵契约师契约。战斗开始时召唤奥斯提并使 1 张手牌获得【注能】附魔；消耗卡牌时汲取 2 点生命。',
+  icon: '💀',
+  rarity: 'starter',
+};
+
+// 8. Regent (STS2 储君): Crown of Stars
+export const RELIC_REGENT_CROWN: Relic = {
+  id: 'regent_crown',
+  name: '群星之冕 (Crown of Stars)',
+  desc: 'STS2 储君星辰宝器。每回合打出的第一张牌自动获得【华彩】重放；每次暴击造成 2 倍伤害。',
+  icon: '👑',
+  rarity: 'starter',
+};
+
+// 9. STS2 先祖附魔铁砧
+export const RELIC_ANCIENT_ANVIL: Relic = {
+  id: 'ancient_anvil',
+  name: '先祖附魔砧 (Anvil of the Ancients)',
+  desc: '古代尖塔遗落的锻造砧。可以在休息处为 1 张卡牌进行永久附魔。',
+  icon: '⚒️',
+  rarity: 'rare',
+};
+
 export const ALL_RELICS: Relic[] = [
   RELIC_SCHOLAR_SCROLL,
   RELIC_GILGAMESH_KEY,
@@ -61,6 +88,9 @@ export const ALL_RELICS: Relic[] = [
   RELIC_JALTER_BANNER,
   RELIC_ALCHEMIST_FLASK,
   RELIC_WEAVER_FORK,
+  RELIC_NECRO_HAND,
+  RELIC_REGENT_CROWN,
+  RELIC_ANCIENT_ANVIL,
   {
     id: 'burning_blood',
     name: '燃烧之血 (Burning Blood)',
