@@ -16,7 +16,7 @@ import {
   Volume2,
   AlertTriangle
 } from 'lucide-react';
-import heroPixelImg from '../assets/pixel/hero_scholar.jpg';
+import artoriaPixelSprite from '../assets/pixel/artoria_pixel.png';
 
 interface BattleViewProps {
   player: Player;
@@ -167,17 +167,46 @@ export const BattleView: React.FC<BattleViewProps> = ({
         </div>
       ))}
 
-      {/* TOP/MIDDLE: Battle Arena (Player & Enemy) */}
-      <div style={{
+      {/* TOP/MIDDLE: Battle Arena (Player & Enemy) - Camera Zoomed Out Perspective */}
+      <div className="battle-arena-wide" style={{
         flex: 1,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-around',
-        padding: '4px max(24px, env(safe-area-inset-right)) 4px max(24px, env(safe-area-inset-left))',
+        justifyContent: 'space-between',
+        padding: '8px max(40px, env(safe-area-inset-right)) 10px max(40px, env(safe-area-inset-left))',
         position: 'relative',
         zIndex: 10,
-        minHeight: 'clamp(120px, 30vh, 200px)',
+        minHeight: 'clamp(210px, 48vh, 380px)',
       }}>
+        {/* Sleek Cinematic Top Turn Indicator */}
+        <div style={{
+          position: 'absolute',
+          top: 8,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '4px 16px',
+          backgroundColor: isPlayerTurn ? 'rgba(5, 46, 22, 0.88)' : 'rgba(69, 10, 10, 0.88)',
+          border: `1.5px solid ${isPlayerTurn ? 'rgba(74, 222, 128, 0.6)' : 'rgba(248, 113, 113, 0.6)'}`,
+          borderRadius: 20,
+          boxShadow: '0 4px 16px rgba(0,0,0,0.85)',
+          zIndex: 15,
+        }}>
+          <Swords size={13} color={isPlayerTurn ? '#4ade80' : '#f87171'} />
+          <span style={{
+            fontFamily: 'var(--font-pixel)',
+            fontSize: 10,
+            fontWeight: 700,
+            color: isPlayerTurn ? '#86efac' : '#fca5a5',
+            letterSpacing: '1px',
+            textShadow: '0 1px 2px #000',
+          }}>
+            {isPlayerTurn ? '⚔️ 你的回合 · 选择魔导卡牌' : '⏳ 敌方回合 · 正在行动'}
+          </span>
+        </div>
+
         {/* PLAYER DISPLAY */}
         <div style={{
           display: 'flex',
@@ -193,19 +222,19 @@ export const BattleView: React.FC<BattleViewProps> = ({
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            minHeight: 'clamp(110px, 24vh, 180px)',
-            width: 'clamp(120px, 20vw, 180px)',
+            minHeight: 'clamp(115px, 24vh, 175px)',
+            width: 'clamp(120px, 18vw, 175px)',
           }}>
             <img 
-              src={player.characterAvatar || heroPixelImg} 
-              alt={player.characterName || '英灵战士'} 
+              src={player.characterAvatar || artoriaPixelSprite} 
+              alt={player.characterName || '阿尔托莉雅'} 
               className="monster-idle"
               style={{
-                height: 'clamp(110px, 24vh, 180px)',
+                height: 'clamp(115px, 24vh, 175px)',
                 maxWidth: '100%',
                 objectFit: 'contain',
-                filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.95)) drop-shadow(0 0 10px rgba(59, 130, 246, 0.4))',
-                imageRendering: 'auto',
+                filter: 'drop-shadow(0 10px 18px rgba(0,0,0,0.92)) drop-shadow(0 0 10px rgba(59, 130, 246, 0.5))',
+                imageRendering: 'pixelated',
                 zIndex: 5,
               }}
             />
@@ -216,8 +245,8 @@ export const BattleView: React.FC<BattleViewProps> = ({
               width: 140,
               height: 24,
               borderRadius: '50%',
-              background: 'radial-gradient(ellipse at center, rgba(59, 130, 246, 0.55) 0%, rgba(37, 99, 235, 0.2) 60%, transparent 80%)',
-              boxShadow: '0 0 16px rgba(59, 130, 246, 0.6)',
+              background: 'radial-gradient(ellipse at center, rgba(59, 130, 246, 0.6) 0%, rgba(37, 99, 235, 0.25) 60%, transparent 80%)',
+              boxShadow: '0 0 18px rgba(59, 130, 246, 0.7)',
               zIndex: 2,
               pointerEvents: 'none',
             }} />
@@ -266,7 +295,7 @@ export const BattleView: React.FC<BattleViewProps> = ({
               color: '#f8fafc',
               textShadow: '0 2px 4px #000',
             }}>
-              {player.characterName || '御主英灵'}
+              {player.characterName || '阿尔托莉雅 (Artoria)'}
             </div>
             
             {/* Player Segmented 16-bit HP Bar */}
@@ -317,25 +346,6 @@ export const BattleView: React.FC<BattleViewProps> = ({
                 <Skull size={12} /> 易伤 {player.statusEffects.vulnerable}
               </span>
             )}
-          </div>
-        </div>
-
-        {/* VS Pixel Arcane Clashing Insignia */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 4,
-          opacity: 0.85,
-        }}>
-          <Swords size={22} color="#fbbf24" style={{ filter: 'drop-shadow(0 0 8px rgba(234, 179, 8, 0.7))' }} />
-          <div style={{
-            fontFamily: 'var(--font-pixel)',
-            fontSize: '9px',
-            color: isPlayerTurn ? '#4ade80' : '#f87171',
-            letterSpacing: '1px',
-          }}>
-            {isPlayerTurn ? '▶ 你的回合' : '⏳ 敌方行动'}
           </div>
         </div>
 
@@ -724,97 +734,134 @@ export const BattleView: React.FC<BattleViewProps> = ({
         </div>
       )}
 
-      {/* BOTTOM CONTROLS & HAND OF CARDS */}
+      {/* BOTTOM ACTION DOCK: Authentic Slay the Spire Corner Layout */}
       <div style={{
         position: 'relative',
         width: '100%',
-        paddingBottom: 'max(4px, env(safe-area-inset-bottom))',
-        zIndex: 20,
+        minHeight: 'clamp(150px, 32vh, 195px)',
+        zIndex: 25,
+        pointerEvents: 'none',
       }}>
-        {/* Battle Controls Bar: Energy, Draw Pile, Discard Pile, End Turn */}
+        {/* LEFT DOCK: Main Energy Orb + Draw Pile Button */}
         <div style={{
+          position: 'absolute',
+          left: 'max(14px, env(safe-area-inset-left))',
+          bottom: 'max(8px, env(safe-area-inset-bottom))',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 max(20px, env(safe-area-inset-right)) 4px max(20px, env(safe-area-inset-left))',
+          gap: 6,
+          zIndex: 35,
+          pointerEvents: 'auto',
         }}>
-          {/* Left: Player Main Energy Orb & Draw Pile */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div className="main-energy-orb" title="剩余能量">
-              <span style={{
-                fontFamily: 'var(--font-pixel-num)',
-                fontWeight: 700,
-                fontSize: '18px',
-                color: '#1c1002',
-                lineHeight: 1,
-              }}>
-                {player.energy}
-              </span>
-              <span style={{ 
-                fontSize: '9px', 
-                fontWeight: 700, 
-                color: '#452204',
-                fontFamily: 'var(--font-pixel-num)'
-              }}>
-                /{player.maxEnergy}
-              </span>
-            </div>
-
-            <button
-              onClick={() => onOpenDeckList(player.drawPile, '抽牌堆 (Draw Pile)')}
-              className="spire-btn"
-              style={{ padding: '5px 10px', fontSize: '11px' }}
-              title="查看抽牌堆"
-            >
-              <Layers size={13} />
-              <span>抽牌 ({player.drawPile.length})</span>
-            </button>
+          {/* Glowing Slay the Spire Octagonal Energy Gem */}
+          <div className="main-energy-orb" title="剩余能量 (Energy)">
+            <span style={{
+              fontFamily: 'var(--font-pixel-num)',
+              fontWeight: 900,
+              fontSize: '20px',
+              color: '#1c1002',
+              lineHeight: 1,
+            }}>
+              {player.energy}
+            </span>
+            <span style={{ 
+              fontSize: '9.5px', 
+              fontWeight: 800, 
+              color: '#452204',
+              fontFamily: 'var(--font-pixel-num)'
+            }}>
+              /{player.maxEnergy}
+            </span>
           </div>
 
-          {/* Right: Discard Pile & End Turn Button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button
-              onClick={() => onOpenDeckList(player.discardPile, '弃牌堆 (Discard Pile)')}
-              className="spire-btn"
-              style={{ padding: '5px 10px', fontSize: '11px' }}
-              title="查看弃牌堆"
-            >
-              <Archive size={13} />
-              <span>弃牌 ({player.discardPile.length})</span>
-            </button>
-
-            <button
-              onClick={() => {
-                if (isPlayerTurn) {
-                  sound.playDraw();
-                  onEndTurn();
-                }
-              }}
-              disabled={!isPlayerTurn}
-              className="end-turn-btn"
-              style={{
-                padding: '10px 18px',
-                fontSize: '13px',
-              }}
-            >
-              结束回合
-            </button>
-          </div>
+          <button
+            onClick={() => onOpenDeckList(player.drawPile, '抽牌堆 (Draw Pile)')}
+            className="spire-btn"
+            style={{ 
+              padding: '4px 8px', 
+              fontSize: '10px',
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              borderColor: '#64748b',
+              borderRadius: 4,
+            }}
+            title="查看抽牌堆"
+          >
+            <Layers size={11} color="#38bdf8" />
+            <span>抽牌 ({player.drawPile.length})</span>
+          </button>
         </div>
 
-        {/* HAND CARDS FAN CONTAINER */}
+        {/* RIGHT DOCK: End Turn Banner Button + Discard Pile Button */}
         <div style={{
-          width: '100%',
+          position: 'absolute',
+          right: 'max(14px, env(safe-area-inset-right))',
+          bottom: 'max(8px, env(safe-area-inset-bottom))',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          zIndex: 35,
+          pointerEvents: 'auto',
+        }}>
+          <button
+            onClick={() => {
+              if (isPlayerTurn) {
+                sound.playDraw();
+                onEndTurn();
+              }
+            }}
+            disabled={!isPlayerTurn}
+            className="end-turn-btn"
+            style={{
+              padding: '9px 18px',
+              fontSize: '12.5px',
+              fontWeight: 800,
+              letterSpacing: '1px',
+              boxShadow: isPlayerTurn 
+                ? '0 0 16px rgba(239, 68, 68, 0.6), inset 0 1px 0 rgba(255,255,255,0.4)' 
+                : 'none',
+              filter: isPlayerTurn ? 'none' : 'grayscale(0.8) opacity(0.5)',
+              cursor: isPlayerTurn ? 'pointer' : 'not-allowed',
+            }}
+          >
+            结束回合
+          </button>
+
+          <button
+            onClick={() => onOpenDeckList(player.discardPile, '弃牌堆 (Discard Pile)')}
+            className="spire-btn"
+            style={{ 
+              padding: '4px 8px', 
+              fontSize: '10px',
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              borderColor: '#64748b',
+              borderRadius: 4,
+            }}
+            title="查看弃牌堆"
+          >
+            <Archive size={11} color="#fca5a5" />
+            <span>弃牌 ({player.discardPile.length})</span>
+          </button>
+        </div>
+
+        {/* CENTER: HAND CARDS FAN CONTAINER */}
+        <div style={{
+          position: 'absolute',
+          left: 'max(90px, env(safe-area-inset-left) + 80px)',
+          right: 'max(110px, env(safe-area-inset-right) + 100px)',
+          bottom: 0,
+          top: 0,
           overflowX: 'auto',
           overflowY: 'visible',
           display: 'flex',
-          justifyContent: player.hand.length <= 4 ? 'center' : 'flex-start',
+          justifyContent: 'center',
           alignItems: 'flex-end',
-          padding: '2px max(24px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left))',
-          gap: 8,
-          minHeight: 'clamp(170px, 36vh, 260px)',
+          paddingBottom: 'max(6px, env(safe-area-inset-bottom))',
+          gap: player.hand.length > 5 ? 2 : 8,
+          pointerEvents: 'auto',
         }}>
-          {player.hand.map((card) => {
+          {player.hand.map((card, idx) => {
             const cost = card.isUpgraded && card.upgradedCost !== undefined ? card.upgradedCost : card.cost;
             const canAfford = player.energy >= cost;
 
@@ -823,7 +870,17 @@ export const BattleView: React.FC<BattleViewProps> = ({
                 key={card.id}
                 style={{
                   flexShrink: 0,
-                  transition: 'transform 0.2s ease',
+                  transition: 'transform 0.18s cubic-bezier(0.2, 0.9, 0.3, 1), z-index 0.1s ease',
+                  marginLeft: player.hand.length > 6 && idx > 0 ? '-16px' : '0px',
+                  zIndex: idx + 1,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.zIndex = '50';
+                  e.currentTarget.style.transform = 'translateY(-20px) scale(1.08)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.zIndex = `${idx + 1}`;
+                  e.currentTarget.style.transform = 'none';
                 }}
               >
                 <CardView
@@ -832,6 +889,7 @@ export const BattleView: React.FC<BattleViewProps> = ({
                   disabled={!isPlayerTurn || !canAfford}
                   selected={selectedCard?.id === card.id}
                   showMeaning={true}
+                  compact={player.hand.length > 5}
                 />
               </div>
             );

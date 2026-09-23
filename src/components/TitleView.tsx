@@ -111,7 +111,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
 
   return (
     <div 
-      className="spire-pixel-bg title-view-container"
+      className="title-warm-pixel-bg title-view-container"
       style={{
         width: '100vw',
         height: '100vh',
@@ -126,8 +126,8 @@ export const TitleView: React.FC<TitleViewProps> = ({
         boxSizing: 'border-box',
       }}
     >
-      {/* Dynamic Ambient Magical Particle Atmosphere */}
-      <AtmosphericParticles color={currentChar.archetypeColor} density={isCompact ? 30 : 45} />
+      {/* Dynamic Ambient Warm Ember Particle Atmosphere */}
+      <AtmosphericParticles color="#f59e0b" density={isCompact ? 28 : 42} />
 
       {/* HORIZONTAL 3-COLUMN LAYOUT IN LANDSCAPE */}
       <div 

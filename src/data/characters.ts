@@ -11,8 +11,8 @@ import {
   RELIC_REGENT_CROWN,
 } from './relics';
 
-// Official Fate/Grand Order High-Definition Servant Artwork
-import charSaberImg from '../assets/fate/artoria.png';
+// Official Fate & Custom High-Definition Pixel Artwork
+import charSaberImg from '../assets/pixel/artoria_pixel.png';
 import charSaberCard from '../assets/fate/artoria_card.png';
 import charGilgameshImg from '../assets/fate/gilgamesh.png';
 import charGilgameshCard from '../assets/fate/gilgamesh_card.png';

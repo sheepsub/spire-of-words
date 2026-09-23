@@ -155,6 +155,43 @@ html, body, #root {
   overflow: hidden;
 }
 
+/* Cozy Warm Sunset Pixel Fantasy Background for Main Menu */
+.title-warm-pixel-bg {
+  position: relative;
+  background: 
+    linear-gradient(180deg, rgba(20, 10, 5, 0.2) 0%, rgba(35, 18, 10, 0.25) 50%, rgba(18, 10, 6, 0.65) 100%),
+    url('/assets/backgrounds/title_bg_warm_pixel.jpg') center center / cover no-repeat;
+  background-attachment: fixed;
+  overflow: hidden;
+}
+
+.title-warm-pixel-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(251, 191, 36, 0.12) 0%, rgba(245, 158, 11, 0.06) 50%, rgba(15, 7, 3, 0.55) 95%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Battle Arena Zoomed Out Perspective Stage */
+.battle-arena-wide {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 60px;
+  position: relative;
+  z-index: 10;
+  min-height: clamp(220px, 48vh, 380px);
+}
+
+@media (max-width: 768px) {
+  .battle-arena-wide {
+    padding: 4px 20px;
+  }
+}
+
 /* Subtle torch flicker vignette */
 .spire-pixel-bg::before {
   content: '';
