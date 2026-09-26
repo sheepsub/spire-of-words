@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Spire of Words</string>
-    <string name="title_activity_main">Spire of Words</string>
+    <string name="app_name">Reversal Day</string>
+    <string name="title_activity_main">Reversal Day</string>
     <string name="package_name">com.spireofwords.app</string>
     <string name="custom_url_scheme">com.spireofwords.app</string>
 </resources>
