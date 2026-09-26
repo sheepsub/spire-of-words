@@ -1,10 +1,9 @@
 import React from 'react';
-import type { CardType, VocabArchetype } from '../types/game';
+import type { CardType } from '../types/game';
 
 interface CardIllustrationProps {
   illustrationKey?: string;
   type: CardType;
-  archetype?: VocabArchetype;
 }
 
 export const CardIllustration: React.FC<CardIllustrationProps> = ({

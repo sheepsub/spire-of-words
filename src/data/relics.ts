@@ -4,7 +4,7 @@ import type { Relic } from '../types/game';
 export const RELIC_SCHOLAR_SCROLL: Relic = {
   id: 'scholar_scroll',
   name: '遥远的理想乡 (Avalon)',
-  desc: 'Saber 誓约之宝具。每场战斗首次打出词根连携牌时，立即抽 1 张牌并施加 1 层易伤。',
+  desc: 'Saber 誓约之宝具。每场战斗首次打出攻击牌时，立即抽 1 张牌并施加 1 层易伤。',
   icon: '✨',
   rarity: 'starter',
 };
@@ -72,13 +72,67 @@ export const RELIC_REGENT_CROWN: Relic = {
   rarity: 'starter',
 };
 
-// 9. STS2 先祖附魔铁砧
+// 9. STS1 铁甲战士: Burning Blood
+export const RELIC_BURNING_BLOOD: Relic = {
+  id: 'burning_blood',
+  name: '燃烧之血 (Burning Blood)',
+  desc: '铁甲战士不灭恶魔之誓。战斗结束时，立即回复 6 点生命。',
+  icon: '🩸',
+  rarity: 'starter',
+};
+
+// 10. STS1 静默猎手: Ring of the Snake
+export const RELIC_RING_OF_SNAKE: Relic = {
+  id: 'ring_of_snake',
+  name: '蛇之戒指 (Ring of the Snake)',
+  desc: '静默猎手剧毒誓戒。在第一回合额外抽 2 张牌。',
+  icon: '🐍',
+  rarity: 'starter',
+};
+
+// 11. STS1 故障机器人: Cracked Core
+export const RELIC_CRACKED_CORE: Relic = {
+  id: 'cracked_core',
+  name: '破损核心 (Cracked Core)',
+  desc: '故障机器人古代能量核。在战斗开始时，生成 1 个雷电充能球（每回合造成 3 点自动穿透伤害）。',
+  icon: '⚡',
+  rarity: 'starter',
+};
+
+// 12. STS1 观者: Pure Water
+export const RELIC_PURE_WATER: Relic = {
+  id: 'pure_water',
+  name: '纯洁水珠 (Pure Water)',
+  desc: '观者清修圣水。在战斗开始时，将 1 张 0 费奇迹牌（获得 1 能量并保留）加入手牌。',
+  icon: '💧',
+  rarity: 'starter',
+};
+
+// 13. STS2 先祖附魔铁砧
 export const RELIC_ANCIENT_ANVIL: Relic = {
   id: 'ancient_anvil',
   name: '先祖附魔砧 (Anvil of the Ancients)',
   desc: '古代尖塔遗落的锻造砧。可以在休息处为 1 张卡牌进行永久附魔。',
   icon: '⚒️',
   rarity: 'rare',
+};
+
+// 14. Phoebe (鸣潮 · 隐海修会): Spectro Censer
+export const RELIC_PHOEBE_CENSER: Relic = {
+  id: 'spectro_censer',
+  name: '隐海圣物 · 光噪香炉 (Spectro Censer)',
+  desc: '菲比告解之器。战斗开始时，立即对敌方全体施加 2 层光噪（持续伤害），并使其衍射抗性降低 15%。',
+  icon: '🕯️',
+  rarity: 'starter',
+};
+
+// 15. Stewie (恶搞之家): Conquest Blueprint
+export const RELIC_STEWIE_BLUEPRINT: Relic = {
+  id: 'conquest_blueprint',
+  name: '世界征服蓝图 (Conquest Blueprint)',
+  desc: '饺子谋略之书。每回合打出的第一张牌耗能降为 0；每打出 3 张牌，随机 1 张手牌获得 1 层「谋略」。',
+  icon: '📋',
+  rarity: 'starter',
 };
 
 export const ALL_RELICS: Relic[] = [
@@ -90,24 +144,23 @@ export const ALL_RELICS: Relic[] = [
   RELIC_WEAVER_FORK,
   RELIC_NECRO_HAND,
   RELIC_REGENT_CROWN,
+  RELIC_BURNING_BLOOD,
+  RELIC_RING_OF_SNAKE,
+  RELIC_CRACKED_CORE,
+  RELIC_PURE_WATER,
+  RELIC_PHOEBE_CENSER,
+  RELIC_STEWIE_BLUEPRINT,
   RELIC_ANCIENT_ANVIL,
   {
-    id: 'burning_blood',
-    name: '燃烧之血 (Burning Blood)',
-    desc: '在战斗结束时，回复 6 点生命。',
-    icon: '🩸',
-    rarity: 'common',
-  },
-  {
-    id: 'rosetta_stone',
-    name: '罗塞塔石碑 (Rosetta Stone)',
-    desc: '战斗中直接显示词根解析；每回合开始额外抽 1 张牌。',
+    id: 'ancient_tablet',
+    name: '远古石板 (Ancient Tablet)',
+    desc: '每回合开始时额外抽 1 张牌。',
     icon: '📜',
     rarity: 'rare',
   },
   {
-    id: 'oxford_lexicon',
-    name: '先贤词典 (Ancient Lexicon)',
+    id: 'ancient_relic',
+    name: '先贤遗物 (Ancient Relic)',
     desc: '战斗开始时获得 1 点额外能量。',
     icon: '📖',
     rarity: 'rare',
@@ -128,22 +181,22 @@ export const ALL_RELICS: Relic[] = [
   },
   {
     id: 'mnemonic_ring',
-    name: '记忆指环 (Mnemonic Ring)',
-    desc: '词汇回忆暴击（Critical Recall）伤害额外提升 30%。',
+    name: '共鸣指环 (Resonance Ring)',
+    desc: '每回合首次造成伤害时，伤害提升 30%。',
     icon: '💍',
     rarity: 'common',
   },
   {
     id: 'ebbinghaus_glass',
-    name: '艾宾浩斯沙漏 (Hourglass)',
+    name: '时之沙漏 (Hourglass)',
     desc: '在你的回合开始时，对所有敌人造成 4 点伤害。',
     icon: '⏳',
     rarity: 'rare',
   },
   {
     id: 'feather_quill',
-    name: '博学羽毛笔 (Scholar\'s Quill)',
-    desc: '每次成功回忆单词，获得 2 点金币。',
+    name: '黄金羽笔 (Golden Quill)',
+    desc: '每场战斗胜利后额外获得 2 点金币。',
     icon: '🪶',
     rarity: 'shop',
   },

@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import type { Card } from '../types/game';
-import { CardView } from './CardView';
-import { VOCABULARY_CARDS } from '../data/vocabulary';
+import type { EffectCard } from '../types/autoChess';
+import { ALL_EFFECT_CARDS } from '../data/effectCardsData';
+import { PixelIcon } from './PixelIcon';
+import { EffectCardItem } from './EffectCardItem';
 import { sound } from '../utils/audio';
-import { Coins, PlusCircle } from 'lucide-react';
 
 interface RewardModalProps {
   characterId?: string;
   goldReward: number;
+  interestReward?: number;
   onClaimGold: () => void;
   goldClaimed: boolean;
-  onPickCard: (card: Card) => void;
+  onPickEffectCard?: (card: EffectCard) => void;
   cardPicked: boolean;
   onContinue: () => void;
 }
 
 export const RewardModal: React.FC<RewardModalProps> = ({
-  characterId,
   goldReward,
+  interestReward = 0,
   onClaimGold,
   goldClaimed,
-  onPickCard,
+  onPickEffectCard,
   cardPicked,
   onContinue,
 }) => {
-  // Generate 3 character-specific cards for drafting
-  const [draftCards] = useState<Card[]>(() => {
-    const charPool = characterId ? VOCABULARY_CARDS.filter(c => c.characterId === characterId) : [];
-    const pool = (charPool.length >= 3 ? charPool : VOCABULARY_CARDS).sort(() => Math.random() - 0.5);
+  // Generate 3 random Effect Cards for tactical drafting
+  const [draftEffectCards] = useState<EffectCard[]>(() => {
+    const pool = [...ALL_EFFECT_CARDS].sort(() => Math.random() - 0.5);
     return pool.slice(0, 3).map((c, i) => ({
       ...c,
       id: `draft_${c.id}_${Date.now()}_${i}`,
@@ -36,9 +36,11 @@ export const RewardModal: React.FC<RewardModalProps> = ({
 
   const [showingCardPicker, setShowingCardPicker] = useState(false);
 
-  const handleSelectCard = (c: Card) => {
+  const handleSelectEffectCard = (c: EffectCard) => {
     sound.playCritical();
-    onPickCard(c);
+    if (onPickEffectCard) {
+      onPickEffectCard(c);
+    }
     setShowingCardPicker(false);
   };
 
@@ -108,10 +110,17 @@ export const RewardModal: React.FC<RewardModalProps> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <Coins size={20} color="#fbbf24" />
-              <span style={{ fontSize: '15px', color: goldClaimed ? '#94a3b8' : '#f8fafc' }}>
-                获得 {goldReward} 金币 (Gold)
-              </span>
+              <PixelIcon name="coins" size={20} color="#fbbf24" />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '15px', color: goldClaimed ? '#94a3b8' : '#f8fafc' }}>
+                  获得 {goldReward} 金币 (Gold)
+                </span>
+                {interestReward > 0 && (
+                  <span style={{ fontSize: '10px', color: '#facc15', fontFamily: 'var(--font-pixel)', marginTop: 2 }}>
+                    📈 货币战争利息分红: +{interestReward} G (储蓄理财收益)
+                  </span>
+                )}
+              </div>
             </div>
             <span style={{ fontSize: '12px', color: goldClaimed ? '#64748b' : '#fbbf24' }}>
               {goldClaimed ? '已领取' : '点击领取'}
@@ -136,13 +145,13 @@ export const RewardModal: React.FC<RewardModalProps> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <PlusCircle size={20} color="#38bdf8" />
+              <PixelIcon name="zap" size={20} color="#38bdf8" />
               <span style={{ fontSize: '15px', color: cardPicked ? '#94a3b8' : '#f8fafc' }}>
-                挑选一张新词汇卡牌加入牌组
+                挑选一张【万象效果牌】加入战术锦囊
               </span>
             </div>
             <span style={{ fontSize: '12px', color: cardPicked ? '#64748b' : '#38bdf8' }}>
-              {cardPicked ? '已加入牌组' : '3 选 1 构筑'}
+              {cardPicked ? '已加入战术库' : '3 选 1 效果牌'}
             </span>
           </button>
         </div>
@@ -165,12 +174,13 @@ export const RewardModal: React.FC<RewardModalProps> = ({
         </button>
       </div>
 
-      {/* CARD PICKER SUB-MODAL */}
+      {/* EFFECT CARD PICKER SUB-MODAL */}
       {showingCardPicker && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          backgroundColor: 'rgba(0, 0, 0, 0.92)',
+          backdropFilter: 'blur(10px)',
           zIndex: 180,
           display: 'flex',
           flexDirection: 'column',
@@ -181,29 +191,31 @@ export const RewardModal: React.FC<RewardModalProps> = ({
           <h3 style={{
             fontFamily: 'var(--font-serif)',
             color: '#facc15',
-            fontSize: '22px',
+            fontSize: '24px',
+            fontWeight: 900,
             marginBottom: 8,
           }}>
-            选择 1 张卡牌加入你的战斗卡组
+            挑选 1 张【万象效果牌】(Tactical Effect Card)
           </h3>
-          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: 24 }}>
-            挑选与你的战术流派契合的词汇，在往后的战斗中强化运用它
+          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: 24, textAlign: 'center', maxWidth: 500 }}>
+            效果牌可在自走棋遭遇战中即时打出！释放时能量超频，威力翻倍！
           </p>
 
           <div style={{
             display: 'flex',
-            gap: 20,
+            gap: 24,
             flexWrap: 'wrap',
             justifyContent: 'center',
             marginBottom: 28,
+            maxWidth: '1000px',
           }}>
-            {draftCards.map((c) => (
+            {draftEffectCards.map((c) => (
               <div
                 key={c.id}
-                onClick={() => handleSelectCard(c)}
-                style={{ cursor: 'pointer' }}
+                onClick={() => handleSelectEffectCard(c)}
+                style={{ cursor: 'pointer', transform: 'scale(1.02)' }}
               >
-                <CardView card={c} showMeaning={true} />
+                <EffectCardItem card={c} />
               </div>
             ))}
           </div>
@@ -213,7 +225,7 @@ export const RewardModal: React.FC<RewardModalProps> = ({
             className="spire-btn"
             style={{ padding: '8px 24px', fontSize: '14px', borderColor: '#64748b' }}
           >
-            跳过 (不拿取卡牌)
+            跳过 (不拿取效果牌)
           </button>
         </div>
       )}

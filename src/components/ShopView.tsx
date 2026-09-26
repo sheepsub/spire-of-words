@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import type { Card, Player, Relic } from '../types/game';
+import { PixelIcon } from './PixelIcon';
 import { CardView } from './CardView';
 import { ALL_RELICS } from '../data/relics';
 import { VOCABULARY_CARDS } from '../data/vocabulary';
-import { Coins, Trash2, Check } from 'lucide-react';
+import {
+  ALL_COMPANION_CONFIGS,
+  createCompanionInstance,
+  type SpireCompanionConfig,
+  type SpireCompanionInstance,
+} from '../data/spireCompanions';
 import { sound } from '../utils/audio';
 
 interface ShopViewProps {
@@ -11,6 +17,8 @@ interface ShopViewProps {
   onBuyCard: (card: Card, cost: number) => void;
   onBuyRelic: (relic: Relic, cost: number) => void;
   onRemoveCard: (cardId: string, cost: number) => void;
+  onRecruitCompanion?: (companion: SpireCompanionInstance, cost: number) => void;
+  onUpgradeCompanion?: (companionInstanceId: string, cost: number) => void;
   onLeave: () => void;
 }
 
@@ -19,8 +27,20 @@ export const ShopView: React.FC<ShopViewProps> = ({
   onBuyCard,
   onBuyRelic,
   onRemoveCard,
+  onRecruitCompanion,
+  onUpgradeCompanion,
   onLeave,
 }) => {
+  // Mercenary recruitment inventory (Spire Party integration)
+  const [mercenaries, setMercenaries] = useState<Array<{ config: SpireCompanionConfig; cost: number; recruited: boolean }>>(() => {
+    const currentIds = new Set(player.companions?.map(c => c.configId) || []);
+    const available = ALL_COMPANION_CONFIGS.filter(c => !currentIds.has(c.id)).sort(() => Math.random() - 0.5);
+    return available.slice(0, 2).map(c => ({
+      config: c,
+      cost: c.cost,
+      recruited: false,
+    }));
+  });
   // Generate inventory on first mount for this character
   const [shopCards] = useState<Array<{ card: Card; price: number; bought: boolean }>>(() => {
     const charPool = player.characterId ? VOCABULARY_CARDS.filter(c => c.characterId === player.characterId) : [];
@@ -71,6 +91,28 @@ export const ShopView: React.FC<ShopViewProps> = ({
     onRemoveCard(cardId, cardRemovalCost);
   };
 
+  const handleRecruit = (idx: number) => {
+    const item = mercenaries[idx];
+    if (item.recruited || player.gold < item.cost) return;
+    if ((player.companions?.length || 0) >= (player.maxCompanions || 3)) {
+      sound.playEnemyHit();
+      return;
+    }
+    sound.playGold();
+    sound.playBuff();
+    setMercenaries(prev => prev.map((m, i) => i === idx ? { ...m, recruited: true } : m));
+    const newComp = createCompanionInstance(item.config);
+    onRecruitCompanion?.(newComp, item.cost);
+  };
+
+  const handleUpgradeComp = (comp: SpireCompanionInstance) => {
+    const upgradeCost = comp.level === 1 ? 55 : 85;
+    if (comp.level >= 3 || player.gold < upgradeCost) return;
+    sound.playGold();
+    sound.playCritical();
+    onUpgradeCompanion?.(comp.instanceId, upgradeCost);
+  };
+
   return (
     <div style={{
       width: '100%',
@@ -113,7 +155,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             fontWeight: 800,
             fontSize: '18px',
           }}>
-            <Coins size={20} />
+            <PixelIcon name="coins" size={20} />
             <span>{player.gold}</span>
           </div>
 
@@ -137,7 +179,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
           borderBottom: '1px solid rgba(197, 160, 89, 0.2)',
           paddingBottom: 6,
         }}>
-          词汇卡牌 (Vocabulary Scrolls)
+          战术卡牌 (Tactical Cards)
         </h3>
 
         <div style={{
@@ -157,7 +199,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 opacity: item.bought ? 0.35 : 1,
               }}
             >
-              <CardView card={item.card} showMeaning={true} />
+              <CardView card={item.card} />
               <button
                 onClick={() => handleBuyCardItem(idx)}
                 disabled={item.bought || player.gold < item.price}
@@ -170,9 +212,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 }}
               >
                 {item.bought ? (
-                  <>已售出 <Check size={14} /></>
+                  <>已售出 <PixelIcon name="check" size={14} /></>
                 ) : (
-                  <><Coins size={14} /> {item.price} G</>
+                  <><PixelIcon name="coins" size={14} /> {item.price} G</>
                 )}
               </button>
             </div>
@@ -228,7 +270,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
                   className="spire-btn"
                   style={{ padding: '6px 14px', fontSize: '12px' }}
                 >
-                  {item.bought ? '已拥有' : <><Coins size={13} /> {item.price} G</>}
+                  {item.bought ? '已拥有' : <><PixelIcon name="coins" size={13} /> {item.price} G</>}
                 </button>
               </div>
             ))}
@@ -259,7 +301,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             textAlign: 'center',
             opacity: removalUsed ? 0.35 : 1,
           }}>
-            <Trash2 size={32} color="#ef4444" style={{ marginBottom: 8 }} />
+            <PixelIcon name="trash" size={32} color="#ef4444" style={{ marginBottom: 8 }} />
             <div style={{ fontWeight: 800, color: '#f8fafc', fontSize: '14px', marginBottom: 4 }}>
               遗忘一张卡牌 (Remove a Card)
             </div>
@@ -277,9 +319,207 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 padding: '8px 16px',
               }}
             >
-              {removalUsed ? '本次已用' : <><Coins size={14} /> {cardRemovalCost} G 移除</>}
+              {removalUsed ? '本次已用' : <><PixelIcon name="coins" size={14} /> {cardRemovalCost} G 移除</>}
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* MERCENARY GUILD: COMPANIONS RECRUITMENT & TRAINING (自走棋与货币战争深度融合) */}
+      <div style={{ marginTop: 24, marginBottom: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, borderBottom: '1px solid rgba(197, 160, 89, 0.3)', paddingBottom: 6 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: '20px' }}>⚔️</span>
+            <div>
+              <h3 style={{ fontFamily: 'var(--font-serif)', color: '#fbbf24', fontSize: '17px', margin: 0 }}>
+                尖塔佣兵公会 · 随从契约与进阶 (Mercenary Guild)
+              </h3>
+              <div style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'var(--font-pixel)' }}>
+                招募英灵伙伴并肩爬塔 · 打出卡牌触发关键词协同 · 金币直升进阶解锁质变绝技 (队伍上限: {player.companions?.length || 0}/{player.maxCompanions || 3})
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Existing Companions Leveling & Available Recruitment */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 12 }}>
+          {/* Available Recruits */}
+          {mercenaries.map((item, idx) => {
+            const isFull = (player.companions?.length || 0) >= (player.maxCompanions || 3);
+            const canAfford = player.gold >= item.cost;
+
+            return (
+              <div
+                key={item.config.id}
+                style={{
+                  backgroundColor: 'rgba(20, 24, 38, 0.92)',
+                  border: `1.5px solid ${item.recruited ? '#374151' : item.config.synergyColor}`,
+                  borderRadius: 8,
+                  padding: 12,
+                  display: 'flex',
+                  gap: 12,
+                  alignItems: 'center',
+                  opacity: item.recruited ? 0.4 : 1,
+                  boxShadow: item.recruited ? undefined : `0 4px 12px rgba(0,0,0,0.6), inset 0 0 10px rgba(0,0,0,0.4)`,
+                }}
+              >
+                {/* Companion Pixel Avatar */}
+                <div style={{
+                  width: 58,
+                  height: 72,
+                  borderRadius: 4,
+                  backgroundColor: '#0a0d16',
+                  border: `1.5px solid ${item.config.synergyColor}`,
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
+                  <img
+                    src={item.config.avatar}
+                    alt={item.config.name}
+                    style={{ maxHeight: '92%', maxWidth: '92%', objectFit: 'contain', imageRendering: 'pixelated' }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    fontSize: '8px',
+                    backgroundColor: item.config.synergyColor,
+                    color: '#fff',
+                    padding: '1px 3px',
+                    fontFamily: 'var(--font-pixel)',
+                  }}>
+                    {item.config.synergyName.slice(0, 2)}
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ fontWeight: 800, color: '#f8fafc', fontSize: '13.5px' }}>
+                      {item.config.name}
+                    </div>
+                    <span style={{ fontSize: '9px', color: item.config.synergyColor, fontFamily: 'var(--font-pixel)' }}>
+                      {item.config.synergyName}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: '#93c5fd', marginTop: 2 }}>
+                    协同: {item.config.triggerDesc}
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#fcd34d', marginTop: 2 }}>
+                    绝技: {item.config.ultimateName}
+                  </div>
+
+                  <button
+                    onClick={() => handleRecruit(idx)}
+                    disabled={item.recruited || isFull || !canAfford}
+                    className="spire-btn"
+                    style={{
+                      marginTop: 8,
+                      width: '100%',
+                      padding: '5px 8px',
+                      fontSize: '11px',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {item.recruited ? '已入队' : isFull ? '队伍已满' : <><PixelIcon name="coins" size={12} /> {item.cost} G 契约招募</>}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Current Companions Upgrade Books */}
+          {player.companions && player.companions.map((comp) => {
+            const nextLv = comp.level + 1;
+            const upgradeCost = comp.level === 1 ? 55 : 85;
+            const canAfford = player.gold >= upgradeCost;
+            const isMax = comp.level >= 3;
+
+            return (
+              <div
+                key={comp.instanceId}
+                style={{
+                  backgroundColor: 'rgba(26, 31, 48, 0.92)',
+                  border: `1.5px solid ${isMax ? '#eab308' : '#3b82f6'}`,
+                  borderRadius: 8,
+                  padding: 12,
+                  display: 'flex',
+                  gap: 12,
+                  alignItems: 'center',
+                  boxShadow: isMax ? '0 0 12px rgba(234, 179, 8, 0.3)' : undefined,
+                }}
+              >
+                {/* Companion Sprite */}
+                <div style={{
+                  width: 58,
+                  height: 72,
+                  borderRadius: 4,
+                  backgroundColor: '#0a0d16',
+                  border: `1.5px solid ${comp.synergyColor}`,
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}>
+                  <img
+                    src={comp.avatar}
+                    alt={comp.name}
+                    style={{ maxHeight: '92%', maxWidth: '92%', objectFit: 'contain', imageRendering: 'pixelated' }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    fontSize: '8px',
+                    backgroundColor: comp.level === 3 ? '#eab308' : '#3b82f6',
+                    color: '#fff',
+                    padding: '1px 4px',
+                    fontFamily: 'var(--font-pixel)',
+                    fontWeight: 700,
+                  }}>
+                    Lv.{comp.level}
+                  </div>
+                </div>
+
+                {/* Upgrade Info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ fontWeight: 800, color: '#f8fafc', fontSize: '13.5px' }}>
+                      {comp.name}
+                    </div>
+                    <span style={{ fontSize: '9px', color: comp.synergyColor, fontFamily: 'var(--font-pixel)' }}>
+                      Lv.{comp.level} {isMax ? '已极境' : `→ Lv.${nextLv}`}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '10.5px', color: isMax ? '#fde047' : '#94a3b8', marginTop: 2 }}>
+                    {isMax ? comp.awakenedDesc : `进阶将强化生命与协战数值，Lv.3 可解锁质变绝技`}
+                  </div>
+
+                  <button
+                    onClick={() => handleUpgradeComp(comp)}
+                    disabled={isMax || !canAfford}
+                    className="spire-btn"
+                    style={{
+                      marginTop: 8,
+                      width: '100%',
+                      padding: '5px 8px',
+                      fontSize: '11px',
+                      justifyContent: 'center',
+                      borderColor: isMax ? '#64748b' : '#3b82f6',
+                    }}
+                  >
+                    {isMax ? '★ 质变已觉醒 (MAX)' : <><PixelIcon name="sparkles" size={12} /> {upgradeCost} G 进阶至 Lv.{nextLv}</>}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -331,7 +571,7 @@ export const ShopView: React.FC<ShopViewProps> = ({
             }}>
               {player.deck.map((c) => (
                 <div key={c.id} onClick={() => handleSelectCardToRemove(c.id)}>
-                  <CardView card={c} showMeaning={true} />
+                  <CardView card={c} />
                 </div>
               ))}
             </div>

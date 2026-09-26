@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { Card, Player, EnchantmentType } from '../types/game';
+import { PixelIcon } from './PixelIcon';
 import { CardView } from './CardView';
-import { BookOpen, Heart, Sparkles, Wand2 } from 'lucide-react';
 import { sound } from '../utils/audio';
 import { getRandomEnchantments, type EnchantmentConfig } from '../data/enchantments';
 
@@ -10,6 +10,7 @@ interface RestSiteViewProps {
   onRest: () => void;
   onUpgradeCard: (cardId: string) => void;
   onEnchantCard?: (cardId: string, enchantment: EnchantmentType) => void;
+  onTrainCompanion?: () => void;
   onLeave: () => void;
 }
 
@@ -18,6 +19,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
   onRest,
   onUpgradeCard,
   onEnchantCard,
+  onTrainCompanion,
   onLeave,
 }) => {
   const [mode, setMode] = useState<'options' | 'selectCard' | 'selectCardForEnchant' | 'selectEnchantment' | 'done'>('options');
@@ -102,7 +104,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
         textAlign: 'center',
         maxWidth: 520,
       }}>
-        围坐炉火旁。你可以安然休憩抚平伤口、研读词汇数值强化，或借助先祖之力进行《杀戮尖塔 2》专属附魔！
+        围坐炉火旁。你可以安然休憩抚平伤口、锤炼卡牌数值强化，或借助先祖之力进行《杀戮尖塔 2》专属附魔！
       </p>
 
       {/* OPTIONS SCREEN */}
@@ -127,7 +129,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
               borderColor: '#ef4444',
             }}
           >
-            <Heart size={32} color="#ef4444" fill="#ef4444" />
+            <PixelIcon name="heart" size={32} color="#ef4444" />
             <div style={{ fontSize: '16px', color: '#f8fafc' }}>安然休憩 (Rest)</div>
             <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'none' }}>
               回复 <strong style={{ color: '#4ade80' }}>+{healAmount}</strong> 点生命值 (30% Max HP)
@@ -147,10 +149,10 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
               borderColor: '#38bdf8',
             }}
           >
-            <BookOpen size={32} color="#38bdf8" />
+            <PixelIcon name="book-open" size={32} color="#38bdf8" />
             <div style={{ fontSize: '16px', color: '#f8fafc' }}>温故知新 (Smith)</div>
             <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'none' }}>
-              研读单词深化例句，将 1 张卡牌强化为 <strong style={{ color: '#facc15' }}>+1</strong> 强化版
+              锤炼卡牌，将 1 张卡牌强化为 <strong style={{ color: '#facc15' }}>+1</strong> 强化版
             </div>
           </button>
 
@@ -168,12 +170,38 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
               boxShadow: '0 0 16px rgba(234, 179, 8, 0.25)',
             }}
           >
-            <Wand2 size={32} color="#eab308" />
+            <PixelIcon name="wand" size={32} color="#eab308" />
             <div style={{ fontSize: '16px', color: '#fef08a' }}>先祖附魔 (Enchant)</div>
             <div style={{ fontSize: '11px', color: '#cbd5e1', textTransform: 'none' }}>
               借由《尖塔2》法则，赋予卡牌 <strong style={{ color: '#facc15' }}>动量/华彩/蛇行/王室</strong> 等全新词缀
             </div>
           </button>
+
+          {/* COMPANION TRAINING OPTION */}
+          {player.companions && player.companions.length > 0 && (
+            <button
+              onClick={() => {
+                sound.playBuff();
+                onTrainCompanion?.();
+                setMode('done');
+              }}
+              className="spire-btn"
+              style={{
+                flex: '1 1 180px',
+                padding: '20px 14px',
+                flexDirection: 'column',
+                gap: 10,
+                borderColor: '#a855f7',
+                boxShadow: '0 0 16px rgba(168, 85, 247, 0.25)',
+              }}
+            >
+              <PixelIcon name="sparkles" size={32} color="#c084fc" />
+              <div style={{ fontSize: '16px', color: '#f3e8ff' }}>随从集训 (Train Squad)</div>
+              <div style={{ fontSize: '11px', color: '#cbd5e1', textTransform: 'none' }}>
+                鼓舞随从战阵，全员生命值回满并将首战法力充盈至 <strong style={{ color: '#c084fc' }}>100%</strong> 绝技即发！
+              </div>
+            </button>
+          )}
         </div>
       )}
 
@@ -192,7 +220,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
             <h3 style={{ fontFamily: 'var(--font-serif)', color: '#facc15', fontSize: '18px' }}>
-              选择 1 张卡牌进行词汇研读与数值强化 (+1)
+              选择 1 张卡牌进行数值强化 (+1)
             </h3>
             <button
               onClick={() => setMode('options')}
@@ -217,7 +245,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
                 <CardView
                   card={c}
                   selected={selectedCardToUpgrade?.id === c.id}
-                  showMeaning={true}
+                 
                 />
               </div>
             ))}
@@ -237,7 +265,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
                 className="spire-btn"
                 style={{ padding: '10px 24px', borderColor: '#facc15', color: '#facc15', fontSize: '14px' }}
               >
-                确认强化: {selectedCardToUpgrade.name || selectedCardToUpgrade.word} (+1)
+                确认强化: {selectedCardToUpgrade.name} (+1)
               </button>
             </div>
           )}
@@ -283,7 +311,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
               <div key={c.id} onClick={() => handleSelectCardForEnchant(c)}>
                 <CardView
                   card={c}
-                  showMeaning={true}
+                 
                 />
               </div>
             ))}
@@ -368,7 +396,7 @@ export const RestSiteView: React.FC<RestSiteViewProps> = ({
           borderRadius: 12,
           border: '1px solid var(--border-gold)',
         }}>
-          <Sparkles size={48} color="#facc15" />
+          <PixelIcon name="sparkles" size={48} color="#facc15" />
           <h2 style={{ fontFamily: 'var(--font-serif)', color: '#facc15', fontSize: '22px' }}>
             整备完毕，重踏征途！
           </h2>

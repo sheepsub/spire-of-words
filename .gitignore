@@ -17,8 +17,13 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Local workspace & temp generation folders
+.workbuddy-ai/
+scratch/
+candidate_art/
+generated-images/
+test_cards/
+test_cards_polished/
+__pycache__/
+*.pyc
+

@@ -1,25 +1,29 @@
 import React from 'react';
 import type { Card } from '../types/game';
+import type { EffectCard } from '../types/autoChess';
+import { PixelIcon } from './PixelIcon';
 import { CardView } from './CardView';
-import { X, Layers } from 'lucide-react';
+import { EffectCardItem } from './EffectCardItem';
 
 interface DeckModalProps {
   cards: Card[];
+  effectCards?: EffectCard[];
   title?: string;
   onClose: () => void;
 }
 
 export const DeckModal: React.FC<DeckModalProps> = ({
   cards,
-  title = '我的战斗卡组 (Current Deck)',
+  effectCards = [],
+  title = '我的战术锦囊 (Tactical Deck)',
   onClose,
 }) => {
   return (
     <div style={{
       position: 'fixed',
       inset: 0,
-      backgroundColor: 'rgba(5, 6, 12, 0.92)',
-      backdropFilter: 'blur(8px)',
+      backgroundColor: 'rgba(5, 6, 12, 0.94)',
+      backdropFilter: 'blur(10px)',
       zIndex: 220,
       display: 'flex',
       flexDirection: 'column',
@@ -35,9 +39,9 @@ export const DeckModal: React.FC<DeckModalProps> = ({
         marginBottom: 16,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Layers size={22} color="#fbbf24" />
+          <PixelIcon name="zap" size={22} color="#fbbf24" />
           <h2 style={{ fontFamily: 'var(--font-serif)', color: '#fbbf24', fontSize: '20px' }}>
-            {title} ({cards.length} 张牌)
+            {title} ({effectCards.length > 0 ? `${effectCards.length} 张万象效果牌` : `${cards.length} 张卡牌`})
           </h2>
         </div>
 
@@ -50,7 +54,7 @@ export const DeckModal: React.FC<DeckModalProps> = ({
             cursor: 'pointer',
           }}
         >
-          <X size={26} />
+          <PixelIcon name="close" size={26} />
         </button>
       </div>
 
@@ -60,15 +64,27 @@ export const DeckModal: React.FC<DeckModalProps> = ({
         overflowY: 'auto',
         display: 'flex',
         flexWrap: 'wrap',
-        gap: 16,
+        gap: 20,
         justifyContent: 'center',
         paddingBottom: 20,
       }}>
-        {cards.map((c) => (
-          <div key={c.id}>
-            <CardView card={c} showMeaning={true} />
+        {effectCards.length > 0 ? (
+          effectCards.map((c, i) => (
+            <div key={`${c.id}_${i}`} style={{ transform: 'scale(0.95)' }}>
+              <EffectCardItem card={c} />
+            </div>
+          ))
+        ) : cards.length > 0 ? (
+          cards.map((c) => (
+            <div key={c.id}>
+              <CardView card={c} />
+            </div>
+          ))
+        ) : (
+          <div style={{ color: '#64748b', fontSize: '15px', marginTop: 40 }}>
+            当前锦囊内暂无效果牌
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

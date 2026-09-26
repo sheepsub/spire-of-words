@@ -1,9 +1,8 @@
-// Web Audio API Sound Synthesizer + Web Speech API + iOS Haptic Feedback
+// Web Audio API Sound Synthesizer + iOS Haptic Feedback
 
 class SoundFX {
   private ctx: AudioContext | null = null;
   public enabled: boolean = true;
-  public speechEnabled: boolean = true;
   private bgmOsc1: OscillatorNode | null = null;
   private bgmOsc2: OscillatorNode | null = null;
   private bgmGain: GainNode | null = null;
@@ -79,21 +78,6 @@ class SoundFX {
       this.bgmOsc1?.disconnect();
       this.bgmOsc2?.disconnect();
       this.isBgmPlaying = false;
-    } catch {
-      // Ignore
-    }
-  }
-
-  // Play English word pronunciation using Web Speech API
-  public speakWord(word: string) {
-    if (!this.speechEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(word);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.88;
-      utterance.pitch = 1.0;
-      window.speechSynthesis.speak(utterance);
     } catch {
       // Ignore
     }
@@ -331,6 +315,32 @@ class SoundFX {
 
       osc.start(this.ctx!.currentTime + i * 0.1);
       osc.stop(this.ctx!.currentTime + i * 0.1 + 0.9);
+    });
+  }
+
+  // Defeat Drone
+  public playDefeat() {
+    this.haptic('heavy');
+    if (!this.enabled) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    [220, 185, 146, 110].forEach((freq, i) => {
+      const osc = this.ctx!.createOscillator();
+      const gain = this.ctx!.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, this.ctx!.currentTime + i * 0.18);
+      osc.frequency.exponentialRampToValueAtTime(40, this.ctx!.currentTime + i * 0.18 + 0.4);
+
+      gain.gain.setValueAtTime(0.18, this.ctx!.currentTime + i * 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + i * 0.18 + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.ctx!.destination);
+
+      osc.start(this.ctx!.currentTime + i * 0.18);
+      osc.stop(this.ctx!.currentTime + i * 0.18 + 0.45);
     });
   }
 

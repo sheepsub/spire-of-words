@@ -42,6 +42,12 @@
   --font-serif: 'Cinzel', serif, Georgia;
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Responsive UI Layout Dimensions */
+  --top-bar-height: 52px;
+  --arena-min-height: clamp(190px, 45vh, 400px);
+  --card-art-min-height: 56px;
+  --card-rules-min-height: 46px;
 }
 
 * {
@@ -67,35 +73,6 @@ html, body, #root {
   touch-action: manipulation;
 }
 
-/* Crisp Pixel Rendering Utility */
-.pixel-art {
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-}
-
-/* Safe area padding for mobile notches and dynamic islands */
-.safe-top {
-  padding-top: max(8px, env(safe-area-inset-top));
-}
-
-.safe-bottom {
-  padding-bottom: max(8px, env(safe-area-inset-bottom));
-}
-
-.safe-left {
-  padding-left: max(16px, env(safe-area-inset-left));
-}
-
-.safe-right {
-  padding-right: max(16px, env(safe-area-inset-right));
-}
-
-.safe-x {
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
-}
-
 .safe-all {
   padding-top: max(8px, env(safe-area-inset-top));
   padding-bottom: max(8px, env(safe-area-inset-bottom));
@@ -115,7 +92,6 @@ html, body, #root {
   overflow: hidden !important;
   z-index: 999 !important;
 }
-
 
 /* Custom Pixel Scrollbars */
 ::-webkit-scrollbar {
@@ -150,17 +126,17 @@ html, body, #root {
   position: relative;
   background: 
     linear-gradient(180deg, rgba(8, 10, 15, 0.65) 0%, rgba(13, 14, 22, 0.45) 50%, rgba(5, 6, 10, 0.9) 100%),
-    url('/src/assets/pixel/spire_pixel_bg.jpg') center center / cover no-repeat;
+    url('./assets/pixel/spire_pixel_bg.jpg') center center / cover no-repeat;
   background-attachment: fixed;
   overflow: hidden;
 }
 
-/* Cozy Warm Sunset Pixel Fantasy Background for Main Menu */
+/* Bright & Refreshing Sunny Pixel RPG Meadow Background for Main Menu */
 .title-warm-pixel-bg {
   position: relative;
   background: 
-    linear-gradient(180deg, rgba(20, 10, 5, 0.2) 0%, rgba(35, 18, 10, 0.25) 50%, rgba(18, 10, 6, 0.65) 100%),
-    url('/assets/backgrounds/title_bg_warm_pixel.jpg') center center / cover no-repeat;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%, rgba(34, 197, 94, 0.04) 100%),
+    url('/assets/backgrounds/title_bg_bright_pixel.png') center bottom / cover no-repeat;
   background-attachment: fixed;
   overflow: hidden;
 }
@@ -169,27 +145,10 @@ html, body, #root {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 45%, rgba(251, 191, 36, 0.12) 0%, rgba(245, 158, 11, 0.06) 50%, rgba(15, 7, 3, 0.55) 95%);
+  background: 
+    radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.28) 0%, rgba(254, 240, 138, 0.14) 35%, transparent 68%);
   pointer-events: none;
   z-index: 1;
-}
-
-/* Battle Arena Zoomed Out Perspective Stage */
-.battle-arena-wide {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 60px;
-  position: relative;
-  z-index: 10;
-  min-height: clamp(220px, 48vh, 380px);
-}
-
-@media (max-width: 768px) {
-  .battle-arena-wide {
-    padding: 4px 20px;
-  }
 }
 
 /* Subtle torch flicker vignette */
@@ -200,26 +159,6 @@ html, body, #root {
   background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(0, 0, 0, 0.75) 95%);
   pointer-events: none;
   z-index: 1;
-}
-
-/* Stepped Pixel Ground Pedestal for Fighters */
-.pixel-pedestal {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pixel-pedestal::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  width: 90%;
-  height: 18px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 75%);
-  border-radius: 50%;
-  z-index: 1;
-  pointer-events: none;
 }
 
 /* ==========================================================================
@@ -256,10 +195,25 @@ html, body, #root {
 
 /* Compact Landscape Tuning for Mobile Devices (iPhone & Android Landscape) */
 @media (max-height: 520px) {
+  :root {
+    --top-bar-height: 38px;
+    --arena-min-height: 110px;
+    --card-art-min-height: 40px;
+    --card-rules-min-height: 34px;
+  }
+
+  .spire-top-bar {
+    height: 38px !important;
+  }
+
+  .spire-top-bar img {
+    max-height: 18px !important;
+  }
+
   .card-frame {
-    width: 120px !important;
-    height: 168px !important;
-    padding: 5px 6px !important;
+    width: 118px !important;
+    height: 160px !important;
+    padding: 4px 6px !important;
   }
   
   .card-frame .energy-orb {
@@ -271,18 +225,29 @@ html, body, #root {
   }
 
   .card-frame .card-name-title {
-    font-size: 10px !important;
-    max-width: 68px !important;
+    font-size: 9.5px !important;
+    max-width: 84px !important;
   }
 
-  .card-frame .card-word-incantation {
+  .card-frame .card-artwork-container {
+    min-height: 38px !important;
+    max-height: 48px !important;
+    height: 44px !important;
+    flex: none !important;
+  }
+
+  .card-frame .card-rules-container {
+    min-height: 34px !important;
     font-size: 8.5px !important;
+    line-height: 11.5px !important;
+    padding: 2px 4px !important;
+    margin: 2px 0 !important;
   }
 
   .card-attack:hover, .card-attack.selected,
   .card-skill:hover, .card-skill.selected,
   .card-power:hover, .card-power.selected {
-    transform: translateY(-14px) scale(1.06) !important;
+    transform: translateY(-16px) scale(1.06) !important;
   }
 }
 
@@ -347,43 +312,9 @@ html, body, #root {
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Slay the Spire Big 16-Bit Octagonal Player Energy Gem */
-.main-energy-orb {
-  width: 68px;
-  height: 68px;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%);
-  background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 30%, #ca8a04 70%, #451a03 100%);
-  border: 3px solid #fef08a;
-  box-shadow: 0 0 24px rgba(234, 179, 8, 0.75), inset 0 0 10px #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  animation: pulse-energy 2.8s infinite alternate;
-}
-
 @keyframes pulse-energy {
   0% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(234,179,8,0.6)); }
   100% { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(234,179,8,0.95)); }
-}
-
-/* Segmented 16-bit Pixel HP Bar */
-.pixel-hp-bar-bg {
-  position: relative;
-  height: 18px;
-  background-color: #1a0808;
-  border: 2px solid #000;
-  box-shadow: 
-    0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000,
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-}
-
-.pixel-hp-fill {
-  height: 100%;
-  background: linear-gradient(180deg, #f87171 0%, #ef4444 50%, #991b1b 100%);
-  transition: width 0.25s steps(20, end);
 }
 
 /* Floating combat text in 8-bit / 16-bit pixel font */
@@ -392,18 +323,6 @@ html, body, #root {
   15% { opacity: 1; transform: translateY(-14px) scale(1.15); }
   75% { opacity: 0.95; transform: translateY(-34px) scale(1); }
   100% { opacity: 0; transform: translateY(-48px) scale(0.85); }
-}
-
-.animate-float-text {
-  animation: float-up-pixel 1.1s cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
-  font-family: var(--font-pixel-num) !important;
-  text-shadow: 
-    -2px -2px 0 #000, 
-     2px -2px 0 #000, 
-    -2px  2px 0 #000, 
-     2px  2px 0 #000, 
-     0    3px 0 #000,
-     0 0 10px currentColor !important;
 }
 
 /* Monster Breathing animation with retro subtle stepping */
@@ -425,10 +344,6 @@ html, body, #root {
   60% { transform: translate(-4px, 2px); }
   80% { transform: translate(4px, -2px); }
   100% { transform: translate(0, 0); }
-}
-
-.shake {
-  animation: screen-shake 0.35s ease;
 }
 
 /* ==========================================================================
@@ -481,68 +396,6 @@ html, body, #root {
   filter: grayscale(0.9);
 }
 
-/* End Turn Button (Chunky Retro Red Pixel Bevel) */
-.end-turn-btn {
-  background: #7f1d1d;
-  border: 3px solid #000;
-  color: #ffffff;
-  font-family: var(--font-pixel);
-  font-size: 13px;
-  font-weight: 700;
-  padding: 10px 20px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  box-shadow: 
-    0 -3px 0 0 #000, 0 3px 0 0 #000, -3px 0 0 0 #000, 3px 0 0 0 #000,
-    inset 3px 3px 0 0 #f87171,
-    inset -3px -3px 0 0 #450a0a,
-    0 4px 12px rgba(239, 68, 68, 0.4);
-  transition: all 0.1s ease;
-}
-
-.end-turn-btn:hover {
-  background: #991b1b;
-  box-shadow: 
-    0 -3px 0 0 #000, 0 3px 0 0 #000, -3px 0 0 0 #000, 3px 0 0 0 #000,
-    inset 3px 3px 0 0 #fca5a5,
-    inset -3px -3px 0 0 #7f1d1d,
-    0 0 20px rgba(239, 68, 68, 0.7);
-  transform: translateY(-2px);
-}
-
-.end-turn-btn:active {
-  transform: translateY(2px);
-  box-shadow: 
-    0 -3px 0 0 #000, 0 3px 0 0 #000, -3px 0 0 0 #000, 3px 0 0 0 #000,
-    inset 3px 3px 0 0 #450a0a,
-    inset -3px -3px 0 0 #f87171;
-}
-
-/* ==========================================================================
-   DYNAMIC CINEMATIC ANIMATIONS & EFFECTS
-   ========================================================================== */
-
-/* Shimmering Metallic Gold Title Animation */
-.shimmer-gold-title {
-  background: linear-gradient(
-    115deg,
-    #ca8a04 0%,
-    #eab308 20%,
-    #fef08a 38%,
-    #ffffff 50%,
-    #fef08a 62%,
-    #eab308 80%,
-    #ca8a04 100%
-  );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shineGoldTitle 3.5s linear infinite;
-  display: inline-block;
-  will-change: background-position;
-}
-
 @keyframes shineGoldTitle {
   0% {
     background-position: 150% 0;
@@ -589,18 +442,6 @@ html, body, #root {
   }
 }
 
-/* Gate of Babylon Golden Ripple */
-.gate-ripple {
-  position: absolute;
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  border: 2px solid rgba(234, 179, 8, 0.85);
-  box-shadow: 0 0 16px rgba(234, 179, 8, 0.8), inset 0 0 12px rgba(234, 179, 8, 0.5);
-  background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, transparent 70%);
-  animation: ripplePulse 2.4s ease-in-out infinite;
-}
-
 @keyframes ripplePulse {
   0%, 100% {
     transform: scale(0.85);
@@ -624,27 +465,6 @@ html, body, #root {
   }
 }
 
-/* Holographic Glint Glare Sweep */
-.holographic-glint {
-  animation: holoGlintSweep 5.5s ease-in-out infinite;
-}
-
-@keyframes holoGlintSweep {
-  0%, 80%, 100% {
-    opacity: 0.2;
-    transform: translateX(-10%);
-  }
-  40% {
-    opacity: 0.75;
-    transform: translateX(10%);
-  }
-}
-
-/* Holo Card Auto 3D Floating Rotation for Mobile & Idle */
-.holo-card-auto-rotate {
-  animation: holoCardAutoRotate 6.5s ease-in-out infinite alternate;
-}
-
 @keyframes holoCardAutoRotate {
   0% {
     transform: perspective(900px) rotateX(8deg) rotateY(-13deg) scale3d(1.03, 1.03, 1);
@@ -661,11 +481,6 @@ html, body, #root {
   100% {
     transform: perspective(900px) rotateX(8deg) rotateY(-13deg) scale3d(1.03, 1.03, 1);
   }
-}
-
-.holo-shine-auto {
-  background-size: 200% 200%;
-  animation: holoShineAuto 6.5s ease-in-out infinite alternate;
 }
 
 @keyframes holoShineAuto {
@@ -714,4 +529,944 @@ html, body, #root {
 .spire-btn:hover:not(:disabled)::after {
   left: 140%;
 }
+
+/* ==========================================================================
+   AUTHENTIC SLAY THE SPIRE MAP & TOP BAR SYSTEM
+   ========================================================================== */
+
+/* Breathing pulse for accessible climbing nodes */
+@keyframes spireNodePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.85)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.6));
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.22);
+    filter: drop-shadow(0 0 16px rgba(251, 191, 36, 1)) drop-shadow(0 0 28px rgba(245, 158, 11, 0.9));
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.85)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.6));
+  }
+}
+
+/* Character pin marker hovering bounce */
+@keyframes spireMarkerBob {
+  0%, 100% {
+    transform: translate(-50%, -100%) translateY(-2px);
+  }
+  50% {
+    transform: translate(-50%, -100%) translateY(-10px);
+  }
+}
+
+/* Animated flow for available dotted path */
+@keyframes spirePathFlow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Boss chamber fiery aura */
+@keyframes spireBossAura {
+  0%, 100% {
+    filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.8)) drop-shadow(0 0 30px rgba(220, 38, 38, 0.5));
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  50% {
+    filter: drop-shadow(0 0 24px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 45px rgba(239, 68, 68, 0.75));
+    transform: translate(-50%, -50%) scale(1.18);
+  }
+}
+
+/* Legend Highlight Pulse */
+@keyframes spireLegendHighlight {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px #38bdf8) drop-shadow(0 0 24px #0284c7);
+    transform: translate(-50%, -50%) scale(1.28);
+  }
+  50% {
+    filter: drop-shadow(0 0 20px #7dd3fc) drop-shadow(0 0 35px #38bdf8);
+    transform: translate(-50%, -50%) scale(1.38);
+  }
+}
+
+.spire-node-pulse {
+  animation: spireNodePulse 1.8s ease-in-out infinite;
+}
+
+.spire-boss-pulse {
+  animation: spireBossAura 2.2s ease-in-out infinite;
+}
+
+.spire-marker-bob {
+  animation: spireMarkerBob 1.6s ease-in-out infinite;
+}
+
+.spire-path-flow {
+  animation: spirePathFlow 1.2s linear infinite;
+}
+
+.spire-legend-highlight {
+  animation: spireLegendHighlight 1.2s ease-in-out infinite !important;
+  z-index: 50 !important;
+}
+
+/* Smooth custom parchment scrollbar */
+.spire-map-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.spire-map-scroll::-webkit-scrollbar-track {
+  background: rgba(10, 11, 16, 0.85);
+  border-left: 1px solid rgba(197, 160, 89, 0.25);
+}
+
+.spire-map-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c5a059 0%, #78350f 100%);
+  border-radius: 4px;
+  border: 1px solid #1a1714;
+}
+
+.spire-map-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #facc15 0%, #92400e 100%);
+}
+
+/* ==========================================================================
+   AUTHENTIC KING'S AUTO CHESS & TACTICAL EFFECT SYSTEM (王者万象棋核心样式)
+   ========================================================================== */
+
+.autochess-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: radial-gradient(circle at 50% 15%, #131728 0%, #090b14 60%, #05060a 100%);
+  color: #ffffff;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.autochess-header {
+  width: 100%;
+  padding: 8px 16px;
+  background: rgba(10, 14, 26, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1.5px solid rgba(251, 191, 36, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 30;
+}
+
+.autochess-commander-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fbbf24;
+  background: #0f172a;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+}
+
+.autochess-enemy-avatar {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+  border-radius: 10px;
+  object-fit: contain;
+  border: 2px solid #f43f5e;
+  background: #0f172a;
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
+.autochess-arena-wrapper {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  padding: 8px 14px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.autochess-synergies-panel {
+  width: 175px;
+  flex-shrink: 0;
+  background: rgba(13, 17, 28, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  backdrop-filter: blur(8px);
+  box-sizing: border-box;
+}
+
+.autochess-synergy-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.autochess-synergy-active {
+  background: rgba(180, 83, 9, 0.35);
+  border-color: rgba(251, 191, 36, 0.5);
+  color: #fef08a;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.25);
+}
+
+.autochess-synergy-inactive {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
+  color: #64748b;
+}
+
+.autochess-battlefield {
+  flex: 1;
+  background: rgba(8, 11, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+.autochess-board-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  height: clamp(80px, 16vh, 102px);
+}
+
+.autochess-slot {
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.autochess-slot-enemy {
+  background: rgba(136, 19, 55, 0.2);
+  border-color: rgba(225, 29, 72, 0.3);
+}
+
+.autochess-slot-player {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(71, 85, 105, 0.45);
+}
+
+.autochess-slot-selected {
+  border-color: #facc15 !important;
+  background: rgba(245, 158, 11, 0.25) !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.6);
+  z-index: 10;
+}
+
+.autochess-unit-sprite {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 44px;
+  max-height: 44px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.85));
+}
+
+.autochess-bench-sprite {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.autochess-bench-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  height: 52px;
+}
+
+.autochess-tactical-drawer {
+  width: 100%;
+  background: rgba(8, 10, 18, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1.5px solid rgba(251, 191, 36, 0.35);
+  padding: 8px 14px 10px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 25;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.85);
+}
+
+.effect-card-compact {
+  flex-shrink: 0;
+  width: 155px;
+  min-width: 155px;
+  max-width: 165px;
+  height: 165px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+  box-sizing: border-box;
+  text-align: left;
+  user-select: none;
+}
+
+.effect-card-compact:hover:not(:disabled) {
+  transform: translateY(-8px) scale(1.04);
+  border-color: #fbbf24;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.9), 0 0 16px rgba(251, 191, 36, 0.4);
+  z-index: 30;
+}
+
+.effect-card-compact:disabled {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  cursor: not-allowed;
+}
+
+@media (max-height: 520px) {
+  .autochess-header {
+    padding: 4px 12px;
+  }
+  .autochess-commander-avatar,
+  .autochess-enemy-avatar {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+    max-width: 34px;
+    max-height: 34px;
+  }
+  .autochess-synergies-panel {
+    width: 135px;
+    padding: 6px;
+  }
+  .autochess-synergy-item {
+    font-size: 9.5px;
+    padding: 2px 6px;
+    margin-bottom: 2px;
+  }
+  .autochess-board-grid {
+    height: 72px;
+    gap: 5px;
+  }
+  .autochess-unit-sprite {
+    width: 36px;
+    height: 36px;
+    max-width: 36px;
+    max-height: 36px;
+  }
+  .autochess-bench-grid {
+    height: 42px;
+    gap: 4px;
+  }
+  .autochess-bench-sprite {
+    width: 26px;
+    height: 26px;
+    max-width: 26px;
+    max-height: 26px;
+  }
+  .autochess-tactical-drawer {
+    padding: 4px 10px 6px;
+  }
+  .effect-card-compact {
+    width: 130px;
+    min-width: 130px;
+    height: 125px;
+    padding: 6px 8px;
+  }
+}
+
+/* ==========================================================================
+   STARDEW VALLEY & PIXEL RPG DESIGN SYSTEM
+   Authentic handcrafted warm wooden boards, parchment, 3D pixel bevel buttons
+   ========================================================================== */
+
+/* Global Spire Button - Stardew Pixel Bevel */
+.spire-btn {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.5px;
+  border: 2px solid #1a0c05;
+  background: linear-gradient(180deg, #4a2817 0%, #30170a 60%, #200d04 100%);
+  color: #fef3c7;
+  text-shadow: 1px 1px 0 #140602;
+  box-shadow: 
+    inset 1px 1px 0 0 #b36327,
+    inset -1px -1px 0 0 #140803,
+    0 3px 0 0 #100602,
+    0 4px 8px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  transition: transform 0.06s ease, filter 0.06s ease, box-shadow 0.06s ease;
+  user-select: none;
+  image-rendering: pixelated;
+}
+
+.spire-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 
+    inset 1px 1px 0 0 #fde68a,
+    inset -1px -1px 0 0 #140803,
+    0 4px 0 0 #100602,
+    0 6px 10px rgba(0, 0, 0, 0.7);
+}
+
+.spire-btn:active {
+  transform: translateY(2px) !important;
+  box-shadow: 
+    inset 1px 1px 0 0 #140803,
+    inset -1px -1px 0 0 #b36327,
+    0 1px 0 0 #100602 !important;
+}
+
+.pixel-panel {
+  background: #2b170c;
+  background-image: linear-gradient(180deg, #381f10 0%, #26140a 100%);
+  border: 3px solid #1a0c05;
+  box-shadow: 
+    inset 2px 2px 0 0 #b36327,
+    inset -2px -2px 0 0 #180a04,
+    0 8px 24px rgba(0, 0, 0, 0.85);
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------------------------
+   配色体系（2026-09-25 重做）—— 暖木 + 旧羊皮纸 + 琥珀金
+   改色时请沿用这套色族，不要重新引入荧光橙 / 荧光紫 / 电光蓝：
+     木材 深 → 浅： #3b1c09 / #2f1406 / #4a2410 / #5c2f16 / #6b3a1b / #7a4520
+     琥珀 深 → 浅： #6f4209 / #94590f / #b8761d / #d4912a / #e5b93f / #f5d76e
+     羊皮纸      ： #fcf7ec / #f1e5c9 / #e3d1ab
+     按钮四色（同明度的暖色族，仅色相区分功能）：
+       主·蜜琥珀 #d4912a  沙盒·苔绿 #5f8a3a  英灵·砖红 #a8452f  卡组·深靛 #3f5a8a
+   --------------------------------------------------------------------------- */
+
+/* 1. Stardew Wooden Board Panel（深胡桃木外框 + 旧羊皮纸内芯的公告板） */
+.stardew-panel {
+  background: #f7f0de;
+  background-image: 
+    radial-gradient(ellipse at 50% 15%, rgba(255, 252, 240, 0.7) 0%, transparent 65%),
+    linear-gradient(180deg, #fcf7ec 0%, #f1e5c9 50%, #e3d1ab 100%);
+  border: 4px solid #3b1c09;
+  box-shadow: 
+    inset 3px 3px 0 0 #b8761d,
+    inset -3px -3px 0 0 #241005,
+    inset 5px 5px 0 0 #d9ae72,
+    inset -5px -5px 0 0 #5c2f16,
+    0 8px 24px rgba(24, 12, 5, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Brass / Golden Corner Brackets */
+.stardew-panel::before,
+.stardew-panel::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.stardew-panel::before {
+  top: 2px;
+  left: 2px;
+  border-top: 3px solid #dcae5c;
+  border-left: 3px solid #dcae5c;
+  box-shadow: 2px 2px 0 0 #5c3a0e;
+}
+
+.stardew-panel::after {
+  bottom: 2px;
+  right: 2px;
+  border-bottom: 3px solid #dcae5c;
+  border-right: 3px solid #dcae5c;
+  box-shadow: -2px -2px 0 0 #5c3a0e;
+}
+
+/* 2. Stardew 3D Pixel Tactile Buttons */
+.stardew-btn {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.5px;
+  border: 3px solid #150904;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, filter 0.06s ease;
+  image-rendering: pixelated;
+}
+
+.stardew-btn:hover {
+  filter: brightness(1.12);
+  transform: translateY(-2px);
+}
+
+.stardew-btn:active {
+  transform: translateY(3px) !important;
+}
+
+/* Primary Button (蜜琥珀 - 踏入尖塔大作战，视觉优先级最高) */
+.stardew-btn-primary {
+  background: linear-gradient(180deg, #d4912a 0%, #b0701a 50%, #8f570d 100%);
+  color: #fdf8e8;
+  text-shadow: 2px 2px 0 #2b1207, -1px -1px 0 #2b1207, 1px -1px 0 #2b1207, -1px 1px 0 #2b1207;
+  box-shadow: 
+    inset 2px 2px 0 0 #f0c93e,
+    inset -3px -3px 0 0 #3d2008,
+    0 5px 0 0 #140803,
+    0 8px 12px rgba(0, 0, 0, 0.7);
+}
+
+.stardew-btn-primary:hover {
+  box-shadow: 
+    inset 2px 2px 0 0 #f5d76e,
+    inset -3px -3px 0 0 #3d2008,
+    0 7px 0 0 #140803,
+    0 10px 16px rgba(0, 0, 0, 0.8);
+}
+
+.stardew-btn-primary:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #3d2008,
+    inset -2px -2px 0 0 #f0c93e,
+    0 2px 0 0 #140803 !important;
+}
+
+/* Secondary Button (苔绿 - 沙盒演练场) */
+.stardew-btn-purple {
+  background: linear-gradient(180deg, #5f8a3a 0%, #4a6f2c 50%, #35521e 100%);
+  color: #f4f9ec;
+  text-shadow: 2px 2px 0 #1c2c0c, -1px -1px 0 #1c2c0c;
+  box-shadow: 
+    inset 2px 2px 0 0 #bcd88f,
+    inset -3px -3px 0 0 #22360f,
+    0 4px 0 0 #140803,
+    0 6px 10px rgba(0, 0, 0, 0.65);
+}
+
+.stardew-btn-purple:hover {
+  box-shadow: 
+    inset 2px 2px 0 0 #d3e8ab,
+    inset -3px -3px 0 0 #22360f,
+    0 6px 0 0 #140803,
+    0 8px 14px rgba(0, 0, 0, 0.75);
+}
+
+.stardew-btn-purple:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #22360f,
+    inset -2px -2px 0 0 #bcd88f,
+    0 1px 0 0 #140803 !important;
+}
+
+/* Roster Button (砖红 - 英灵阵容) */
+.stardew-btn-red {
+  background: linear-gradient(180deg, #a8452f 0%, #8a3524 50%, #6b2718 100%);
+  color: #f8ece7;
+  text-shadow: 2px 2px 0 #2b0e08, -1px -1px 0 #2b0e08;
+  box-shadow: 
+    inset 2px 2px 0 0 #dda08c,
+    inset -3px -3px 0 0 #33120b,
+    0 4px 0 0 #140803,
+    0 6px 10px rgba(0, 0, 0, 0.65);
+}
+
+.stardew-btn-red:hover {
+  box-shadow: 
+    inset 2px 2px 0 0 #e8bfb0,
+    inset -3px -3px 0 0 #33120b,
+    0 6px 0 0 #140803,
+    0 8px 14px rgba(0, 0, 0, 0.75);
+}
+
+.stardew-btn-red:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #33120b,
+    inset -2px -2px 0 0 #dda08c,
+    0 1px 0 0 #140803 !important;
+}
+
+/* Tactics Deck Button (深靛 - 战术卡组) */
+.stardew-btn-blue {
+  background: linear-gradient(180deg, #3f5a8a 0%, #334a73 50%, #26385a 100%);
+  color: #eaeff7;
+  text-shadow: 2px 2px 0 #0e1522, -1px -1px 0 #0e1522;
+  box-shadow: 
+    inset 2px 2px 0 0 #9db3d0,
+    inset -3px -3px 0 0 #1a2740,
+    0 4px 0 0 #140803,
+    0 6px 10px rgba(0, 0, 0, 0.65);
+}
+
+.stardew-btn-blue:hover {
+  box-shadow: 
+    inset 2px 2px 0 0 #b8c8dd,
+    inset -3px -3px 0 0 #1a2740,
+    0 6px 0 0 #140803,
+    0 8px 14px rgba(0, 0, 0, 0.75);
+}
+
+.stardew-btn-blue:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #1a2740,
+    inset -2px -2px 0 0 #9db3d0,
+    0 1px 0 0 #140803 !important;
+}
+
+/* Natural Oak / Wood Button (音效、风景切换等次级小按钮，明度刻意低于主按钮) */
+.stardew-btn-wood {
+  background: linear-gradient(180deg, #b8761d 0%, #94590f 50%, #6f4209 100%);
+  color: #fdf8e8;
+  text-shadow: 1px 1px 0 #2f1406;
+  box-shadow: 
+    inset 2px 2px 0 0 #e8c069,
+    inset -2px -2px 0 0 #2f1406,
+    0 3px 0 0 #241005,
+    0 4px 8px rgba(30, 15, 6, 0.4);
+}
+
+.stardew-btn-wood:hover {
+  box-shadow: 
+    inset 2px 2px 0 0 #fbf3e0,
+    inset -2px -2px 0 0 #2f1406,
+    0 4px 0 0 #241005,
+    0 6px 12px rgba(30, 15, 6, 0.45);
+}
+
+.stardew-btn-wood:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #2f1406,
+    inset -2px -2px 0 0 #e8c069,
+    0 1px 0 0 #241005 !important;
+}
+
+/* Tactile Pixel Arrow Switcher (Title Carousel Left/Right) */
+.stardew-arrow-btn {
+  background: linear-gradient(180deg, #d4912a 0%, #b8761d 50%, #94590f 100%) !important;
+  border: 3px solid #2f1406 !important;
+  box-shadow: 
+    inset 2px 2px 0 0 #f5d76e,
+    inset -2px -2px 0 0 #54280c,
+    0 4px 0 0 #2f1406,
+    0 6px 12px rgba(30, 15, 6, 0.45) !important;
+  cursor: pointer !important;
+  user-select: none;
+  touch-action: manipulation;
+  transition: transform 0.08s ease, filter 0.08s ease, box-shadow 0.08s ease;
+}
+
+.stardew-arrow-btn:hover {
+  filter: brightness(1.18) contrast(1.05);
+  box-shadow: 
+    inset 2px 2px 0 0 #fbf3e0,
+    inset -2px -2px 0 0 #54280c,
+    0 5px 0 0 #2f1406,
+    0 8px 16px rgba(30, 15, 6, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+.stardew-arrow-btn:active {
+  box-shadow: 
+    inset 2px 2px 0 0 #54280c,
+    inset -2px -2px 0 0 #f5d76e,
+    0 1px 0 0 #2f1406 !important;
+  transform: translateY(3px) !important;
+}
+
+/* 3. Stardew Tavern Signboard (Title) */
+.stardew-title-sign {
+  background: #5c2f16;
+  background-image: 
+    radial-gradient(ellipse at 50% 25%, rgba(245, 215, 110, 0.14) 0%, transparent 75%),
+    linear-gradient(180deg, #6b3a1b 0%, #4a2410 100%);
+  border: 4px solid #2b1207;
+  box-shadow: 
+    inset 3px 3px 0 0 #d4912a,
+    inset -3px -3px 0 0 #1c0b04,
+    inset 5px 5px 0 0 #c99a5c,
+    inset -5px -5px 0 0 #361a09,
+    0 8px 24px rgba(30, 15, 6, 0.45);
+  position: relative;
+  padding: 12px 18px;
+  box-sizing: border-box;
+}
+
+/* 3D Carved Pixel Title Text */
+.stardew-pixel-title {
+  font-family: var(--font-pixel-num);
+  font-weight: 900;
+  color: #ffdf6b;
+  text-shadow: 
+    2px 2px 0 #94590f,
+    3px 3px 0 #54280c,
+    4px 4px 0 #2f1406,
+    -1px -1px 0 #fdf8e8;
+  letter-spacing: 2px;
+  line-height: 1.15;
+}
+
+/* Parchment Ribbon Banner */
+.stardew-ribbon-banner {
+  background: linear-gradient(180deg, #fdf8e8 0%, #f5d76e 60%, #d4912a 100%);
+  color: #5a3a12;
+  font-family: var(--font-pixel);
+  border: 2px solid #6f4209;
+  box-shadow: 
+    inset 1px 1px 0 0 #fbf3e0,
+    inset -2px -2px 0 0 #94590f,
+    0 2px 4px rgba(0, 0, 0, 0.25);
+  padding: 3px 12px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Brass Rivet Corners */
+.stardew-rivet {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #e8c069;
+  border: 1px solid #54280c;
+  box-shadow: inset 1px 1px 0 #fbf3e0, 1px 1px 0 rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+.stardew-rivet-tl { top: 3px; left: 3px; }
+.stardew-rivet-tr { top: 3px; right: 3px; }
+.stardew-rivet-bl { bottom: 3px; left: 3px; }
+.stardew-rivet-br { bottom: 3px; right: 3px; }
+
+/* Carved Oak Nameplate */
+.stardew-nameplate {
+  background: linear-gradient(180deg, #6b3a1b 0%, #4f2a12 60%, #361a09 100%);
+  border: 3px solid #241005;
+  box-shadow: 
+    inset 2px 2px 0 0 #e5b93f,
+    inset -2px -2px 0 0 #1c0b04,
+    0 4px 10px rgba(0, 0, 0, 0.4);
+  padding: 4px 16px;
+  text-align: center;
+  position: relative;
+  margin: 8px auto 2px;
+  white-space: nowrap;
+  z-index: 25;
+}
+
+/* 5. Stardew Noticeboard Header Plaque */
+.stardew-board-header {
+  background: linear-gradient(180deg, #d4912a 0%, #b8761d 60%, #94590f 100%);
+  border: 2px solid #4a2410;
+  color: #fdf8e8;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 5px 10px;
+  text-shadow: 1px 1px 0 #2f1406;
+  box-shadow: 
+    inset 1px 1px 0 0 #f5d76e,
+    inset -2px -2px 0 0 #54280c,
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   MEADOW-ADAPTED TITLE SCENE & HERO STAGE STYLES
+   ========================================================================== */
+
+/* 1. Open-Air Meadow Hero Stage */
+.meadow-hero-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: auto;
+  user-select: none;
+}
+
+@keyframes runeSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 像素图标统一旋转（PixelIcon spin 属性使用；修复 RotatePrompt 引用了不存在的 spin keyframe） */
+@keyframes pixelIconSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 2. Rustic Grounding Timber Posts for Signboard & Noticeboard */
+.stardew-timber-post {
+  position: absolute;
+  bottom: -28px;
+  width: 14px;
+  height: 34px;
+  background: repeating-linear-gradient(
+    180deg,
+    #5c2f16 0px,
+    #5c2f16 4px,
+    #45220e 4px,
+    #45220e 8px
+  );
+  border: 2px solid #221005;
+  box-shadow: 
+    inset 1px 0 0 #d4912a,
+    inset -1px 0 0 #1c0b04,
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+.stardew-timber-post-l { left: 24px; }
+.stardew-timber-post-r { right: 24px; }
+
+/* Stardew Rustic Timber Rooflet on Signboard & Noticeboard */
+.stardew-timber-roof {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 104%;
+  height: 10px;
+  background: linear-gradient(180deg, #7a4520 0%, #4f2a12 60%, #2f1406 100%);
+  border: 2px solid #241005;
+  border-radius: 3px 3px 0 0;
+  box-shadow: 
+    inset 0 1px 0 #c99a5c,
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+/* 4. Carved Oak Roster Dock with 12 Hero Portrait Slots */
+.stardew-roster-dock {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(36, 16, 6, 0.92);
+  border: 2px solid #1c0b04;
+  padding: 5px 7px;
+  box-shadow: 
+    inset 1px 1px 0 #5c2f16,
+    inset -1px -1px 0 #1b0a04,
+    0 3px 8px rgba(0, 0, 0, 0.35);
+  margin: 6px 0 2px;
+}
+
+.stardew-hero-rune {
+  background: linear-gradient(180deg, #331a0a 0%, #1e0d05 100%);
+  border: 2px solid #4a2410;
+  box-shadow: inset 1px 1px 0 rgba(252, 211, 77, 0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  padding: 1px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  line-height: 0;
+  filter: brightness(0.82) saturate(0.85);
+}
+
+.stardew-hero-rune:hover {
+  transform: translateY(-3px);
+  border-color: #e5b93f;
+  box-shadow: 0 0 10px #d4912a;
+  filter: brightness(1.1) saturate(1);
+}
+
+.stardew-hero-rune.active {
+  border-color: #f0c93e;
+  box-shadow: 
+    inset 0 0 0 1px #54280c,
+    0 0 12px #e0b23a,
+    0 0 5px #b8761d;
+  transform: translateY(-2px);
+  filter: brightness(1.12) saturate(1.05);
+}
+
+/* 5. Meadow Banner Wooden Stakes */
+.stardew-banner-stake {
+  width: 6px;
+  height: 18px;
+  background: #45220e;
+  border: 1px solid #221005;
+  position: absolute;
+  bottom: -10px;
+  z-index: -1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.stardew-banner-stake-l { left: 16px; }
+.stardew-banner-stake-r { right: 16px; }
 

@@ -1,30 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { sound } from '../utils/audio';
-import { CHARACTERS, type CharacterDefinition } from '../data/characters';
+import { CHARACTERS, ARCHETYPE_ICON, type CharacterDefinition } from '../data/characters';
 import { AtmosphericParticles } from './AtmosphericParticles';
 import { HoloServantCard } from './HoloServantCard';
-import { 
-  Play, 
-  BookOpen, 
-  Layers, 
-  Volume2, 
-  VolumeX, 
-  Sparkles, 
-  Compass, 
-  ShieldCheck,
-  UserCheck,
-  Users,
-  ChevronLeft,
-  ChevronRight
-} from 'lucide-react';
+import { PixelIcon } from './PixelIcon';
+import type { PixelIconName } from '../data/pixelIcons';
 
 interface TitleViewProps {
   onStartGame: () => void;
+  onStartAutoChess?: () => void;
   onOpenCharacterSelect: () => void;
   onResumeRun?: () => void;
   hasActiveRun?: boolean;
   currentFloor?: number;
-  onOpenLexicon: () => void;
   onOpenDeck: () => void;
   soundEnabled: boolean;
   onToggleSound: () => void;
@@ -38,13 +26,44 @@ interface TitleViewProps {
   selectedCharColor?: string;
 }
 
+// Bright & Refreshing Pixel Scenery Themes
+const SCENERY_THEMES: {
+  id: string;
+  name: string;
+  pixelIcon: PixelIconName;
+  url: string;
+  particleColor: string;
+}[] = [
+  {
+    id: 'summer',
+    name: '晴空花海',
+    pixelIcon: 'sun',
+    url: '/assets/backgrounds/title_bg_bright_pixel.png',
+    particleColor: '#fef08a',
+  },
+  {
+    id: 'prairie',
+    name: '浮空圣塔',
+    pixelIcon: 'castle',
+    url: '/assets/backgrounds/title_bg_prairie_pixel.jpg',
+    particleColor: '#e0e7ff',
+  },
+  {
+    id: 'meadow',
+    name: '翠绿密林',
+    pixelIcon: 'tree-pine',
+    url: '/assets/backgrounds/title_bg_meadow_pixel.png',
+    particleColor: '#86efac',
+  },
+];
+
 export const TitleView: React.FC<TitleViewProps> = ({
   onStartGame,
+  onStartAutoChess,
   onOpenCharacterSelect,
   onResumeRun,
   hasActiveRun = false,
   currentFloor = 0,
-  onOpenLexicon,
   onOpenDeck,
   soundEnabled,
   onToggleSound,
@@ -53,6 +72,27 @@ export const TitleView: React.FC<TitleViewProps> = ({
 }) => {
   const currentChar = selectedCharacter || CHARACTERS[0];
   const currentIndex = Math.max(0, CHARACTERS.findIndex(c => c.id === currentChar.id));
+
+  // Scenery Theme Switcher State (Defaults to Bright Sunny Flower Meadow)
+  const [sceneryIdx, setSceneryIdx] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    const saved = localStorage.getItem('spire_title_scenery_idx');
+    const parsed = saved ? parseInt(saved, 10) : 0;
+    return isNaN(parsed) || parsed < 0 || parsed >= SCENERY_THEMES.length ? 0 : parsed;
+  });
+
+  const currentTheme = SCENERY_THEMES[sceneryIdx];
+
+  const handleNextScenery = () => {
+    sound.playSelect();
+    const next = (sceneryIdx + 1) % SCENERY_THEMES.length;
+    setSceneryIdx(next);
+    try {
+      localStorage.setItem('spire_title_scenery_idx', next.toString());
+    } catch {
+      // Ignore
+    }
+  };
 
   // Responsive hook for compact mobile landscape viewports
   const [isCompact, setIsCompact] = useState<boolean>(() => {
@@ -72,13 +112,21 @@ export const TitleView: React.FC<TitleViewProps> = ({
     };
   }, []);
 
-  const handlePrev = () => {
+  const handlePrev = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     sound.playSelect();
     const prevIdx = (currentIndex - 1 + CHARACTERS.length) % CHARACTERS.length;
     onSelectCharacter?.(CHARACTERS[prevIdx]);
   };
 
-  const handleNext = () => {
+  const handleNext = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     sound.playSelect();
     const nextIdx = (currentIndex + 1) % CHARACTERS.length;
     onSelectCharacter?.(CHARACTERS[nextIdx]);
@@ -105,9 +153,21 @@ export const TitleView: React.FC<TitleViewProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [hasActiveRun, onResumeRun, onStartGame, currentIndex, onSelectCharacter]);
 
-  // Card dimensions tailored for mobile landscape vs desktop
-  const cardWidth = isCompact ? 152 : 205;
-  const cardHeight = isCompact ? 216 : 290;
+  // Meadow hero stage dimensions tailored for mobile landscape vs desktop
+  const heroWidth = isCompact ? 190 : 250;
+  const heroHeight = isCompact ? 210 : 280;
+
+  // 英雄连位选人条：每个槽位直接显示该英雄的像素立绘。
+  // 槽位总宽会直接决定中间栏宽度，进而决定三栏在手机横屏（如 844×390）下是否换行。
+  // 槽位数会随角色增加而变多，写死尺寸迟早会把三栏挤到换行（12→14 时就发生过），
+  // 所以这里按「选人条可用总宽」反算单槽尺寸。
+  // dockChrome = 左右内边距(7×2) + 边框(2×2) + 槽间距(4×(n-1))
+  const dockChrome = 18 + 4 * (CHARACTERS.length - 1);
+  const dockMaxWidth = isCompact ? 296 : 420;
+  const runeSize = Math.max(
+    12,
+    Math.min(isCompact ? 18 : 30, Math.floor((dockMaxWidth - dockChrome) / CHARACTERS.length)),
+  );
 
   return (
     <div 
@@ -117,17 +177,21 @@ export const TitleView: React.FC<TitleViewProps> = ({
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: isCompact ? 'center' : 'space-between',
+        justifyContent: isCompact ? 'flex-start' : 'space-between',
         alignItems: 'center',
         padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
         position: 'relative',
         overflowX: 'hidden',
         overflowY: 'auto',
         boxSizing: 'border-box',
+        backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%, rgba(34, 197, 94, 0.04) 100%), url('${currentTheme.url}')`,
+        backgroundPosition: 'center bottom',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
       }}
     >
-      {/* Dynamic Ambient Warm Ember Particle Atmosphere */}
-      <AtmosphericParticles color="#f59e0b" density={isCompact ? 28 : 42} />
+      {/* Dynamic Ambient Sun-Dappled Pollen & Breezy Petals */}
+      <AtmosphericParticles color={currentTheme.particleColor} density={isCompact ? 22 : 34} />
 
       {/* HORIZONTAL 3-COLUMN LAYOUT IN LANDSCAPE */}
       <div 
@@ -141,94 +205,115 @@ export const TitleView: React.FC<TitleViewProps> = ({
           maxWidth: '1240px',
           flex: 1,
           zIndex: 10,
-          gap: isCompact ? '12px' : '36px',
+          gap: isCompact ? '10px' : '36px',
           flexWrap: 'wrap',
           padding: '4px 0',
         }}
       >
-        {/* COLUMN 1: BRAND LOGO & MOTTO & SOUND SETTINGS */}
+        {/* COLUMN 1: STARDEW TAVERN HANGING SIGNBOARD & SETTINGS */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: isCompact ? 'center' : 'flex-start',
-          textAlign: isCompact ? 'center' : 'left',
-          maxWidth: isCompact ? '260px' : '360px',
+          justifyContent: 'center',
+          maxWidth: isCompact ? '258px' : '360px',
           flexShrink: 0,
         }}>
-          {/* Top Subtitle */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            color: '#fbbf24',
-            fontFamily: 'var(--font-pixel)',
-            fontSize: isCompact ? '9.5px' : '11px',
-            letterSpacing: '1px',
-            textShadow: '0 2px 4px #000',
-            marginBottom: 4,
-          }}>
-            <Sparkles size={12} color="#fbbf24" />
-            <span>VOCABULARY DECKBUILDER</span>
-            <Sparkles size={12} color="#fbbf24" />
+          {/* Wooden Tavern Signboard */}
+          <div className="stardew-title-sign" style={{ width: '100%', marginBottom: 14, position: 'relative' }}>
+            {/* Rustic Timber Rooflet */}
+            <div className="stardew-timber-roof">
+              <PixelIcon name="leaf" size={9} color="#bbf7d0" />
+              <PixelIcon name="leaf" size={9} color="#bbf7d0" />
+            </div>
+
+            {/* Grounding Timber Posts rooted into the Meadow */}
+            <div className="stardew-timber-post stardew-timber-post-l" />
+            <div className="stardew-timber-post stardew-timber-post-r" />
+            
+            {/* Brass Corner Rivets */}
+            <div className="stardew-rivet stardew-rivet-tl" />
+            <div className="stardew-rivet stardew-rivet-tr" />
+            <div className="stardew-rivet stardew-rivet-bl" />
+            <div className="stardew-rivet stardew-rivet-br" />
+
+            {/* Top Ribbon: Genre Tagline */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
+              <div className="stardew-ribbon-banner" style={{ fontSize: isCompact ? '8.5px' : '9.5px' }}>
+                <PixelIcon name="sparkle" size={9} color="#6f4209" />
+                <span>ROGUELIKE · AUTOBATTLER · TIMELINE</span>
+                <PixelIcon name="sparkle" size={9} color="#6f4209" />
+              </div>
+            </div>
+
+            {/* 3D Carved Pixel Title */}
+            <h1 
+              className="stardew-pixel-title"
+              style={{
+                fontSize: isCompact ? 'clamp(22px, 4vw, 30px)' : 'clamp(28px, 4.4vw, 40px)',
+                textAlign: 'center',
+                margin: '10px 0 8px',
+              }}
+            >
+              REVERSAL DAY
+            </h1>
+
           </div>
 
-          {/* Shimmering Metallic Gold Title */}
-          <h1 style={{
-            fontFamily: 'var(--font-serif)',
-            fontWeight: 900,
-            fontSize: isCompact ? 'clamp(24px, 4.2vw, 36px)' : 'clamp(34px, 5.5vw, 56px)',
-            letterSpacing: '2px',
-            textTransform: 'uppercase',
-            lineHeight: 1.05,
-            marginBottom: 4,
-            filter: 'drop-shadow(0 0 24px rgba(234, 179, 8, 0.7))',
-          }}>
-            <span className="shimmer-gold-title">
-              SPIRE OF WORDS
-            </span>
-          </h1>
-
-          <p style={{
-            fontSize: isCompact ? '10.5px' : '12px',
-            color: '#94a3b8',
-            fontStyle: 'italic',
-            letterSpacing: '0.4px',
-            lineHeight: 1.4,
-            marginBottom: isCompact ? 8 : 14,
-          }}>
-            "Words are thy runic blade; Vocabulary is thy indestructible shield."
-          </p>
-
-          {/* Sound Toggle Button in Left Column for Easy Access */}
+          {/* Stardew Options / Sound & Scenery Wood Buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <button
               onClick={() => {
                 sound.playSelect();
                 onToggleSound();
               }}
-              className="spire-btn"
+              className="stardew-btn stardew-btn-wood"
+              style={{
+                padding: '6px 14px',
+                fontSize: '11px',
+                gap: 6,
+              }}
+            >
+              <PixelIcon
+                name={soundEnabled ? 'volume-2' : 'volume-x'}
+                size={14}
+                color={soundEnabled ? '#f5d76e' : '#cfc6b4'}
+              />
+              <span>音效: {soundEnabled ? '已开启' : '静音'}</span>
+            </button>
+
+            {/* Scenery Theme Switcher */}
+            <button
+              onClick={handleNextScenery}
+              className="stardew-btn stardew-btn-wood"
+              title="切换明亮清新风景 (晴空花海 / 浮空圣塔 / 翠绿密林)"
               style={{
                 padding: '6px 12px',
                 fontSize: '11px',
-                color: soundEnabled ? '#86efac' : '#94a3b8',
-                borderColor: soundEnabled ? 'rgba(74, 222, 128, 0.4)' : '#475569',
+                gap: 6,
               }}
             >
-              {soundEnabled ? <Volume2 size={14} color="#4ade80" /> : <VolumeX size={14} color="#94a3b8" />}
-              <span>音效: {soundEnabled ? '已开' : '静音'}</span>
+              <PixelIcon name={currentTheme.pixelIcon} size={14} color="#fde047" />
+              <span>风景: {currentTheme.name}</span>
             </button>
 
             <div style={{
               fontSize: '10px',
-              color: '#64748b',
-              fontFamily: 'var(--font-mono)',
+              color: '#5a3a12',
+              fontFamily: 'var(--font-pixel)',
+              textShadow: '0 1px 0 rgba(255, 255, 255, 0.8)',
+              backgroundColor: 'rgba(247, 240, 222, 0.95)',
+              padding: '4px 8px',
+              border: '1px solid #b8761d',
+              borderRadius: 2,
+              boxShadow: '0 2px 4px rgba(30, 15, 6, 0.2)',
             }}>
-              v1.2.0 横屏重构版
+              v1.2.0
             </div>
           </div>
         </div>
 
-        {/* COLUMN 2: 3D HOLOGRAPHIC SERVANT CARD & SWITCHER */}
+        {/* COLUMN 2: MEADOW HERO STAGE & TACTILE SWITCHERS */}
         <div style={{
           display: 'flex',
           flexDirection: 'column',
@@ -236,122 +321,126 @@ export const TitleView: React.FC<TitleViewProps> = ({
           justifyContent: 'center',
           position: 'relative',
           flexShrink: 0,
+          margin: isCompact ? '0 6px' : '0 24px',
         }}>
+          {/* Hero Showcase (Open-Air Meadow Stand) */}
           <div style={{ position: 'relative' }}>
-            {/* Left Switcher Arrow */}
-            <button
-              onClick={handlePrev}
-              title="切换上一位英灵 (A 或 ←)"
-              className="spire-btn"
-              style={{
-                position: 'absolute',
-                left: isCompact ? -20 : -26,
-                top: '44%',
-                transform: 'translateY(-50%)',
-                width: isCompact ? 32 : 38,
-                height: isCompact ? 32 : 38,
-                borderRadius: '50%',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(10, 14, 24, 0.95)',
-                border: `2px solid ${currentChar.archetypeColor}`,
-                boxShadow: `0 0 16px ${currentChar.archetypeGlow}, 0 4px 10px rgba(0,0,0,0.85)`,
-                zIndex: 30,
-                cursor: 'pointer',
-              }}
-            >
-              <ChevronLeft size={isCompact ? 18 : 22} color={currentChar.archetypeColor} />
-            </button>
-
-            {/* Right Switcher Arrow */}
-            <button
-              onClick={handleNext}
-              title="切换下一位英灵 (D 或 →)"
-              className="spire-btn"
-              style={{
-                position: 'absolute',
-                right: isCompact ? -20 : -26,
-                top: '44%',
-                transform: 'translateY(-50%)',
-                width: isCompact ? 32 : 38,
-                height: isCompact ? 32 : 38,
-                borderRadius: '50%',
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(10, 14, 24, 0.95)',
-                border: `2px solid ${currentChar.archetypeColor}`,
-                boxShadow: `0 0 16px ${currentChar.archetypeGlow}, 0 4px 10px rgba(0,0,0,0.85)`,
-                zIndex: 30,
-                cursor: 'pointer',
-              }}
-            >
-              <ChevronRight size={isCompact ? 18 : 22} color={currentChar.archetypeColor} />
-            </button>
-
-            {/* 3D Holographic Foil Card */}
             <HoloServantCard
               character={currentChar}
-              viewMode="card"
-              width={cardWidth}
-              height={cardHeight}
+              width={heroWidth}
+              height={heroHeight}
             />
 
-            {/* Class & Name Badge */}
-            <div style={{
-              position: 'absolute',
-              bottom: isCompact ? -12 : -16,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              backgroundColor: 'rgba(9, 11, 18, 0.96)',
-              border: `2px solid ${currentChar.archetypeColor}`,
-              boxShadow: '0 -2px 0 0 #000, 0 2px 0 0 #000, -2px 0 0 0 #000, 2px 0 0 0 #000',
-              padding: isCompact ? '2px 10px' : '4px 14px',
-              color: '#f8fafc',
-              fontFamily: 'var(--font-pixel)',
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-              borderRadius: 3,
-              zIndex: 25,
-            }}>
-              <div style={{
-                fontSize: isCompact ? '11px' : '13px',
-                fontWeight: 700,
-                color: '#ffffff',
-                fontFamily: 'var(--font-pixel)',
-              }}>
-                {currentChar.name}
-              </div>
-              <div style={{
-                fontSize: isCompact ? '8.5px' : '9.5px',
-                color: '#94a3b8',
-                fontFamily: 'var(--font-pixel)',
-                marginTop: 1,
-              }}>
-                {currentChar.title}
-              </div>
+            {/* Left 3D Wood Arrow Switcher */}
+            <div
+              style={{
+                position: 'absolute',
+                left: isCompact ? -48 : -64,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 100,
+                pointerEvents: 'auto',
+              }}
+            >
+              <button
+                type="button"
+                onClick={handlePrev}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                title="切换上一位英灵 (键盘 ← 或 A)"
+                className="stardew-btn stardew-arrow-btn"
+                style={{
+                  width: isCompact ? 38 : 46,
+                  height: isCompact ? 38 : 46,
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  borderRadius: 4,
+                }}
+              >
+                <PixelIcon name="chevron-left" size={isCompact ? 20 : 24} color="#fef08a" />
+              </button>
+            </div>
+
+            {/* Right 3D Wood Arrow Switcher */}
+            <div
+              style={{
+                position: 'absolute',
+                right: isCompact ? -48 : -64,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                zIndex: 100,
+                pointerEvents: 'auto',
+              }}
+            >
+              <button
+                type="button"
+                onClick={handleNext}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                title="切换下一位英灵 (键盘 → 或 D)"
+                className="stardew-btn stardew-arrow-btn"
+                style={{
+                  width: isCompact ? 38 : 46,
+                  height: isCompact ? 38 : 46,
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  borderRadius: 4,
+                }}
+              >
+                <PixelIcon name="chevron-right" size={isCompact ? 20 : 24} color="#fef08a" />
+              </button>
             </div>
           </div>
 
-          <div style={{
-            fontSize: isCompact ? '9.5px' : '11px',
-            color: currentChar.archetypeColor,
-            fontFamily: 'var(--font-pixel)',
-            marginTop: isCompact ? 14 : 16,
-          }}>
-            {currentChar.archetypeTag}
+          {/* Carved Oak & Brass Nameplate (Cleanly placed below the Dais) */}
+          <div className="stardew-nameplate">
+            <div style={{
+              fontSize: isCompact ? '8.5px' : '9.5px',
+              color: '#fef08a',
+              fontFamily: 'var(--font-pixel)',
+              textShadow: '1px 1px 0 #1b0a04',
+              marginBottom: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 4,
+            }}>
+              <span>{currentChar.servantClass}</span>
+              <span>·</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                <PixelIcon name={ARCHETYPE_ICON[currentChar.archetype]} size={10} color="#fef08a" />
+                <span>{currentChar.archetypeTag}</span>
+              </span>
+            </div>
+            <div style={{
+              fontSize: isCompact ? '11px' : '13px',
+              fontWeight: 700,
+              color: '#ffd166',
+              fontFamily: 'var(--font-pixel)',
+              textShadow: '1px 1px 0 #1b0a04',
+            }}>
+              {currentChar.name}
+            </div>
+            <div style={{
+              fontSize: isCompact ? '8px' : '9px',
+              color: '#fef9c3',
+              fontFamily: 'var(--font-pixel)',
+              textShadow: '1px 1px 0 #1b0a04',
+              marginTop: 1,
+              opacity: 0.9,
+            }}>
+              {currentChar.title}
+            </div>
           </div>
 
-          {/* 6 Servants Mini Carousel Dots */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 5,
-            margin: '3px 0',
-          }}>
+          {/* 12 Servants Carved Oak Roster Dock — 槽位直接显示像素立绘 */}
+          <div className="stardew-roster-dock">
             {CHARACTERS.map((c) => {
               const isCur = c.id === currentChar.id;
               return (
@@ -361,19 +450,23 @@ export const TitleView: React.FC<TitleViewProps> = ({
                     sound.playSelect();
                     onSelectCharacter?.(c);
                   }}
-                  title={`点击切换到 ${c.name} (${c.servantClass})`}
-                  style={{
-                    width: isCur ? (isCompact ? 20 : 26) : (isCompact ? 7 : 9),
-                    height: isCompact ? 6 : 8,
-                    borderRadius: 3,
-                    backgroundColor: isCur ? c.archetypeColor : 'rgba(148, 163, 184, 0.35)',
-                    border: isCur ? `1px solid ${c.archetypeColor}` : 'none',
-                    boxShadow: isCur ? `0 0 8px ${c.archetypeGlow}` : undefined,
-                    cursor: 'pointer',
-                    transition: 'all 0.25s ease',
-                    padding: 0,
-                  }}
-                />
+                  title={`点击选择 ${c.name} (${c.servantClass})`}
+                  className={`stardew-hero-rune ${isCur ? 'active' : ''}`}
+                  style={{ width: runeSize, height: runeSize }}
+                >
+                  <img
+                    src={c.avatarSprite}
+                    alt={c.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      objectPosition: 'center bottom',
+                      imageRendering: 'pixelated',
+                      display: 'block',
+                    }}
+                  />
+                </button>
               );
             })}
           </div>
@@ -381,39 +474,49 @@ export const TitleView: React.FC<TitleViewProps> = ({
           {/* Detailed Roster Selection Button */}
           <button
             onClick={() => { sound.playSelect(); onOpenCharacterSelect(); }}
-            className="spire-btn"
+            className="stardew-btn stardew-btn-wood"
             style={{
-              padding: isCompact ? '4px 10px' : '6px 14px',
+              padding: isCompact ? '4px 12px' : '6px 16px',
               fontSize: isCompact ? '9.5px' : '11px',
-              backgroundColor: 'rgba(30, 41, 59, 0.8)',
-              borderColor: currentChar.archetypeColor,
-              color: '#f8fafc',
-              gap: 5,
-              marginTop: 2,
+              gap: 6,
+              marginTop: 6,
             }}
           >
-            <Users size={isCompact ? 12 : 13} color={currentChar.archetypeColor} />
-            <span>6位英灵流派与宝具</span>
+            <PixelIcon name="users" size={isCompact ? 12 : 14} color="#fef08a" />
+            <span>{CHARACTERS.length}位英雄与英灵全览</span>
           </button>
         </div>
 
-        {/* COLUMN 3: ACTION MENU BUTTONS */}
+        {/* COLUMN 3: STARDEW ADVENTURER'S GUILD NOTICEBOARD */}
         <div 
-          className="pixel-panel" 
+          className="stardew-panel" 
           style={{
-            padding: isCompact ? '12px 14px' : '20px 24px',
+            position: 'relative',
+            padding: isCompact ? '12px 14px' : '16px 18px',
             display: 'flex',
             flexDirection: 'column',
-            gap: isCompact ? 7 : 10,
-            width: isCompact ? '230px' : '280px',
-            backdropFilter: 'blur(12px)',
-            backgroundColor: 'rgba(12, 15, 25, 0.92)',
-            border: `2px solid ${currentChar.archetypeColor}`,
-            boxShadow: `0 0 24px ${currentChar.archetypeGlow}, 0 12px 32px rgba(0, 0, 0, 0.85)`,
-            transition: 'all 0.3s ease',
+            justifyContent: 'center',
+            gap: isCompact ? 8 : 10,
+            width: isCompact ? '208px' : '280px',
             flexShrink: 0,
           }}
         >
+          {/* Rustic Timber Rooflet */}
+          <div className="stardew-timber-roof">
+            <PixelIcon name="leaf" size={9} color="#bbf7d0" />
+            <PixelIcon name="leaf" size={9} color="#bbf7d0" />
+          </div>
+
+          {/* Grounding Timber Posts rooted into the Meadow */}
+          <div className="stardew-timber-post stardew-timber-post-l" />
+          <div className="stardew-timber-post stardew-timber-post-r" />
+
+          {/* Noticeboard Header Plaque */}
+          <div className="stardew-board-header">
+            <PixelIcon name="scroll-horizontal" size={12} color="#fffbeb" />
+            <span>冒险者公会 · 远征战令</span>
+          </div>
+
           {/* Continue button if run active */}
           {hasActiveRun && currentFloor > 0 && onResumeRun && (
             <button
@@ -421,38 +524,56 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 sound.playDraw();
                 onResumeRun();
               }}
-              className="spire-btn"
+              className="stardew-btn stardew-btn-blue"
               style={{
-                padding: isCompact ? '8px 12px' : '11px 16px',
-                fontSize: isCompact ? '11px' : '13px',
-                backgroundColor: '#1e3a8a',
-                color: '#93c5fd',
+                padding: isCompact ? '8px 12px' : '10px 14px',
+                fontSize: isCompact ? '11px' : '12px',
+                gap: 8,
                 justifyContent: 'flex-start',
+                width: '100%',
               }}
             >
-              <Compass size={isCompact ? 14 : 16} color="#60a5fa" />
+              <PixelIcon name="compass" size={isCompact ? 15 : 18} color="#9db3d0" />
               <span>继续攀登 (第 {currentFloor} 层)</span>
             </button>
           )}
 
-          {/* Start New Run Button */}
+          {/* Start New Run Button (Spire Slay + Companion Squad + Currency Wars) */}
           <button
             onClick={() => {
               sound.playSelect();
               onStartGame();
             }}
-            className="spire-btn"
+            className="stardew-btn stardew-btn-primary"
             style={{
-              padding: isCompact ? '10px 14px' : '13px 18px',
-              fontSize: isCompact ? '12px' : '14px',
-              backgroundColor: '#854d0e',
-              color: '#fef08a',
+              padding: isCompact ? '10px 12px' : '12px 14px',
+              fontSize: isCompact ? '12px' : '13.5px',
+              gap: 10,
               justifyContent: 'flex-start',
-              boxShadow: '0 0 14px rgba(234, 179, 8, 0.4)',
+              width: '100%',
             }}
           >
-            <Play size={isCompact ? 15 : 17} color="#fde047" fill="#fde047" />
-            <span>{hasActiveRun && currentFloor > 0 ? '重新开始攀登' : '踏入尖塔 (START)'}</span>
+            <PixelIcon name="play" size={isCompact ? 18 : 20} color="#fffbeb" />
+            <span style={{ fontWeight: 800 }}>{hasActiveRun && currentFloor > 0 ? '继续尖塔' : '踏入尖塔'}</span>
+          </button>
+
+          {/* Auto-Chess Sandbox Mode Button */}
+          <button
+            onClick={() => {
+              sound.playSelect();
+              onStartAutoChess?.();
+            }}
+            className="stardew-btn stardew-btn-purple"
+            style={{
+              padding: isCompact ? '8px 12px' : '10px 14px',
+              fontSize: isCompact ? '11px' : '12px',
+              gap: 8,
+              justifyContent: 'flex-start',
+              width: '100%',
+            }}
+          >
+            <PixelIcon name="sparkles" size={isCompact ? 15 : 17} color="#f4f9ec" />
+            <span style={{ fontWeight: 700 }}>自走棋演练场 (SANDBOX)</span>
           </button>
 
           {/* Select Character / Hero Roster Button */}
@@ -461,34 +582,17 @@ export const TitleView: React.FC<TitleViewProps> = ({
               sound.playSelect();
               onOpenCharacterSelect();
             }}
-            className="spire-btn"
+            className="stardew-btn stardew-btn-red"
             style={{
-              padding: isCompact ? '8px 12px' : '11px 16px',
-              fontSize: isCompact ? '11px' : '12.5px',
-              borderColor: currentChar.archetypeColor,
-              color: '#ffffff',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <UserCheck size={isCompact ? 14 : 16} color={currentChar.archetypeColor} />
-            <span>英灵召见 (SERVANTS)</span>
-          </button>
-
-          {/* Lexicon / Vocabulary Library */}
-          <button
-            onClick={() => {
-              sound.playSelect();
-              onOpenLexicon();
-            }}
-            className="spire-btn"
-            style={{
-              padding: isCompact ? '8px 12px' : '10px 16px',
+              padding: isCompact ? '8px 12px' : '10px 14px',
               fontSize: isCompact ? '11px' : '12px',
+              gap: 8,
               justifyContent: 'flex-start',
+              width: '100%',
             }}
           >
-            <BookOpen size={isCompact ? 14 : 15} color="#fbbf24" />
-            <span>尖塔词典 (LEXICON)</span>
+            <PixelIcon name="user" size={isCompact ? 15 : 17} color="#f8ece7" />
+            <span style={{ fontWeight: 700 }}>英灵阵容 (SERVANTS)</span>
           </button>
 
           {/* Starter Deck Preview */}
@@ -497,42 +601,21 @@ export const TitleView: React.FC<TitleViewProps> = ({
               sound.playSelect();
               onOpenDeck();
             }}
-            className="spire-btn"
+            className="stardew-btn stardew-btn-blue"
             style={{
-              padding: isCompact ? '8px 12px' : '10px 16px',
+              padding: isCompact ? '8px 12px' : '10px 14px',
               fontSize: isCompact ? '11px' : '12px',
+              gap: 8,
               justifyContent: 'flex-start',
+              width: '100%',
             }}
           >
-            <Layers size={isCompact ? 14 : 15} color="#38bdf8" />
-            <span>卡牌套组鉴赏</span>
+            <PixelIcon name="blocks" size={isCompact ? 15 : 17} color="#eaeff7" />
+            <span style={{ fontWeight: 700 }}>战术卡组整备</span>
           </button>
         </div>
       </div>
 
-      {/* FOOTER BAR: GAMEPLAY RULE TIP */}
-      {!isCompact && (
-        <div style={{
-          textAlign: 'center',
-          zIndex: 10,
-          padding: '4px 0',
-        }}>
-          <div style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.75)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            padding: '3px 12px',
-            borderRadius: 4,
-            fontSize: '11px',
-            color: '#cbd5e1',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 6,
-          }}>
-            <ShieldCheck size={13} color="#34d399" />
-            <span>出牌唤醒词义享 <strong style={{ color: '#facc15' }}>1.5x 暴击</strong> | 原生支持真人发音与词根记忆</span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

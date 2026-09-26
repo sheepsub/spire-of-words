@@ -1,5 +1,5 @@
 {
-  "name": "slay-the-spire-mirror",
+  "name": "reversal-day",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -30,6 +30,8 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
+    "pngjs": "^7.0.0",
+    "sharp": "^0.35.4",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
   }

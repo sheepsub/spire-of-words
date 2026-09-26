@@ -1,7 +1,7 @@
 {
-  "name": "Spire of Words",
-  "short_name": "Spire of Words",
-  "description": "Slay the Spire styled rogue-lite vocabulary deckbuilder",
+  "name": "Reversal Day",
+  "short_name": "Reversal Day",
+  "description": "Reversal Day —— 肉鸽卡牌构筑 × 自走棋战阵 × 行动条排轴",
   "start_url": "/",
   "display": "standalone",
   "orientation": "landscape",

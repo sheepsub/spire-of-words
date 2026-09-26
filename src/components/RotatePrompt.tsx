@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Smartphone, RotateCw, X } from 'lucide-react';
+import { PixelIcon } from './PixelIcon';
 import { sound } from '../utils/audio';
 
 interface RotatePromptProps {
@@ -87,7 +87,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
         }}
         title="暂不旋转，直接游玩"
       >
-        <X size={18} />
+        <PixelIcon name="close" size={18} />
       </button>
 
       {/* Animated Phone Rotation Graphic */}
@@ -112,7 +112,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
             filter: 'drop-shadow(0 0 16px rgba(251, 191, 36, 0.6))',
           }}
         >
-          <Smartphone size={54} strokeWidth={1.75} />
+          <PixelIcon name="smartphone" size={54} />
         </div>
         <div
           style={{
@@ -123,7 +123,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
             color: '#38bdf8',
           }}
         >
-          <RotateCw size={22} />
+          <PixelIcon name="redo" size={22} />
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
           marginBottom: 24,
         }}
       >
-        《Spire of Words》针对<strong>横屏卡牌构筑</strong>精心调优。请将手机横置，享受完整战斗视野与全息英灵立绘！
+        《Reversal Day》针对<strong>横屏卡牌构筑</strong>精心调优。请将手机横置，享受完整战斗视野与像素英灵立绘！
       </p>
 
       {/* Dual Choice Buttons */}
@@ -180,7 +180,7 @@ export const RotatePrompt: React.FC<RotatePromptProps> = ({
             boxShadow: '0 0 16px rgba(234, 179, 8, 0.4)',
           }}
         >
-          <RotateCw size={16} />
+          <PixelIcon name="redo" size={16} />
           <span>一键强制虚拟横屏 (Virtual Landscape)</span>
         </button>
 

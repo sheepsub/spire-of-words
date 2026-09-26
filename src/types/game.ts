@@ -1,7 +1,8 @@
+import type { SpireCompanionInstance } from '../data/spireCompanions';
+
 export type CardType = 'attack' | 'skill' | 'power';
 export type CardRarity = 'starter' | 'common' | 'uncommon' | 'rare';
-export type VocabDifficulty = 'all' | 'cet46' | 'ielts' | 'toefl' | 'gre';
-export type VocabArchetype = 'root' | 'poison' | 'shield' | 'combo' | 'wealth' | 'fury' | 'general' | 'necro' | 'regent';
+export type Archetype = 'root' | 'poison' | 'shield' | 'combo' | 'wealth' | 'fury' | 'general' | 'necro' | 'regent';
 
 // STS2 (杀戮尖塔 2) 附魔与苦痛类型
 export type EnchantmentType =
@@ -26,40 +27,11 @@ export type AfflictionType =
   | 'smog' // 烟雾: 本回合无法再打出技能牌
   | 'hexed'; // 邪咒: 获得虚无
 
-export interface DictionaryEntry {
-  id: string;
-  word: string;
-  phonetic: string;
-  pos: string; // n., v., adj., adv.
-  meaning: string;
-  distractors: string[];
-  tier: VocabDifficulty;
-  etymology?: string;
-  prefix?: string;
-  rootWord?: string;
-  archetype?: VocabArchetype;
-  collocation?: string;
-  exampleSentence?: string;
-  exampleTranslation?: string;
-}
-
 export interface Card {
   id: string;
   name: string; // Distinct card name (e.g. 誓约胜利之剑 (Excalibur))
   characterId?: string; // Character owner (artoria, gilgamesh, mash, jalter, serenity, rin)
-  word: string;
-  phonetic: string;
-  pos: string; // n., v., adj., adv.
-  meaning: string; // Primary Chinese definition
-  distractors: string[]; // 2 wrong definitions for quick recall challenge
-  etymology?: string; // 词根/词源/助记
-  prefix?: string; // 前缀 e.g. 'dis', 're', 'pro'
-  rootWord?: string; // 词根 e.g. 'rupt', 'struct', 'fort'
-  archetype?: VocabArchetype;
-  collocation?: string; // 常用搭配 e.g. 'sever ties with'
-  exampleSentence?: string;
-  exampleTranslation?: string;
-  tier: VocabDifficulty;
+  archetype?: Archetype;
 
   cost: number;
   type: CardType;
@@ -89,7 +61,6 @@ export interface Card {
   retainCard?: boolean; // 保留手牌
   vulnerableMultiplier?: number; // 对易伤敌人倍率 (如 3x)
   reflectionDamage?: boolean; // 理想之城：本回合获得护甲时反弹等量伤害
-  reverberateOnCritical?: boolean; // 咏唱暴击追加 1 段全额打击
   cardDrawOnAttack?: boolean; // 宝石剑：每打出 1 张攻击牌抽 1 张牌
   illustrationKey?: string; // 专属立绘标识
   sts2Art?: string; // STS2 官方卡牌插画文件名
@@ -115,10 +86,6 @@ export interface Card {
   upgradedPoison?: number;
   upgradedStrength?: number;
   upgradedGoldGain?: number;
-
-  // Learning tracking
-  masteryCount: number; // Correct recalls count
-  needReview: boolean;  // Flagged as mistake
 }
 
 export type IntentType = 'attack' | 'defend' | 'buff' | 'debuff' | 'special';
@@ -169,6 +136,8 @@ export interface Player {
   characterId?: string;
   characterName?: string;
   characterAvatar?: string;
+  archetypeColor?: string;
+  archetypeGlow?: string;
   hp: number;
   maxHp: number;
   energy: number;
@@ -177,11 +146,10 @@ export interface Player {
   gold: number;
   statusEffects: StatusEffects;
   deck: Card[];
-  drawPile: Card[];
-  hand: Card[];
-  discardPile: Card[];
-  exhaustPile: Card[];
   relics: Relic[];
+  // Spire Party & Companions (Auto-Chess & Currency Wars integration)
+  companions?: SpireCompanionInstance[];
+  maxCompanions?: number;
 }
 
 export type NodeType = 'monster' | 'elite' | 'rest' | 'shop' | 'event' | 'boss';
@@ -201,18 +169,10 @@ export type GameScreen =
   | 'char_select'
   | 'map' 
   | 'battle' 
+  | 'autochess'
   | 'reward' 
   | 'rest' 
   | 'shop' 
   | 'deck' 
-  | 'lexicon' 
   | 'gameover' 
   | 'victory';
-
-export interface FloatText {
-  id: string;
-  text: string;
-  type: 'damage' | 'block' | 'critical' | 'heal' | 'buff' | 'debuff' | 'miss';
-  x: number;
-  y: number;
-}

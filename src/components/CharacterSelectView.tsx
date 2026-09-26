@@ -1,18 +1,9 @@
 import React, { useState } from 'react';
-import { CHARACTERS, type CharacterDefinition } from '../data/characters';
+import { CHARACTERS, ARCHETYPE_ICON, type CharacterDefinition } from '../data/characters';
 import { sound } from '../utils/audio';
 import { AtmosphericParticles } from './AtmosphericParticles';
 import { HoloServantCard } from './HoloServantCard';
-import { 
-  Heart, 
-  Zap, 
-  Coins, 
-  ArrowLeft, 
-  Sparkles, 
-  Play, 
-  Layers,
-  Sword
-} from 'lucide-react';
+import { PixelIcon } from './PixelIcon';
 
 interface CharacterSelectViewProps {
   onSelectCharacter: (character: CharacterDefinition) => void;
@@ -30,7 +21,19 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
   const [selectedChar, setSelectedChar] = useState<CharacterDefinition>(() => {
     return CHARACTERS.find(c => c.id === initialCharacterId) || CHARACTERS[0];
   });
-  const [viewMode, setViewMode] = useState<'card' | 'figure'>('card');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'sts' | 'fate' | 'crossover'>('all');
+
+  const stsIds = ['ironclad', 'silent', 'defect', 'watcher', 'necrobinder', 'regent'];
+  const fateIds = ['artoria', 'gilgamesh', 'mash', 'jalter', 'serenity', 'rin'];
+  // 跨界联动：既不属于尖塔原生，也不属于 Fate 英灵（菲比 / 饺子）
+  const crossoverIds = ['phoebe', 'stewie'];
+
+  const filteredCharacters = CHARACTERS.filter(char => {
+    if (categoryFilter === 'sts') return stsIds.includes(char.id);
+    if (categoryFilter === 'fate') return fateIds.includes(char.id);
+    if (categoryFilter === 'crossover') return crossoverIds.includes(char.id);
+    return true;
+  });
 
   const handleSelect = (char: CharacterDefinition) => {
     sound.playSelect();
@@ -80,7 +83,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
           className="spire-btn"
           style={{ padding: '8px 14px', fontSize: '11px' }}
         >
-          <ArrowLeft size={14} />
+          <PixelIcon name="arrow-left" size={14} />
           <span>返回大厅</span>
         </button>
 
@@ -93,7 +96,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
             textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, 0 4px 12px rgba(234, 179, 8, 0.6)',
             marginBottom: 2,
           }}>
-            英灵召见 · CHOOSE THY SERVANT
+            英雄召见 · CHOOSE THY HERO
           </h2>
           <div style={{
             fontFamily: 'var(--font-pixel)',
@@ -101,7 +104,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
             color: '#94a3b8',
             letterSpacing: '1px',
           }}>
-            6 位 Fate/Grand Order 正版英灵 · 独立职阶、专属宝具与魔导流派
+            {CHARACTERS.length} 位传奇英雄与英灵全员登场 · 纯正 2D 格斗像素立绘建模 · 专属流派与羁绊机制
           </div>
         </div>
 
@@ -122,7 +125,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
         width: '100%',
         alignSelf: 'center',
       }}>
-        {/* Left: 6 Servants Selectable Tabs */}
+        {/* Left: 12 Heroes Selectable Tabs with Category Filter */}
         <div style={{
           width: 'clamp(240px, 32%, 310px)',
           display: 'flex',
@@ -131,7 +134,49 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
           overflowY: 'auto',
           paddingRight: 6,
         }}>
-          {CHARACTERS.map((char) => {
+          {/* Category Filter Tabs */}
+          <div style={{
+            display: 'flex',
+            gap: 4,
+            padding: '2px',
+            backgroundColor: 'rgba(10, 12, 18, 0.95)',
+            border: '1px solid #374151',
+            borderRadius: 4,
+            marginBottom: 2,
+            flexShrink: 0,
+          }}>
+            {[
+              { id: 'all', label: `全部 (${CHARACTERS.length})` },
+              { id: 'sts', label: `尖塔 (${stsIds.length})` },
+              { id: 'fate', label: `Fate (${fateIds.length})` },
+              { id: 'crossover', label: `联动 (${crossoverIds.length})` },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  sound.playSelect();
+                  setCategoryFilter(tab.id as 'all' | 'sts' | 'fate' | 'crossover');
+                }}
+                style={{
+                  flex: 1,
+                  padding: '4px 2px',
+                  fontSize: '9.5px',
+                  fontFamily: 'var(--font-pixel)',
+                  backgroundColor: categoryFilter === tab.id ? 'rgba(59, 130, 246, 0.4)' : 'transparent',
+                  color: categoryFilter === tab.id ? '#ffffff' : '#94a3b8',
+                  border: categoryFilter === tab.id ? '1px solid #3b82f6' : '1px solid transparent',
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  fontWeight: categoryFilter === tab.id ? 700 : 400,
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {filteredCharacters.map((char) => {
             const isChosen = char.id === selectedChar.id;
             return (
               <div
@@ -169,14 +214,13 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
                   position: 'relative',
                 }}>
                   <img 
-                    src={char.cardSprite || char.avatarSprite} 
+                    src={char.avatarSprite} 
                     alt={char.name}
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'center 15%',
-                      imageRendering: 'auto',
+                      objectFit: 'contain',
+                      imageRendering: 'pixelated',
                     }}
                   />
                   <div style={{
@@ -215,8 +259,13 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
                     color: char.archetypeColor,
                     marginTop: 2,
                     whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 3,
                   }}>
-                    {char.archetypeTag}
+                    <PixelIcon name={ARCHETYPE_ICON[char.archetype]} size={10} color={char.archetypeColor} />
+                    <span>{char.archetypeTag}</span>
                   </div>
                 </div>
               </div>
@@ -236,57 +285,13 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
         }}>
           {/* Top Section: Art Showcase & Core Info */}
           <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            {/* Magnificent Fate Artwork Preview */}
+            {/* Magnificent Pixel Hero Figure Preview */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flexShrink: 0 }}>
               <HoloServantCard
                 character={selectedChar}
-                viewMode={viewMode}
                 width={200}
                 height={283}
               />
-
-              {/* View Mode Toggle Button */}
-              <div style={{
-                display: 'flex',
-                gap: 4,
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                padding: '3px 6px',
-                borderRadius: 4,
-                border: '1px solid #334155',
-              }}>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('card')}
-                  style={{
-                    backgroundColor: viewMode === 'card' ? selectedChar.archetypeColor : 'transparent',
-                    color: viewMode === 'card' ? '#ffffff' : '#94a3b8',
-                    border: 'none',
-                    borderRadius: 2,
-                    fontSize: '9.5px',
-                    fontFamily: 'var(--font-pixel)',
-                    padding: '2px 8px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  🎴 圣晶卡面
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('figure')}
-                  style={{
-                    backgroundColor: viewMode === 'figure' ? selectedChar.archetypeColor : 'transparent',
-                    color: viewMode === 'figure' ? '#ffffff' : '#94a3b8',
-                    border: 'none',
-                    borderRadius: 2,
-                    fontSize: '9.5px',
-                    fontFamily: 'var(--font-pixel)',
-                    padding: '2px 8px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ⚔️ 全景立绘
-                </button>
-              </div>
             </div>
 
             {/* Title & Basic Stats */}
@@ -338,22 +343,22 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
                 marginBottom: 10,
                 fontFamily: 'var(--font-pixel)',
               }}>
-                <Sword size={12} color="#facc15" />
+                <PixelIcon name="sword" size={12} color="#facc15" />
                 <span>宝具: {selectedChar.noblePhantasm}</span>
               </div>
 
               {/* Attributes Row */}
               <div style={{ display: 'flex', gap: 14, alignItems: 'center', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#f87171', fontFamily: 'var(--font-pixel-num)', fontSize: '12px' }}>
-                  <Heart size={15} fill="#ef4444" color="#ef4444" />
+                  <PixelIcon name="heart" size={15} color="#ef4444" />
                   <span>{selectedChar.hp} HP</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#facc15', fontFamily: 'var(--font-pixel-num)', fontSize: '12px' }}>
-                  <Zap size={15} fill="#eab308" color="#eab308" />
+                  <PixelIcon name="zap" size={15} color="#eab308" />
                   <span>{selectedChar.energy} 能量</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#fbbf24', fontFamily: 'var(--font-pixel-num)', fontSize: '12px' }}>
-                  <Coins size={15} color="#fbbf24" />
+                  <PixelIcon name="coins" size={15} color="#fbbf24" />
                   <span>{selectedChar.gold} G</span>
                 </div>
               </div>
@@ -396,7 +401,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
                 alignItems: 'center',
                 gap: 6,
               }}>
-                <Sparkles size={13} color="#38bdf8" />
+                <PixelIcon name="sparkles" size={13} color="#38bdf8" />
                 <span>职阶战法与机制</span>
               </div>
               <p style={{ fontSize: '11px', lineHeight: '16px', color: '#cbd5e1', margin: 0 }}>
@@ -440,7 +445,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
               alignItems: 'center',
               gap: 6,
             }}>
-              <Layers size={12} />
+              <PixelIcon name="blocks" size={12} />
               <span>初始魔导牌库 (10张精选卡牌):</span>
             </div>
             <div style={{
@@ -466,11 +471,10 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
                     alignItems: 'center',
                     gap: 4,
                   }}
-                  title={`${card.word} (${card.pos}) - ${card.meaning}`}
+                  title={card.name}
                 >
                   <span style={{ fontFamily: 'var(--font-pixel-num)', fontSize: '8px', color: '#fef08a' }}>{card.cost}E</span>
                   <strong style={{ color: '#fef08a' }}>{card.name.split('(')[0].trim()}</strong>
-                  <span style={{ fontSize: '9px', color: '#93c5fd' }}>({card.word})</span>
                 </div>
               ))}
             </div>
@@ -503,7 +507,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
             gap: 8,
           }}
         >
-          <ArrowLeft size={15} color={selectedChar.archetypeColor} />
+          <PixelIcon name="arrow-left" size={15} color={selectedChar.archetypeColor} />
           <span>设为大厅展示并返回</span>
         </button>
 
@@ -519,7 +523,7 @@ export const CharacterSelectView: React.FC<CharacterSelectViewProps> = ({
             boxShadow: '0 0 16px rgba(234, 179, 8, 0.4)',
           }}
         >
-          <Play size={17} color="#fde047" fill="#fde047" />
+          <PixelIcon name="play" size={17} color="#fde047" />
           <span>召唤【{selectedChar.name}】出征尖塔 (SUMMON SERVANT)</span>
         </button>
       </div>
