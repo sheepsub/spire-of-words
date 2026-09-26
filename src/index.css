@@ -1016,31 +1016,10 @@ html, body, #root {
   box-sizing: border-box;
 }
 
-/* Brass / Golden Corner Brackets */
+/* Brass / Golden Corner Brackets - removed to avoid floating/misaligned lines on compact screens */
 .stardew-panel::before,
 .stardew-panel::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.stardew-panel::before {
-  top: 2px;
-  left: 2px;
-  border-top: 3px solid #9adcea;
-  border-left: 3px solid #9adcea;
-  box-shadow: 2px 2px 0 0 #2f7a8c;
-}
-
-.stardew-panel::after {
-  bottom: 2px;
-  right: 2px;
-  border-bottom: 3px solid #9adcea;
-  border-right: 3px solid #9adcea;
-  box-shadow: -2px -2px 0 0 #2f7a8c;
+  display: none;
 }
 
 /* 2. Stardew 3D Pixel Tactile Buttons */

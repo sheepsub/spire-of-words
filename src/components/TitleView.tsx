@@ -154,19 +154,15 @@ export const TitleView: React.FC<TitleViewProps> = ({
   }, [hasActiveRun, onResumeRun, onStartGame, currentIndex, onSelectCharacter]);
 
   // Meadow hero stage dimensions tailored for mobile landscape vs desktop
-  const heroWidth = isCompact ? 190 : 250;
-  const heroHeight = isCompact ? 210 : 280;
+  const heroWidth = isCompact ? 160 : 250;
+  const heroHeight = isCompact ? 175 : 280;
 
   // 英雄连位选人条：每个槽位直接显示该英雄的像素立绘。
-  // 槽位总宽会直接决定中间栏宽度，进而决定三栏在手机横屏（如 844×390）下是否换行。
-  // 槽位数会随角色增加而变多，写死尺寸迟早会把三栏挤到换行（12→14 时就发生过），
-  // 所以这里按「选人条可用总宽」反算单槽尺寸。
-  // dockChrome = 左右内边距(7×2) + 边框(2×2) + 槽间距(4×(n-1))
-  const dockChrome = 18 + 4 * (CHARACTERS.length - 1);
-  const dockMaxWidth = isCompact ? 296 : 420;
+  const dockChrome = 14 + 3 * (CHARACTERS.length - 1);
+  const dockMaxWidth = isCompact ? 250 : 420;
   const runeSize = Math.max(
-    12,
-    Math.min(isCompact ? 18 : 30, Math.floor((dockMaxWidth - dockChrome) / CHARACTERS.length)),
+    11,
+    Math.min(isCompact ? 15 : 30, Math.floor((dockMaxWidth - dockChrome) / CHARACTERS.length)),
   );
 
   return (
@@ -177,12 +173,11 @@ export const TitleView: React.FC<TitleViewProps> = ({
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: isCompact ? 'flex-start' : 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
-        padding: 'max(8px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left))',
+        padding: 'max(6px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left))',
         position: 'relative',
-        overflowX: 'hidden',
-        overflowY: 'auto',
+        overflow: 'hidden',
         boxSizing: 'border-box',
         backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%, rgba(34, 197, 94, 0.04) 100%), url('${currentTheme.url}')`,
         backgroundPosition: 'center bottom',
@@ -191,7 +186,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
       }}
     >
       {/* Dynamic Ambient Sun-Dappled Pollen & Breezy Petals */}
-      <AtmosphericParticles color={currentTheme.particleColor} density={isCompact ? 22 : 34} />
+      <AtmosphericParticles color={currentTheme.particleColor} density={isCompact ? 20 : 34} />
 
       {/* HORIZONTAL 3-COLUMN LAYOUT IN LANDSCAPE */}
       <div 
@@ -200,14 +195,13 @@ export const TitleView: React.FC<TitleViewProps> = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: isCompact ? 'center' : 'space-evenly',
+          justifyContent: 'center',
           width: '100%',
           maxWidth: '1240px',
-          flex: 1,
           zIndex: 10,
-          gap: isCompact ? '10px' : '36px',
-          flexWrap: 'wrap',
-          padding: '4px 0',
+          gap: isCompact ? '12px' : '36px',
+          flexWrap: 'nowrap',
+          padding: '2px 0',
         }}
       >
         {/* COLUMN 1: STARDEW TAVERN HANGING SIGNBOARD & SETTINGS */}
@@ -216,12 +210,20 @@ export const TitleView: React.FC<TitleViewProps> = ({
           flexDirection: 'column',
           alignItems: isCompact ? 'center' : 'flex-start',
           justifyContent: 'center',
-          maxWidth: isCompact ? '258px' : '360px',
+          width: isCompact ? '230px' : '360px',
+          maxWidth: isCompact ? '230px' : '360px',
           flexShrink: 0,
-          order: isCompact ? 1 : 0,
         }}>
           {/* Wooden Tavern Signboard */}
-          <div className="stardew-title-sign" style={{ width: '100%', marginBottom: 14, position: 'relative' }}>
+          <div 
+            className="stardew-title-sign" 
+            style={{ 
+              width: '100%', 
+              marginBottom: isCompact ? 8 : 14, 
+              padding: isCompact ? '8px 12px' : '12px 18px',
+              position: 'relative' 
+            }}
+          >
             {/* Rustic Timber Rooflet */}
             <div className="stardew-timber-roof">
               <PixelIcon name="leaf" size={9} color="#bbf7d0" />
@@ -239,11 +241,11 @@ export const TitleView: React.FC<TitleViewProps> = ({
             <div className="stardew-rivet stardew-rivet-br" />
 
             {/* Top Ribbon: Genre Tagline */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
-              <div className="stardew-ribbon-banner" style={{ fontSize: isCompact ? '8.5px' : '9.5px' }}>
-                <PixelIcon name="sparkle" size={9} color="#6f4209" />
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: isCompact ? 4 : 6 }}>
+              <div className="stardew-ribbon-banner" style={{ fontSize: isCompact ? '8px' : '9.5px', padding: isCompact ? '2px 8px' : '3px 12px' }}>
+                <PixelIcon name="sparkle" size={8} color="#6f4209" />
                 <span>ROGUELIKE · AUTOBATTLER · TIMELINE</span>
-                <PixelIcon name="sparkle" size={9} color="#6f4209" />
+                <PixelIcon name="sparkle" size={8} color="#6f4209" />
               </div>
             </div>
 
@@ -251,9 +253,10 @@ export const TitleView: React.FC<TitleViewProps> = ({
             <h1 
               className="stardew-pixel-title"
               style={{
-                fontSize: isCompact ? 'clamp(22px, 4vw, 30px)' : 'clamp(28px, 4.4vw, 40px)',
+                fontSize: isCompact ? '22px' : 'clamp(28px, 4.4vw, 40px)',
                 textAlign: 'center',
-                margin: '10px 0 8px',
+                margin: isCompact ? '6px 0 4px' : '10px 0 8px',
+                letterSpacing: isCompact ? '1.5px' : '2px',
               }}
             >
               REVERSAL DAY
@@ -262,7 +265,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
           </div>
 
           {/* Stardew Options / Sound & Scenery Wood Buttons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: isCompact ? 5 : 8, width: '100%', justifyContent: 'center' }}>
             <button
               onClick={() => {
                 sound.playSelect();
@@ -270,17 +273,19 @@ export const TitleView: React.FC<TitleViewProps> = ({
               }}
               className="stardew-btn stardew-btn-wood"
               style={{
-                padding: '6px 14px',
-                fontSize: '11px',
-                gap: 6,
+                padding: isCompact ? '5px 8px' : '6px 14px',
+                fontSize: isCompact ? '10px' : '11px',
+                gap: 4,
+                flex: 1,
+                justifyContent: 'center',
               }}
             >
               <PixelIcon
                 name={soundEnabled ? 'volume-2' : 'volume-x'}
-                size={14}
+                size={isCompact ? 12 : 14}
                 color={soundEnabled ? '#f5d76e' : '#cfc6b4'}
               />
-              <span>音效: {soundEnabled ? '已开启' : '静音'}</span>
+              <span>{soundEnabled ? '音效: 开' : '音效: 关'}</span>
             </button>
 
             {/* Scenery Theme Switcher */}
@@ -289,25 +294,28 @@ export const TitleView: React.FC<TitleViewProps> = ({
               className="stardew-btn stardew-btn-wood"
               title="切换明亮清新风景 (晴空花海 / 浮空圣塔 / 翠绿密林)"
               style={{
-                padding: '6px 12px',
-                fontSize: '11px',
-                gap: 6,
+                padding: isCompact ? '5px 8px' : '6px 12px',
+                fontSize: isCompact ? '10px' : '11px',
+                gap: 4,
+                flex: 1,
+                justifyContent: 'center',
               }}
             >
-              <PixelIcon name={currentTheme.pixelIcon} size={14} color="#fde047" />
-              <span>风景: {currentTheme.name}</span>
+              <PixelIcon name={currentTheme.pixelIcon} size={isCompact ? 12 : 14} color="#fde047" />
+              <span>{currentTheme.name}</span>
             </button>
 
             <div style={{
-              fontSize: '10px',
+              fontSize: isCompact ? '9px' : '10px',
               color: '#5a3a12',
               fontFamily: 'var(--font-pixel)',
               textShadow: '0 1px 0 rgba(255, 255, 255, 0.8)',
               backgroundColor: 'rgba(247, 240, 222, 0.95)',
-              padding: '4px 8px',
+              padding: isCompact ? '3px 6px' : '4px 8px',
               border: '1px solid #b8761d',
               borderRadius: 2,
               boxShadow: '0 2px 4px rgba(30, 15, 6, 0.2)',
+              flexShrink: 0,
             }}>
               v1.2.0
             </div>
@@ -322,8 +330,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
           justifyContent: 'center',
           position: 'relative',
           flexShrink: 0,
-          margin: isCompact ? '0 6px' : '0 24px',
-          order: isCompact ? 3 : 0,
+          margin: isCompact ? '0 4px' : '0 24px',
         }}>
           {/* Hero Showcase (Open-Air Meadow Stand) */}
           <div style={{ position: 'relative' }}>
@@ -337,7 +344,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
             <div
               style={{
                 position: 'absolute',
-                left: isCompact ? -48 : -64,
+                left: isCompact ? -36 : -64,
                 top: '50%',
                 transform: 'translateY(-50%)',
                 zIndex: 100,
@@ -352,8 +359,8 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 title="切换上一位英灵 (键盘 ← 或 A)"
                 className="stardew-btn stardew-arrow-btn"
                 style={{
-                  width: isCompact ? 38 : 46,
-                  height: isCompact ? 38 : 46,
+                  width: isCompact ? 32 : 46,
+                  height: isCompact ? 32 : 46,
                   padding: 0,
                   display: 'flex',
                   alignItems: 'center',
@@ -362,7 +369,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
                   borderRadius: 4,
                 }}
               >
-                <PixelIcon name="chevron-left" size={isCompact ? 20 : 24} color="#fef08a" />
+                <PixelIcon name="chevron-left" size={isCompact ? 18 : 24} color="#fef08a" />
               </button>
             </div>
 
@@ -370,7 +377,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
             <div
               style={{
                 position: 'absolute',
-                right: isCompact ? -48 : -64,
+                right: isCompact ? -36 : -64,
                 top: '50%',
                 transform: 'translateY(-50%)',
                 zIndex: 100,
@@ -385,8 +392,8 @@ export const TitleView: React.FC<TitleViewProps> = ({
                 title="切换下一位英灵 (键盘 → 或 D)"
                 className="stardew-btn stardew-arrow-btn"
                 style={{
-                  width: isCompact ? 38 : 46,
-                  height: isCompact ? 38 : 46,
+                  width: isCompact ? 32 : 46,
+                  height: isCompact ? 32 : 46,
                   padding: 0,
                   display: 'flex',
                   alignItems: 'center',
@@ -395,15 +402,18 @@ export const TitleView: React.FC<TitleViewProps> = ({
                   borderRadius: 4,
                 }}
               >
-                <PixelIcon name="chevron-right" size={isCompact ? 20 : 24} color="#fef08a" />
+                <PixelIcon name="chevron-right" size={isCompact ? 18 : 24} color="#fef08a" />
               </button>
             </div>
           </div>
 
           {/* Carved Oak & Brass Nameplate (Cleanly placed below the Dais) */}
-          <div className="stardew-nameplate">
+          <div className="stardew-nameplate" style={{
+            margin: isCompact ? '4px auto 1px' : '8px auto 2px',
+            padding: isCompact ? '3px 12px' : '4px 16px',
+          }}>
             <div style={{
-              fontSize: isCompact ? '8.5px' : '9.5px',
+              fontSize: isCompact ? '8px' : '9.5px',
               color: '#fef08a',
               fontFamily: 'var(--font-pixel)',
               textShadow: '1px 1px 0 #1b0a04',
@@ -416,12 +426,12 @@ export const TitleView: React.FC<TitleViewProps> = ({
               <span>{currentChar.servantClass}</span>
               <span>·</span>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                <PixelIcon name={ARCHETYPE_ICON[currentChar.archetype]} size={10} color="#fef08a" />
+                <PixelIcon name={ARCHETYPE_ICON[currentChar.archetype]} size={isCompact ? 9 : 10} color="#fef08a" />
                 <span>{currentChar.archetypeTag}</span>
               </span>
             </div>
             <div style={{
-              fontSize: isCompact ? '11px' : '13px',
+              fontSize: isCompact ? '10.5px' : '13px',
               fontWeight: 700,
               color: '#ffd166',
               fontFamily: 'var(--font-pixel)',
@@ -430,7 +440,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
               {currentChar.name}
             </div>
             <div style={{
-              fontSize: isCompact ? '8px' : '9px',
+              fontSize: isCompact ? '7.5px' : '9px',
               color: '#fef9c3',
               fontFamily: 'var(--font-pixel)',
               textShadow: '1px 1px 0 #1b0a04',
@@ -441,8 +451,12 @@ export const TitleView: React.FC<TitleViewProps> = ({
             </div>
           </div>
 
-          {/* 12 Servants Carved Oak Roster Dock — 槽位直接显示像素立绘 */}
-          <div className="stardew-roster-dock">
+          {/* 14 Servants Carved Oak Roster Dock */}
+          <div className="stardew-roster-dock" style={{
+            margin: isCompact ? '3px 0 1px' : '6px 0 2px',
+            padding: isCompact ? '3px 5px' : '5px 7px',
+            gap: isCompact ? 3 : 4,
+          }}>
             {CHARACTERS.map((c) => {
               const isCur = c.id === currentChar.id;
               return (
@@ -478,13 +492,13 @@ export const TitleView: React.FC<TitleViewProps> = ({
             onClick={() => { sound.playSelect(); onOpenCharacterSelect(); }}
             className="stardew-btn stardew-btn-wood"
             style={{
-              padding: isCompact ? '4px 12px' : '6px 16px',
-              fontSize: isCompact ? '9.5px' : '11px',
-              gap: 6,
-              marginTop: 6,
+              padding: isCompact ? '3px 10px' : '6px 16px',
+              fontSize: isCompact ? '9px' : '11px',
+              gap: 5,
+              marginTop: isCompact ? 3 : 6,
             }}
           >
-            <PixelIcon name="users" size={isCompact ? 12 : 14} color="#fef08a" />
+            <PixelIcon name="users" size={isCompact ? 11 : 14} color="#fef08a" />
             <span>{CHARACTERS.length}位英雄与英灵全览</span>
           </button>
         </div>
@@ -494,14 +508,13 @@ export const TitleView: React.FC<TitleViewProps> = ({
           className="stardew-panel" 
           style={{
             position: 'relative',
-            padding: isCompact ? '12px 14px' : '16px 18px',
+            padding: isCompact ? '10px 12px' : '16px 18px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            gap: isCompact ? 8 : 10,
-            width: isCompact ? '208px' : '280px',
+            gap: isCompact ? 6 : 10,
+            width: isCompact ? '200px' : '280px',
             flexShrink: 0,
-            order: isCompact ? 2 : 0,
           }}
         >
           {/* Rustic Timber Rooflet */}
@@ -515,8 +528,12 @@ export const TitleView: React.FC<TitleViewProps> = ({
           <div className="stardew-timber-post stardew-timber-post-r" />
 
           {/* Noticeboard Header Plaque */}
-          <div className="stardew-board-header">
-            <PixelIcon name="scroll-horizontal" size={12} color="#fffbeb" />
+          <div className="stardew-board-header" style={{
+            fontSize: isCompact ? '10px' : '11px',
+            padding: isCompact ? '4px 8px' : '5px 10px',
+            marginBottom: isCompact ? 2 : 4,
+          }}>
+            <PixelIcon name="scroll-horizontal" size={isCompact ? 10 : 12} color="#fffbeb" />
             <span>冒险者公会 · 远征战令</span>
           </div>
 
@@ -529,14 +546,14 @@ export const TitleView: React.FC<TitleViewProps> = ({
               }}
               className="stardew-btn stardew-btn-blue"
               style={{
-                padding: isCompact ? '8px 12px' : '10px 14px',
-                fontSize: isCompact ? '11px' : '12px',
-                gap: 8,
+                padding: isCompact ? '6px 10px' : '10px 14px',
+                fontSize: isCompact ? '10.5px' : '12px',
+                gap: 6,
                 justifyContent: 'flex-start',
                 width: '100%',
               }}
             >
-              <PixelIcon name="compass" size={isCompact ? 15 : 18} color="#9db3d0" />
+              <PixelIcon name="compass" size={isCompact ? 13 : 18} color="#9db3d0" />
               <span>继续攀登 (第 {currentFloor} 层)</span>
             </button>
           )}
@@ -549,14 +566,14 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="stardew-btn stardew-btn-primary"
             style={{
-              padding: isCompact ? '10px 12px' : '12px 14px',
-              fontSize: isCompact ? '12px' : '13.5px',
-              gap: 10,
+              padding: isCompact ? '8px 10px' : '12px 14px',
+              fontSize: isCompact ? '11.5px' : '13.5px',
+              gap: 8,
               justifyContent: 'flex-start',
               width: '100%',
             }}
           >
-            <PixelIcon name="play" size={isCompact ? 18 : 20} color="#fffbeb" />
+            <PixelIcon name="play" size={isCompact ? 15 : 20} color="#fffbeb" />
             <span style={{ fontWeight: 800 }}>{hasActiveRun && currentFloor > 0 ? '继续尖塔' : '踏入尖塔'}</span>
           </button>
 
@@ -568,14 +585,14 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="stardew-btn stardew-btn-purple"
             style={{
-              padding: isCompact ? '8px 12px' : '10px 14px',
-              fontSize: isCompact ? '11px' : '12px',
-              gap: 8,
+              padding: isCompact ? '6px 10px' : '10px 14px',
+              fontSize: isCompact ? '10.5px' : '12px',
+              gap: 6,
               justifyContent: 'flex-start',
               width: '100%',
             }}
           >
-            <PixelIcon name="sparkles" size={isCompact ? 15 : 17} color="#f4f9ec" />
+            <PixelIcon name="sparkles" size={isCompact ? 13 : 17} color="#f4f9ec" />
             <span style={{ fontWeight: 700 }}>自走棋演练场 (SANDBOX)</span>
           </button>
 
@@ -587,14 +604,14 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="stardew-btn stardew-btn-red"
             style={{
-              padding: isCompact ? '8px 12px' : '10px 14px',
-              fontSize: isCompact ? '11px' : '12px',
-              gap: 8,
+              padding: isCompact ? '6px 10px' : '10px 14px',
+              fontSize: isCompact ? '10.5px' : '12px',
+              gap: 6,
               justifyContent: 'flex-start',
               width: '100%',
             }}
           >
-            <PixelIcon name="user" size={isCompact ? 15 : 17} color="#f8ece7" />
+            <PixelIcon name="user" size={isCompact ? 13 : 17} color="#f8ece7" />
             <span style={{ fontWeight: 700 }}>英灵阵容 (SERVANTS)</span>
           </button>
 
@@ -606,14 +623,14 @@ export const TitleView: React.FC<TitleViewProps> = ({
             }}
             className="stardew-btn stardew-btn-blue"
             style={{
-              padding: isCompact ? '8px 12px' : '10px 14px',
-              fontSize: isCompact ? '11px' : '12px',
-              gap: 8,
+              padding: isCompact ? '6px 10px' : '10px 14px',
+              fontSize: isCompact ? '10.5px' : '12px',
+              gap: 6,
               justifyContent: 'flex-start',
               width: '100%',
             }}
           >
-            <PixelIcon name="blocks" size={isCompact ? 15 : 17} color="#eaeff7" />
+            <PixelIcon name="blocks" size={isCompact ? 13 : 17} color="#eaeff7" />
             <span style={{ fontWeight: 700 }}>战术卡组整备</span>
           </button>
         </div>

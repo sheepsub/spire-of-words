@@ -31,19 +31,22 @@ headers = {
 repo = "sheepsub/spire-of-words"
 print("Checking GitHub Actions for repo:", repo)
 
-# 1. Find the latest workflow run
+# 1. Find the latest workflow run for this commit
+current_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+print(f"Looking for workflow run for commit: {current_sha[:8]}")
+
 run_id = None
-for _ in range(10):
+for attempt in range(20):
     try:
-        url = f"https://api.github.com/repos/{repo}/actions/runs?per_page=5"
+        url = f"https://api.github.com/repos/{repo}/actions/runs?per_page=10"
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as resp:
             data = json.loads(resp.read().decode())
             runs = data.get('workflow_runs', [])
             for r in runs:
-                if '净化应用图标' in r.get('head_commit', {}).get('message', ''):
+                if r.get('head_sha') == current_sha and 'iOS' in r.get('name', ''):
                     run_id = r['id']
-                    print(f"Found target run {run_id}: status={r['status']}, conclusion={r['conclusion']}")
+                    print(f"Found target iOS run {run_id}: status={r['status']}, conclusion={r['conclusion']}")
                     break
             if run_id:
                 break
@@ -53,7 +56,7 @@ for _ in range(10):
 
 if not run_id:
     print("Could not find the target run yet.")
-    exit(0)
+    exit(1)
 
 # 2. Poll until completed
 while True:
@@ -75,7 +78,7 @@ while True:
     time.sleep(10)
 
 print("Build succeeded! Fetching artifacts...")
-# 3. Find and download artifact
+# 3. Find artifact
 url = f"https://api.github.com/repos/{repo}/actions/runs/{run_id}/artifacts"
 req = urllib.request.Request(url, headers=headers)
 with urllib.request.urlopen(req) as resp:
@@ -95,21 +98,38 @@ if not ipa_art:
     print("No artifact found!")
     exit(1)
 
-download_url = ipa_art['archive_download_url']
-print(f"Downloading {ipa_art['name']} from {download_url}...")
+download_api = ipa_art['archive_download_url']
+print(f"Getting download URL for {ipa_art['name']} from {download_api}...")
 
-req = urllib.request.Request(download_url, headers=headers)
+class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+        return None
+
+opener = urllib.request.build_opener(NoRedirectHandler)
+req_init = urllib.request.Request(download_api, headers=headers)
+real_url = None
+try:
+    opener.open(req_init)
+except urllib.error.HTTPError as e:
+    if e.code in (301, 302, 303, 307):
+        real_url = e.headers.get('Location')
+
+if not real_url:
+    print("Failed to get pre-signed blob URL")
+    exit(1)
+
+print("Downloading IPA package directly from blob storage...")
 zip_dest = os.path.expanduser(r"~\Desktop\artifact.zip")
-with urllib.request.urlopen(req) as resp, open(zip_dest, 'wb') as f:
+req_blob = urllib.request.Request(real_url, headers={'User-Agent': 'Python'})
+with urllib.request.urlopen(req_blob) as resp, open(zip_dest, 'wb') as f:
     shutil.copyfileobj(resp, f)
 
-print(f"Artifact downloaded to {zip_dest}. Extracting...")
+print(f"Artifact downloaded ({os.path.getsize(zip_dest)} bytes). Extracting...")
 extract_dir = os.path.expanduser(r"~\Desktop\extracted_ipa")
 os.makedirs(extract_dir, exist_ok=True)
 with zipfile.ZipFile(zip_dest, 'r') as z:
     z.extractall(extract_dir)
 
-# Find .ipa file
 desktop = os.path.expanduser(r"~\Desktop")
 found_ipa = None
 for root, dirs, files in os.walk(extract_dir):
@@ -124,7 +144,6 @@ if found_ipa:
     final_dest = os.path.join(desktop, "SpireOfWords.ipa")
     shutil.copyfile(found_ipa, final_dest)
     print(f"Success! Final IPA saved to: {final_dest}")
-    # Cleanup temp
     os.remove(zip_dest)
     shutil.rmtree(extract_dir, ignore_errors=True)
 else:
