@@ -147,7 +147,7 @@ async function createCharacterCard({
 
 async function run() {
   const cardsDir = path.resolve('src/assets/cards');
-  const stsCardsDir = path.resolve('android/app/src/main/assets/public/assets/sts2/cards');
+  const stsCardsDir = path.resolve('scratch/sts2_source/cards');
   const pixelDir = path.resolve('src/assets/pixel');
 
   // 1. Ironclad

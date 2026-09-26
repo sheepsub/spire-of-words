@@ -15,7 +15,7 @@ async function run() {
 
   // 1. WATCHER (观者) - Official 1920x1200 portrait cropped to 512x724
   console.log('1. Building Watcher full-bleed card...');
-  const watcherSrc = path.resolve('public/assets/sts2/cards/watcherPortrait.webp');
+  const watcherSrc = path.resolve('scratch/sts2_source/cards/watcherPortrait.webp');
   if (fs.existsSync(watcherSrc)) {
     const watcherVignette = Buffer.from(`
       <svg width="${CARD_W}" height="${CARD_H}" xmlns="http://www.w3.org/2000/svg">
@@ -101,8 +101,8 @@ async function run() {
 
   // 4. DEFECT (故障机器人) - Official Automaton & Plasma Orbs
   console.log('4. Building Defect full-bleed card...');
-  const defectSrc = path.resolve('public/assets/sts2/cards/defect.webp');
-  const defectShop = path.resolve('public/assets/sts2/cards/defect1_epoch.webp');
+  const defectSrc = path.resolve('scratch/sts2_source/cards/defect.webp');
+  const defectShop = path.resolve('scratch/sts2_source/cards/defect1_epoch.webp');
   if (fs.existsSync(heroBanner)) {
     const defectVignette = Buffer.from(`
       <svg width="${CARD_W}" height="${CARD_H}" xmlns="http://www.w3.org/2000/svg">
@@ -135,8 +135,8 @@ async function run() {
 
   // 5. NECROBINDER (亡灵契约师) - Official STS2 Lich Queen & Osty
   console.log('5. Building Necrobinder full-bleed card...');
-  const necroBgSrc = path.resolve('public/assets/sts2/characters/character_select_necrobinder_bg.webp');
-  const necroCharSrc = path.resolve('public/assets/sts2/characters/characterselect_necrobinder.webp');
+  const necroBgSrc = path.resolve('scratch/sts2_source/characters/character_select_necrobinder_bg.webp');
+  const necroCharSrc = path.resolve('scratch/sts2_source/characters/characterselect_necrobinder.webp');
   if (fs.existsSync(necroBgSrc) && fs.existsSync(necroCharSrc)) {
     const bgBuf = await sharp(necroBgSrc)
       .extract({ left: 600, top: 0, width: 1100, height: 1204 })
@@ -186,8 +186,8 @@ async function run() {
 
   // 6. REGENT (储君) - Official STS2 Sovereign & Celestial Vortex
   console.log('6. Building Regent full-bleed card...');
-  const regentShopSrc = path.resolve('public/assets/sts2/cards/regent_shop.webp');
-  const regentCharSrc = path.resolve('public/assets/sts2/characters/characterselect_regent.webp');
+  const regentShopSrc = path.resolve('scratch/sts2_source/cards/regent_shop.webp');
+  const regentCharSrc = path.resolve('scratch/sts2_source/characters/characterselect_regent.webp');
   if (fs.existsSync(regentShopSrc) || fs.existsSync(regentCharSrc)) {
     const regentBase = fs.existsSync(regentShopSrc) ? regentShopSrc : regentCharSrc;
     const meta = await sharp(regentBase).metadata();

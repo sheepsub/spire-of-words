@@ -200,7 +200,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-evenly',
+          justifyContent: isCompact ? 'center' : 'space-evenly',
           width: '100%',
           maxWidth: '1240px',
           flex: 1,
@@ -218,6 +218,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
           justifyContent: 'center',
           maxWidth: isCompact ? '258px' : '360px',
           flexShrink: 0,
+          order: isCompact ? 1 : 0,
         }}>
           {/* Wooden Tavern Signboard */}
           <div className="stardew-title-sign" style={{ width: '100%', marginBottom: 14, position: 'relative' }}>
@@ -322,6 +323,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
           position: 'relative',
           flexShrink: 0,
           margin: isCompact ? '0 6px' : '0 24px',
+          order: isCompact ? 3 : 0,
         }}>
           {/* Hero Showcase (Open-Air Meadow Stand) */}
           <div style={{ position: 'relative' }}>
@@ -499,6 +501,7 @@ export const TitleView: React.FC<TitleViewProps> = ({
             gap: isCompact ? 8 : 10,
             width: isCompact ? '208px' : '280px',
             flexShrink: 0,
+            order: isCompact ? 2 : 0,
           }}
         >
           {/* Rustic Timber Rooflet */}

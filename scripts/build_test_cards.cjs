@@ -41,11 +41,11 @@ async function buildCards() {
     .toFile(path.join(outDir, 'defect_card.png'));
   console.log('✓ Defect card saved.');
 
-  // 4. WATCHER: public/assets/sts2/cards/watcherPortrait.webp (1920x1200)
+  // 4. WATCHER: scratch/sts2_source/cards/watcherPortrait.webp (1920x1200)
   // Watcher is centered in the composition: staff, eye, robes
   console.log('4. Processing Watcher...');
   // 1200 * 0.707 = 848 width. Center around left: 700
-  await sharp('public/assets/sts2/cards/watcherPortrait.webp')
+  await sharp('scratch/sts2_source/cards/watcherPortrait.webp')
     .extract({ left: 700, top: 0, width: 850, height: 1200 })
     .resize(W, H)
     .toFile(path.join(outDir, 'watcher_card.png'));

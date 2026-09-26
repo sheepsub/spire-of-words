@@ -129,7 +129,7 @@ async function buildFinalCards() {
     </svg>
   `);
 
-  await sharp('public/assets/sts2/cards/watcherPortrait.webp')
+  await sharp('scratch/sts2_source/cards/watcherPortrait.webp')
     .extract({ left: 700, top: 0, width: 850, height: 1200 })
     .resize(W, H)
     .composite([{ input: watcherVignette, top: 0, left: 0 }])

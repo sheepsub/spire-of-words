@@ -943,9 +943,9 @@ html, body, #root {
   color: #fef3c7;
   text-shadow: 1px 1px 0 #140602;
   box-shadow: 
-    inset 1px 1px 0 0 #b36327,
-    inset -1px -1px 0 0 #140803,
-    0 3px 0 0 #100602,
+    inset 1px 1px 0 0 #36849a,
+    inset -1px -1px 0 0 #0b2830,
+    0 3px 0 0 #071c21,
     0 4px 8px rgba(0, 0, 0, 0.6);
   cursor: pointer;
   display: inline-flex;
@@ -964,17 +964,17 @@ html, body, #root {
   transform: translateY(-1px);
   box-shadow: 
     inset 1px 1px 0 0 #fde68a,
-    inset -1px -1px 0 0 #140803,
-    0 4px 0 0 #100602,
+    inset -1px -1px 0 0 #0b2830,
+    0 4px 0 0 #071c21,
     0 6px 10px rgba(0, 0, 0, 0.7);
 }
 
 .spire-btn:active {
   transform: translateY(2px) !important;
   box-shadow: 
-    inset 1px 1px 0 0 #140803,
-    inset -1px -1px 0 0 #b36327,
-    0 1px 0 0 #100602 !important;
+    inset 1px 1px 0 0 #0b2830,
+    inset -1px -1px 0 0 #36849a,
+    0 1px 0 0 #071c21 !important;
 }
 
 .pixel-panel {
@@ -982,7 +982,7 @@ html, body, #root {
   background-image: linear-gradient(180deg, #381f10 0%, #26140a 100%);
   border: 3px solid #1a0c05;
   box-shadow: 
-    inset 2px 2px 0 0 #b36327,
+    inset 2px 2px 0 0 #36849a,
     inset -2px -2px 0 0 #180a04,
     0 8px 24px rgba(0, 0, 0, 0.85);
   box-sizing: border-box;
@@ -991,26 +991,26 @@ html, body, #root {
 /* ---------------------------------------------------------------------------
    配色体系（2026-09-25 重做）—— 暖木 + 旧羊皮纸 + 琥珀金
    改色时请沿用这套色族，不要重新引入荧光橙 / 荧光紫 / 电光蓝：
-     木材 深 → 浅： #3b1c09 / #2f1406 / #4a2410 / #5c2f16 / #6b3a1b / #7a4520
-     琥珀 深 → 浅： #6f4209 / #94590f / #b8761d / #d4912a / #e5b93f / #f5d76e
-     羊皮纸      ： #fcf7ec / #f1e5c9 / #e3d1ab
+     木材 深 → 浅： #226070 / #1a505c / #2a6d7e / #36849a / #3f92a8 / #7a4520
+     琥珀 深 → 浅： #2f7a8c / #2f7a8c / #4a9db8 / #5cb3cc / #9adcea / #bdeaf5
+     羊皮纸      ： #f6fdfc / #ddf2ef / #c2e5df
      按钮四色（同明度的暖色族，仅色相区分功能）：
-       主·蜜琥珀 #d4912a  沙盒·苔绿 #5f8a3a  英灵·砖红 #a8452f  卡组·深靛 #3f5a8a
+       主·蜜琥珀 #5cb3cc  沙盒·苔绿 #5f8a3a  英灵·砖红 #a8452f  卡组·深靛 #3f5a8a
    --------------------------------------------------------------------------- */
 
 /* 1. Stardew Wooden Board Panel（深胡桃木外框 + 旧羊皮纸内芯的公告板） */
 .stardew-panel {
-  background: #f7f0de;
+  background: #eef9f8;
   background-image: 
     radial-gradient(ellipse at 50% 15%, rgba(255, 252, 240, 0.7) 0%, transparent 65%),
-    linear-gradient(180deg, #fcf7ec 0%, #f1e5c9 50%, #e3d1ab 100%);
-  border: 4px solid #3b1c09;
+    linear-gradient(180deg, #f6fdfc 0%, #ddf2ef 50%, #c2e5df 100%);
+  border: 4px solid #226070;
   box-shadow: 
-    inset 3px 3px 0 0 #b8761d,
-    inset -3px -3px 0 0 #241005,
-    inset 5px 5px 0 0 #d9ae72,
-    inset -5px -5px 0 0 #5c2f16,
-    0 8px 24px rgba(24, 12, 5, 0.45),
+    inset 3px 3px 0 0 #4a9db8,
+    inset -3px -3px 0 0 #143f49,
+    inset 5px 5px 0 0 #8ed6e6,
+    inset -5px -5px 0 0 #36849a,
+    0 8px 24px rgba(8, 34, 40, 0.45),
     0 2px 6px rgba(0, 0, 0, 0.2);
   position: relative;
   box-sizing: border-box;
@@ -1030,24 +1030,24 @@ html, body, #root {
 .stardew-panel::before {
   top: 2px;
   left: 2px;
-  border-top: 3px solid #dcae5c;
-  border-left: 3px solid #dcae5c;
-  box-shadow: 2px 2px 0 0 #5c3a0e;
+  border-top: 3px solid #9adcea;
+  border-left: 3px solid #9adcea;
+  box-shadow: 2px 2px 0 0 #2f7a8c;
 }
 
 .stardew-panel::after {
   bottom: 2px;
   right: 2px;
-  border-bottom: 3px solid #dcae5c;
-  border-right: 3px solid #dcae5c;
-  box-shadow: -2px -2px 0 0 #5c3a0e;
+  border-bottom: 3px solid #9adcea;
+  border-right: 3px solid #9adcea;
+  box-shadow: -2px -2px 0 0 #2f7a8c;
 }
 
 /* 2. Stardew 3D Pixel Tactile Buttons */
 .stardew-btn {
   font-family: var(--font-pixel);
   letter-spacing: 0.5px;
-  border: 3px solid #150904;
+  border: 3px solid #0c2b33;
   outline: none;
   cursor: pointer;
   position: relative;
@@ -1071,147 +1071,147 @@ html, body, #root {
 
 /* Primary Button (蜜琥珀 - 踏入尖塔大作战，视觉优先级最高) */
 .stardew-btn-primary {
-  background: linear-gradient(180deg, #d4912a 0%, #b0701a 50%, #8f570d 100%);
-  color: #fdf8e8;
-  text-shadow: 2px 2px 0 #2b1207, -1px -1px 0 #2b1207, 1px -1px 0 #2b1207, -1px 1px 0 #2b1207;
+  background: linear-gradient(180deg, #eab54a 0%, #d0932c 50%, #a9701c 100%);
+  color: #fffdf2;
+  text-shadow: 2px 2px 0 #5c3d0c, -1px -1px 0 #5c3d0c, 1px -1px 0 #5c3d0c, -1px 1px 0 #5c3d0c;
   box-shadow: 
-    inset 2px 2px 0 0 #f0c93e,
-    inset -3px -3px 0 0 #3d2008,
-    0 5px 0 0 #140803,
+    inset 2px 2px 0 0 #fbe6a2,
+    inset -3px -3px 0 0 #6d4711,
+    0 5px 0 0 #3d2a08,
     0 8px 12px rgba(0, 0, 0, 0.7);
 }
 
 .stardew-btn-primary:hover {
   box-shadow: 
-    inset 2px 2px 0 0 #f5d76e,
-    inset -3px -3px 0 0 #3d2008,
-    0 7px 0 0 #140803,
+    inset 2px 2px 0 0 #fdf0c4,
+    inset -3px -3px 0 0 #6d4711,
+    0 7px 0 0 #3d2a08,
     0 10px 16px rgba(0, 0, 0, 0.8);
 }
 
 .stardew-btn-primary:active {
   box-shadow: 
-    inset 2px 2px 0 0 #3d2008,
-    inset -2px -2px 0 0 #f0c93e,
-    0 2px 0 0 #140803 !important;
+    inset 2px 2px 0 0 #6d4711,
+    inset -2px -2px 0 0 #fbe6a2,
+    0 2px 0 0 #3d2a08 !important;
 }
 
 /* Secondary Button (苔绿 - 沙盒演练场) */
 .stardew-btn-purple {
-  background: linear-gradient(180deg, #5f8a3a 0%, #4a6f2c 50%, #35521e 100%);
-  color: #f4f9ec;
+  background: linear-gradient(180deg, #84b84a 0%, #6a9a34 50%, #4e7622 100%);
+  color: #f7fdf0;
   text-shadow: 2px 2px 0 #1c2c0c, -1px -1px 0 #1c2c0c;
   box-shadow: 
-    inset 2px 2px 0 0 #bcd88f,
-    inset -3px -3px 0 0 #22360f,
-    0 4px 0 0 #140803,
+    inset 2px 2px 0 0 #c8e6a0,
+    inset -3px -3px 0 0 #2c4a12,
+    0 4px 0 0 #1d3208,
     0 6px 10px rgba(0, 0, 0, 0.65);
 }
 
 .stardew-btn-purple:hover {
   box-shadow: 
-    inset 2px 2px 0 0 #d3e8ab,
-    inset -3px -3px 0 0 #22360f,
-    0 6px 0 0 #140803,
+    inset 2px 2px 0 0 #ddf0bd,
+    inset -3px -3px 0 0 #2c4a12,
+    0 6px 0 0 #1d3208,
     0 8px 14px rgba(0, 0, 0, 0.75);
 }
 
 .stardew-btn-purple:active {
   box-shadow: 
-    inset 2px 2px 0 0 #22360f,
-    inset -2px -2px 0 0 #bcd88f,
-    0 1px 0 0 #140803 !important;
+    inset 2px 2px 0 0 #2c4a12,
+    inset -2px -2px 0 0 #c8e6a0,
+    0 1px 0 0 #1d3208 !important;
 }
 
 /* Roster Button (砖红 - 英灵阵容) */
 .stardew-btn-red {
-  background: linear-gradient(180deg, #a8452f 0%, #8a3524 50%, #6b2718 100%);
-  color: #f8ece7;
+  background: linear-gradient(180deg, #e8836a 0%, #cc6249 50%, #a34a33 100%);
+  color: #fdf6f3;
   text-shadow: 2px 2px 0 #2b0e08, -1px -1px 0 #2b0e08;
   box-shadow: 
-    inset 2px 2px 0 0 #dda08c,
-    inset -3px -3px 0 0 #33120b,
-    0 4px 0 0 #140803,
+    inset 2px 2px 0 0 #f7c2b1,
+    inset -3px -3px 0 0 #5c2517,
+    0 4px 0 0 #4a1d12,
     0 6px 10px rgba(0, 0, 0, 0.65);
 }
 
 .stardew-btn-red:hover {
   box-shadow: 
-    inset 2px 2px 0 0 #e8bfb0,
-    inset -3px -3px 0 0 #33120b,
-    0 6px 0 0 #140803,
+    inset 2px 2px 0 0 #fbd9cd,
+    inset -3px -3px 0 0 #5c2517,
+    0 6px 0 0 #4a1d12,
     0 8px 14px rgba(0, 0, 0, 0.75);
 }
 
 .stardew-btn-red:active {
   box-shadow: 
-    inset 2px 2px 0 0 #33120b,
-    inset -2px -2px 0 0 #dda08c,
-    0 1px 0 0 #140803 !important;
+    inset 2px 2px 0 0 #5c2517,
+    inset -2px -2px 0 0 #f7c2b1,
+    0 1px 0 0 #4a1d12 !important;
 }
 
 /* Tactics Deck Button (深靛 - 战术卡组) */
 .stardew-btn-blue {
-  background: linear-gradient(180deg, #3f5a8a 0%, #334a73 50%, #26385a 100%);
-  color: #eaeff7;
-  text-shadow: 2px 2px 0 #0e1522, -1px -1px 0 #0e1522;
+  background: linear-gradient(180deg, #52a8c4 0%, #3d8aa6 50%, #2a6a83 100%);
+  color: #f0fafd;
+  text-shadow: 2px 2px 0 #08222b, -1px -1px 0 #08222b;
   box-shadow: 
-    inset 2px 2px 0 0 #9db3d0,
-    inset -3px -3px 0 0 #1a2740,
-    0 4px 0 0 #140803,
+    inset 2px 2px 0 0 #a9dcea,
+    inset -3px -3px 0 0 #123c4c,
+    0 4px 0 0 #0d2f3b,
     0 6px 10px rgba(0, 0, 0, 0.65);
 }
 
 .stardew-btn-blue:hover {
   box-shadow: 
-    inset 2px 2px 0 0 #b8c8dd,
-    inset -3px -3px 0 0 #1a2740,
-    0 6px 0 0 #140803,
+    inset 2px 2px 0 0 #c8e9f4,
+    inset -3px -3px 0 0 #123c4c,
+    0 6px 0 0 #0d2f3b,
     0 8px 14px rgba(0, 0, 0, 0.75);
 }
 
 .stardew-btn-blue:active {
   box-shadow: 
-    inset 2px 2px 0 0 #1a2740,
-    inset -2px -2px 0 0 #9db3d0,
-    0 1px 0 0 #140803 !important;
+    inset 2px 2px 0 0 #123c4c,
+    inset -2px -2px 0 0 #a9dcea,
+    0 1px 0 0 #0d2f3b !important;
 }
 
 /* Natural Oak / Wood Button (音效、风景切换等次级小按钮，明度刻意低于主按钮) */
 .stardew-btn-wood {
-  background: linear-gradient(180deg, #b8761d 0%, #94590f 50%, #6f4209 100%);
-  color: #fdf8e8;
-  text-shadow: 1px 1px 0 #2f1406;
+  background: linear-gradient(180deg, #93bfa2 0%, #74a285 50%, #567f66 100%);
+  color: #f4fbf6;
+  text-shadow: 1px 1px 0 #2f4d3a;
   box-shadow: 
-    inset 2px 2px 0 0 #e8c069,
-    inset -2px -2px 0 0 #2f1406,
-    0 3px 0 0 #241005,
+    inset 2px 2px 0 0 #cbe5d3,
+    inset -2px -2px 0 0 #2f4d3a,
+    0 3px 0 0 #243d2d,
     0 4px 8px rgba(30, 15, 6, 0.4);
 }
 
 .stardew-btn-wood:hover {
   box-shadow: 
-    inset 2px 2px 0 0 #fbf3e0,
-    inset -2px -2px 0 0 #2f1406,
-    0 4px 0 0 #241005,
+    inset 2px 2px 0 0 #e2f3e8,
+    inset -2px -2px 0 0 #2f4d3a,
+    0 4px 0 0 #243d2d,
     0 6px 12px rgba(30, 15, 6, 0.45);
 }
 
 .stardew-btn-wood:active {
   box-shadow: 
-    inset 2px 2px 0 0 #2f1406,
-    inset -2px -2px 0 0 #e8c069,
-    0 1px 0 0 #241005 !important;
+    inset 2px 2px 0 0 #2f4d3a,
+    inset -2px -2px 0 0 #cbe5d3,
+    0 1px 0 0 #243d2d !important;
 }
 
 /* Tactile Pixel Arrow Switcher (Title Carousel Left/Right) */
 .stardew-arrow-btn {
-  background: linear-gradient(180deg, #d4912a 0%, #b8761d 50%, #94590f 100%) !important;
-  border: 3px solid #2f1406 !important;
+  background: linear-gradient(180deg, #6cc0d8 0%, #4a9db8 50%, #2f7a8c 100%) !important;
+  border: 3px solid #174854 !important;
   box-shadow: 
-    inset 2px 2px 0 0 #f5d76e,
-    inset -2px -2px 0 0 #54280c,
-    0 4px 0 0 #2f1406,
+    inset 2px 2px 0 0 #bdeaf5,
+    inset -2px -2px 0 0 #1d5563,
+    0 4px 0 0 #174854,
     0 6px 12px rgba(30, 15, 6, 0.45) !important;
   cursor: pointer !important;
   user-select: none;
@@ -1222,34 +1222,34 @@ html, body, #root {
 .stardew-arrow-btn:hover {
   filter: brightness(1.18) contrast(1.05);
   box-shadow: 
-    inset 2px 2px 0 0 #fbf3e0,
-    inset -2px -2px 0 0 #54280c,
-    0 5px 0 0 #2f1406,
+    inset 2px 2px 0 0 #dcf4fa,
+    inset -2px -2px 0 0 #1d5563,
+    0 5px 0 0 #174854,
     0 8px 16px rgba(30, 15, 6, 0.5) !important;
   transform: translateY(-2px);
 }
 
 .stardew-arrow-btn:active {
   box-shadow: 
-    inset 2px 2px 0 0 #54280c,
-    inset -2px -2px 0 0 #f5d76e,
-    0 1px 0 0 #2f1406 !important;
+    inset 2px 2px 0 0 #1d5563,
+    inset -2px -2px 0 0 #bdeaf5,
+    0 1px 0 0 #174854 !important;
   transform: translateY(3px) !important;
 }
 
 /* 3. Stardew Tavern Signboard (Title) */
 .stardew-title-sign {
-  background: #5c2f16;
+  background: #36849a;
   background-image: 
-    radial-gradient(ellipse at 50% 25%, rgba(245, 215, 110, 0.14) 0%, transparent 75%),
-    linear-gradient(180deg, #6b3a1b 0%, #4a2410 100%);
-  border: 4px solid #2b1207;
+    radial-gradient(ellipse at 50% 25%, rgba(190, 234, 245, 0.16) 0%, transparent 75%),
+    linear-gradient(180deg, #3f92a8 0%, #2a6d7e 100%);
+  border: 4px solid #174854;
   box-shadow: 
-    inset 3px 3px 0 0 #d4912a,
-    inset -3px -3px 0 0 #1c0b04,
-    inset 5px 5px 0 0 #c99a5c,
-    inset -5px -5px 0 0 #361a09,
-    0 8px 24px rgba(30, 15, 6, 0.45);
+    inset 3px 3px 0 0 #5cb3cc,
+    inset -3px -3px 0 0 #0f333c,
+    inset 5px 5px 0 0 #7ccadd,
+    inset -5px -5px 0 0 #1e5866,
+    0 8px 24px rgba(10, 40, 46, 0.45);
   position: relative;
   padding: 12px 18px;
   box-sizing: border-box;
@@ -1261,23 +1261,23 @@ html, body, #root {
   font-weight: 900;
   color: #ffdf6b;
   text-shadow: 
-    2px 2px 0 #94590f,
-    3px 3px 0 #54280c,
-    4px 4px 0 #2f1406,
-    -1px -1px 0 #fdf8e8;
+    2px 2px 0 #2f7a8c,
+    3px 3px 0 #2f7a8c,
+    4px 4px 0 #1a505c,
+    -1px -1px 0 #f2fbfa;
   letter-spacing: 2px;
   line-height: 1.15;
 }
 
 /* Parchment Ribbon Banner */
 .stardew-ribbon-banner {
-  background: linear-gradient(180deg, #fdf8e8 0%, #f5d76e 60%, #d4912a 100%);
-  color: #5a3a12;
+  background: linear-gradient(180deg, #f2fbfa 0%, #bdeaf5 60%, #5cb3cc 100%);
+  color: #1c5260;
   font-family: var(--font-pixel);
-  border: 2px solid #6f4209;
+  border: 2px solid #2f7a8c;
   box-shadow: 
-    inset 1px 1px 0 0 #fbf3e0,
-    inset -2px -2px 0 0 #94590f,
+    inset 1px 1px 0 0 #e6f7f4,
+    inset -2px -2px 0 0 #2f7a8c,
     0 2px 4px rgba(0, 0, 0, 0.25);
   padding: 3px 12px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
@@ -1292,9 +1292,9 @@ html, body, #root {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #e8c069;
-  border: 1px solid #54280c;
-  box-shadow: inset 1px 1px 0 #fbf3e0, 1px 1px 0 rgba(0, 0, 0, 0.3);
+  background: #b0e4f0;
+  border: 1px solid #2f7a8c;
+  box-shadow: inset 1px 1px 0 #e6f7f4, 1px 1px 0 rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 .stardew-rivet-tl { top: 3px; left: 3px; }
@@ -1304,11 +1304,11 @@ html, body, #root {
 
 /* Carved Oak Nameplate */
 .stardew-nameplate {
-  background: linear-gradient(180deg, #6b3a1b 0%, #4f2a12 60%, #361a09 100%);
-  border: 3px solid #241005;
+  background: linear-gradient(180deg, #2f7a8c 0%, #256273 60%, #1c5060 100%);
+  border: 3px solid #123f4a;
   box-shadow: 
-    inset 2px 2px 0 0 #e5b93f,
-    inset -2px -2px 0 0 #1c0b04,
+    inset 2px 2px 0 0 #9adcea,
+    inset -2px -2px 0 0 #0d2f38,
     0 4px 10px rgba(0, 0, 0, 0.4);
   padding: 4px 16px;
   text-align: center;
@@ -1320,18 +1320,18 @@ html, body, #root {
 
 /* 5. Stardew Noticeboard Header Plaque */
 .stardew-board-header {
-  background: linear-gradient(180deg, #d4912a 0%, #b8761d 60%, #94590f 100%);
-  border: 2px solid #4a2410;
-  color: #fdf8e8;
+  background: linear-gradient(180deg, #3f92a8 0%, #2f7a8c 60%, #22606f 100%);
+  border: 2px solid #143f49;
+  color: #eef9fb;
   font-family: var(--font-pixel);
   font-size: 11px;
   font-weight: 700;
   text-align: center;
   padding: 5px 10px;
-  text-shadow: 1px 1px 0 #2f1406;
+  text-shadow: 1px 1px 0 #0f333c;
   box-shadow: 
-    inset 1px 1px 0 0 #f5d76e,
-    inset -2px -2px 0 0 #54280c,
+    inset 1px 1px 0 0 #8ed6e6,
+    inset -2px -2px 0 0 #143f49,
     0 2px 6px rgba(0, 0, 0, 0.3);
   margin-bottom: 4px;
   display: flex;
@@ -1374,15 +1374,15 @@ html, body, #root {
   height: 34px;
   background: repeating-linear-gradient(
     180deg,
-    #5c2f16 0px,
-    #5c2f16 4px,
+    #36849a 0px,
+    #36849a 4px,
     #45220e 4px,
     #45220e 8px
   );
   border: 2px solid #221005;
   box-shadow: 
-    inset 1px 0 0 #d4912a,
-    inset -1px 0 0 #1c0b04,
+    inset 1px 0 0 #5cb3cc,
+    inset -1px 0 0 #0f333c,
     0 4px 8px rgba(0, 0, 0, 0.3);
   z-index: -1;
 }
@@ -1397,11 +1397,11 @@ html, body, #root {
   transform: translateX(-50%);
   width: 104%;
   height: 10px;
-  background: linear-gradient(180deg, #7a4520 0%, #4f2a12 60%, #2f1406 100%);
-  border: 2px solid #241005;
+  background: linear-gradient(180deg, #7a4520 0%, #256273 60%, #1a505c 100%);
+  border: 2px solid #143f49;
   border-radius: 3px 3px 0 0;
   box-shadow: 
-    inset 0 1px 0 #c99a5c,
+    inset 0 1px 0 #7ccadd,
     0 2px 4px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: space-between;
@@ -1416,10 +1416,10 @@ html, body, #root {
   align-items: center;
   gap: 4px;
   background: rgba(36, 16, 6, 0.92);
-  border: 2px solid #1c0b04;
+  border: 2px solid #0f333c;
   padding: 5px 7px;
   box-shadow: 
-    inset 1px 1px 0 #5c2f16,
+    inset 1px 1px 0 #36849a,
     inset -1px -1px 0 #1b0a04,
     0 3px 8px rgba(0, 0, 0, 0.35);
   margin: 6px 0 2px;
@@ -1427,8 +1427,8 @@ html, body, #root {
 
 .stardew-hero-rune {
   background: linear-gradient(180deg, #331a0a 0%, #1e0d05 100%);
-  border: 2px solid #4a2410;
-  box-shadow: inset 1px 1px 0 rgba(252, 211, 77, 0.3);
+  border: 2px solid #2a6d7e;
+  box-shadow: inset 1px 1px 0 rgba(168, 226, 239, 0.32);
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   padding: 1px;
@@ -1441,17 +1441,17 @@ html, body, #root {
 
 .stardew-hero-rune:hover {
   transform: translateY(-3px);
-  border-color: #e5b93f;
-  box-shadow: 0 0 10px #d4912a;
+  border-color: #9adcea;
+  box-shadow: 0 0 10px #5cb3cc;
   filter: brightness(1.1) saturate(1);
 }
 
 .stardew-hero-rune.active {
-  border-color: #f0c93e;
+  border-color: #a8e2ef;
   box-shadow: 
-    inset 0 0 0 1px #54280c,
+    inset 0 0 0 1px #2f7a8c,
     0 0 12px #e0b23a,
-    0 0 5px #b8761d;
+    0 0 5px #4a9db8;
   transform: translateY(-2px);
   filter: brightness(1.12) saturate(1.05);
 }
