@@ -2,7 +2,30 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import type { MapNode, NodeType } from '../types/game';
 import type { GeneratedFloor } from '../utils/mapGenerator';
 import { PixelIcon } from './PixelIcon';
+import { AtmosphericParticles } from './AtmosphericParticles';
 import { sound } from '../utils/audio';
+
+// Scenery themes matching TitleView
+const SCENERY_THEMES = [
+  {
+    id: 'summer',
+    name: '晴空花海',
+    url: '/assets/backgrounds/title_bg_bright_pixel.png',
+    particleColor: '#fef08a',
+  },
+  {
+    id: 'prairie',
+    name: '浮空圣塔',
+    url: '/assets/backgrounds/title_bg_prairie_pixel.jpg',
+    particleColor: '#e0e7ff',
+  },
+  {
+    id: 'meadow',
+    name: '翠绿密林',
+    url: '/assets/backgrounds/title_bg_meadow_pixel.png',
+    particleColor: '#86efac',
+  },
+];
 
 interface MapViewProps {
   floors: GeneratedFloor[];
@@ -163,50 +186,64 @@ export const MapView: React.FC<MapViewProps> = ({
     return list;
   }, [floors, nodePositions, currentNodeId, currentFloor]);
 
+  // Read the active scenery theme selected on TitleView
+  const currentTheme = useMemo(() => {
+    if (typeof window === 'undefined') return SCENERY_THEMES[0];
+    const saved = localStorage.getItem('spire_title_scenery_idx');
+    const idx = saved ? parseInt(saved, 10) : 0;
+    return SCENERY_THEMES[idx] || SCENERY_THEMES[0];
+  }, []);
+
   return (
     <div style={{
       width: '100%',
       height: '100%',
-      backgroundColor: '#07080d',
+      backgroundColor: '#174854',
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* MAP HEADER BANNER (Authentic STS Spire Aesthetic) */}
+      {/* MAP HEADER BANNER (Harmonized with Stardew Tavern Signboard Palette) */}
       <div style={{
-        padding: 'max(6px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) 6px max(18px, env(safe-area-inset-left))',
-        backgroundColor: 'rgba(12, 14, 20, 0.96)',
-        borderBottom: '2px solid #000',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.8), inset 0 -1px 0 rgba(197, 160, 89, 0.4)',
+        padding: 'max(6px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) 8px max(18px, env(safe-area-inset-left))',
+        background: 'linear-gradient(180deg, #3f92a8 0%, #2f7a8c 60%, #1e5866 100%)',
+        borderBottom: '3px solid #143f49',
+        boxShadow: '0 4px 16px rgba(10, 40, 46, 0.45), inset 0 2px 0 #7ccadd, inset 0 -2px 0 #143f49',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         zIndex: 30,
         gap: 12,
+        position: 'relative',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Brass Rivets on Header corners */}
+        <div className="stardew-rivet stardew-rivet-tl" style={{ top: 4, left: 4 }} />
+        <div className="stardew-rivet stardew-rivet-tr" style={{ top: 4, right: 4 }} />
+        <div className="stardew-rivet stardew-rivet-bl" style={{ bottom: 4, left: 4 }} />
+        <div className="stardew-rivet stardew-rivet-br" style={{ bottom: 4, right: 4 }} />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingLeft: 12 }}>
           <img 
             src="/sts2/ui/top_bar_floor.png" 
             alt="Spire" 
-            style={{ width: 28, height: 28, objectFit: 'contain' }} 
+            style={{ width: 28, height: 28, objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} 
           />
           <div>
-            <h2 style={{
-              fontFamily: 'var(--font-serif)',
-              color: '#facc15',
+            <h2 className="stardew-pixel-title" style={{
               fontSize: '16px',
-              fontWeight: 800,
-              letterSpacing: '1px',
-              textShadow: '0 2px 4px rgba(0,0,0,0.9), 0 0 10px rgba(250, 204, 21, 0.4)',
               margin: 0,
+              letterSpacing: '1px',
+              textShadow: '2px 2px 0 #174854, -1px -1px 0 #174854, 1px -1px 0 #174854, -1px 1px 0 #174854',
             }}>
               尖塔登攀路线 · ACT I EXORDIUM
             </h2>
             <div style={{
               fontSize: '11px',
-              color: '#94a3b8',
-              fontFamily: 'var(--font-serif)',
+              color: '#dcfce7',
+              fontFamily: 'var(--font-pixel)',
+              marginTop: '2px',
+              textShadow: '0 1px 2px rgba(15, 51, 60, 0.9)',
             }}>
               {currentFloor === 0 
                 ? '★ 请在底层选择一个初始房间启程' 
@@ -215,27 +252,19 @@ export const MapView: React.FC<MapViewProps> = ({
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingRight: 12 }}>
           {/* Legend Toggle Button */}
           <button
             onClick={() => setShowLegend(prev => !prev)}
-            className="spire-btn"
+            className="stardew-btn stardew-btn-wood"
             title="查看地图图例"
             style={{
               padding: '5px 12px',
-              fontSize: '12px',
-              fontFamily: 'var(--font-serif)',
-              color: showLegend ? '#facc15' : '#e2e8f0',
-              backgroundColor: showLegend ? 'rgba(250, 204, 21, 0.15)' : 'rgba(25, 20, 15, 0.85)',
-              border: `1px solid ${showLegend ? '#facc15' : 'rgba(197, 160, 89, 0.5)'}`,
-              borderRadius: 4,
-              display: 'flex',
-              alignItems: 'center',
+              fontSize: '11px',
               gap: 5,
-              cursor: 'pointer',
             }}
           >
-            <PixelIcon name="compass" size={14} color={showLegend ? '#facc15' : '#cbd5e1'} />
+            <PixelIcon name="compass" size={14} color="#fde047" />
             <span>图例</span>
           </button>
 
@@ -243,16 +272,10 @@ export const MapView: React.FC<MapViewProps> = ({
           {onClose && (
             <button
               onClick={() => { sound.playSelect(); onClose(); }}
-              className="spire-btn"
+              className="stardew-btn stardew-btn-red"
               style={{
                 padding: '5px 14px',
-                fontSize: '12px',
-                fontFamily: 'var(--font-serif)',
-                color: '#fff',
-                backgroundColor: 'rgba(220, 38, 38, 0.25)',
-                border: '1px solid #ef4444',
-                borderRadius: 4,
-                cursor: 'pointer',
+                fontSize: '11px',
               }}
             >
               返回
@@ -261,7 +284,7 @@ export const MapView: React.FC<MapViewProps> = ({
         </div>
       </div>
 
-      {/* MAP VIEWPORT (Vertical Scrollable Parchment) */}
+      {/* MAP VIEWPORT (Vertical Scrollable Parchment with Vibrant World Backdrop) */}
       <div 
         ref={scrollContainerRef}
         className="spire-map-scroll"
@@ -272,20 +295,49 @@ export const MapView: React.FC<MapViewProps> = ({
           position: 'relative',
           display: 'flex',
           justifyContent: 'center',
-          backgroundColor: '#050608',
-          background: 'radial-gradient(ellipse at center, #111420 0%, #050608 100%)',
+          backgroundImage: `linear-gradient(180deg, rgba(8, 28, 34, 0.72) 0%, rgba(12, 38, 46, 0.65) 50%, rgba(6, 20, 24, 0.82) 100%), url('${currentTheme.url}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          backgroundRepeat: 'no-repeat',
         }}
       >
-        {/* PARCHMENT MAP CANVAS CONTAINER */}
+        {/* Dynamic Ambient Particles from the scenery world */}
+        <AtmosphericParticles color={currentTheme.particleColor} density={18} />
+
+        {/* PARCHMENT MAP CANVAS CONTAINER (Carved Timber Scroll with Stardew Teal & Gold Accents) */}
         <div style={{
           width: '100%',
           maxWidth: `${CANVAS_WIDTH}px`,
           height: `${CANVAS_HEIGHT}px`,
           position: 'relative',
-          boxShadow: '0 0 50px rgba(0, 0, 0, 0.95), -15px 0 35px rgba(0, 0, 0, 0.8), 15px 0 35px rgba(0, 0, 0, 0.8)',
-          backgroundColor: '#1c1917',
+          boxShadow: '0 8px 36px rgba(4, 18, 22, 0.75), -12px 0 28px rgba(4, 18, 22, 0.6), 12px 0 28px rgba(4, 18, 22, 0.6)',
+          backgroundColor: '#f7f0de',
           flexShrink: 0,
+          margin: '0 auto',
         }}>
+          {/* TOP CARVED TIMBER SCROLL ROD */}
+          <div style={{
+            width: 'calc(100% + 36px)',
+            marginLeft: '-18px',
+            height: '16px',
+            background: 'linear-gradient(180deg, #5cb3cc 0%, #36849a 30%, #1e5866 70%, #0f333c 100%)',
+            border: '2px solid #0c2b33',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.4)',
+            position: 'sticky',
+            top: 0,
+            zIndex: 15,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0 6px',
+            boxSizing: 'border-box',
+          }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(135deg, #fef08a 0%, #eab54a 50%, #854d0e 100%)', border: '1px solid #78350f', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
+            <div style={{ height: 2, flex: 1, margin: '0 10px', background: 'rgba(255,255,255,0.25)', borderRadius: 1 }} />
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(135deg, #fef08a 0%, #eab54a 50%, #854d0e 100%)', border: '1px solid #78350f', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
+          </div>
+
           {/* THREE-PIECE EXORDIUM MAP BACKGROUND (Top, Middle, Bottom) */}
           <div style={{
             position: 'absolute',
@@ -294,6 +346,7 @@ export const MapView: React.FC<MapViewProps> = ({
             flexDirection: 'column',
             pointerEvents: 'none',
             zIndex: 1,
+            filter: 'sepia(0.06) saturate(1.18) hue-rotate(-8deg) contrast(1.03)',
           }}>
             {/* Top section: Boss Arena & Thorns */}
             <div style={{
@@ -321,11 +374,20 @@ export const MapView: React.FC<MapViewProps> = ({
             }} />
           </div>
 
-          {/* PARCHMENT VIGNETTE & WORN EDGES OVERLAY */}
+          {/* Subtle Stardew Mint-Parchment Luminous Tint */}
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(90deg, rgba(5,6,8,0.7) 0%, transparent 8%, transparent 92%, rgba(5,6,8,0.7) 100%), linear-gradient(180deg, rgba(5,6,8,0.6) 0%, transparent 5%, transparent 95%, rgba(5,6,8,0.85) 100%)',
+            background: 'radial-gradient(ellipse at 50% 15%, rgba(255, 252, 240, 0.12) 0%, transparent 65%), linear-gradient(180deg, rgba(246, 253, 252, 0.08) 0%, rgba(221, 242, 239, 0.04) 50%, rgba(54, 132, 154, 0.06) 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }} />
+
+          {/* PARCHMENT VIGNETTE & WORN EDGES OVERLAY (Softened teal shadow) */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(90deg, rgba(15,51,60,0.3) 0%, transparent 8%, transparent 92%, rgba(15,51,60,0.3) 100%), linear-gradient(180deg, rgba(15,51,60,0.25) 0%, transparent 4%, transparent 96%, rgba(15,51,60,0.38) 100%)',
             pointerEvents: 'none',
             zIndex: 2,
           }} />
@@ -635,23 +697,40 @@ export const MapView: React.FC<MapViewProps> = ({
               });
             })}
           </div>
+
+          {/* BOTTOM CARVED TIMBER SCROLL ROD */}
+          <div style={{
+            width: 'calc(100% + 36px)',
+            marginLeft: '-18px',
+            height: '16px',
+            background: 'linear-gradient(180deg, #5cb3cc 0%, #36849a 30%, #1e5866 70%, #0f333c 100%)',
+            border: '2px solid #0c2b33',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.4)',
+            position: 'relative',
+            zIndex: 15,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '0 6px',
+            boxSizing: 'border-box',
+            marginTop: '-8px',
+          }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(135deg, #fef08a 0%, #eab54a 50%, #854d0e 100%)', border: '1px solid #78350f', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
+            <div style={{ height: 2, flex: 1, margin: '0 10px', background: 'rgba(255,255,255,0.25)', borderRadius: 1 }} />
+            <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'linear-gradient(135deg, #fef08a 0%, #eab54a 50%, #854d0e 100%)', border: '1px solid #78350f', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }} />
+          </div>
         </div>
       </div>
 
-      {/* FLOATING LEGEND PANEL (Top Right Overlay) */}
+      {/* FLOATING LEGEND PANEL (Top Right Stardew Noticeboard Overlay) */}
       {showLegend && (
-        <div style={{
+        <div className="stardew-panel" style={{
           position: 'absolute',
           top: '64px',
           right: '16px',
           zIndex: 50,
-          width: '210px',
-          backgroundImage: 'url(/sts2/map/map_legend.png)',
-          backgroundSize: '100% 100%',
-          backgroundColor: '#1c1917',
-          border: '2px solid rgba(197, 160, 89, 0.8)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.95), 0 0 20px rgba(197, 160, 89, 0.3)',
-          borderRadius: 6,
+          width: '220px',
           padding: '12px 14px',
           display: 'flex',
           flexDirection: 'column',
@@ -662,35 +741,40 @@ export const MapView: React.FC<MapViewProps> = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            borderBottom: '1px solid rgba(197, 160, 89, 0.4)',
+            borderBottom: '2px solid #2f7a8c',
             paddingBottom: '6px',
           }}>
             <span style={{
-              fontFamily: 'var(--font-serif)',
-              fontSize: '13px',
+              fontFamily: 'var(--font-pixel)',
+              fontSize: '12px',
               fontWeight: 800,
-              color: '#facc15',
+              color: '#1c5260',
               letterSpacing: '1px',
             }}>
               图例 (LEGEND)
             </span>
             <button
               onClick={() => setShowLegend(false)}
+              className="stardew-btn"
               style={{
-                background: 'none',
-                border: 'none',
-                color: '#94a3b8',
+                background: '#e05252',
+                border: '2px solid #5a1414',
+                color: '#fff',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                padding: 0,
+                justifyContent: 'center',
+                padding: '2px',
+                width: 20,
+                height: 20,
+                borderRadius: 2,
               }}
             >
-              <PixelIcon name="close" size={16} />
+              <PixelIcon name="close" size={14} color="#fff" />
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
             {[
               { type: 'monster' as NodeType, title: '怪物 (Enemy)', icon: '/sts2/map/map_monster.png' },
               { type: 'elite' as NodeType, title: '精英 (Elite)', icon: '/sts2/map/map_elite.png' },
@@ -707,9 +791,9 @@ export const MapView: React.FC<MapViewProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '3px 6px',
-                  borderRadius: 4,
-                  backgroundColor: highlightedType === item.type ? 'rgba(250, 204, 21, 0.2)' : 'transparent',
+                  padding: '4px 6px',
+                  borderRadius: 3,
+                  backgroundColor: highlightedType === item.type ? 'rgba(54, 132, 154, 0.2)' : 'transparent',
                   cursor: 'pointer',
                   transition: 'background-color 0.15s ease',
                 }}
@@ -720,10 +804,10 @@ export const MapView: React.FC<MapViewProps> = ({
                   style={{ width: 22, height: 22, objectFit: 'contain' }} 
                 />
                 <span style={{
-                  fontFamily: 'var(--font-serif)',
+                  fontFamily: 'var(--font-pixel)',
                   fontSize: '11px',
                   fontWeight: 600,
-                  color: highlightedType === item.type ? '#fde047' : '#e2e8f0',
+                  color: highlightedType === item.type ? '#0f333c' : '#226070',
                 }}>
                   {item.title}
                 </span>
@@ -731,9 +815,10 @@ export const MapView: React.FC<MapViewProps> = ({
             ))}
           </div>
           <div style={{
-            fontSize: '9px',
-            color: '#94a3b8',
-            borderTop: '1px solid rgba(197, 160, 89, 0.2)',
+            fontSize: '9.5px',
+            color: '#475569',
+            fontFamily: 'var(--font-pixel)',
+            borderTop: '1px solid rgba(47, 122, 140, 0.3)',
             paddingTop: '6px',
             textAlign: 'center',
           }}>
@@ -750,10 +835,10 @@ export const MapView: React.FC<MapViewProps> = ({
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 30,
-          backgroundColor: 'rgba(15, 12, 10, 0.94)',
-          border: '2px solid #facc15',
-          boxShadow: '0 0 25px rgba(250, 204, 21, 0.6), 0 4px 15px rgba(0,0,0,0.9)',
-          borderRadius: 6,
+          background: 'linear-gradient(180deg, #eab54a 0%, #d0932c 60%, #a9701c 100%)',
+          border: '3px solid #452103',
+          boxShadow: 'inset 2px 2px 0 #fbe6a2, inset -2px -2px 0 #6d4711, 0 6px 20px rgba(0,0,0,0.5)',
+          borderRadius: 4,
           padding: '8px 24px',
           display: 'flex',
           alignItems: 'center',
@@ -764,15 +849,15 @@ export const MapView: React.FC<MapViewProps> = ({
           <img 
             src="/sts2/map/map_marker_ironclad.png" 
             alt="" 
-            style={{ width: 20, height: 24, objectFit: 'contain' }} 
+            style={{ width: 22, height: 26, objectFit: 'contain', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))' }} 
           />
           <div style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '13px',
+            fontFamily: 'var(--font-pixel)',
+            fontSize: '12.5px',
             fontWeight: 800,
-            color: '#facc15',
+            color: '#fffdf2',
             letterSpacing: '1px',
-            textShadow: '0 1px 2px #000',
+            textShadow: '2px 2px 0 #452103, -1px -1px 0 #452103, 1px -1px 0 #452103, -1px 1px 0 #452103',
           }}>
             点击底部的任意发光房间，开启你的爬塔征程！
           </div>
